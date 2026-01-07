@@ -5,10 +5,17 @@ import { MISSIONS, STAGE_INFO } from '@/lib/missions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Heart, Plus, X, CheckCircle2, Circle, Lock } from 'lucide-react';
+import { Heart, Plus, X, CheckCircle2, Lock, ChevronRight, Edit2, Calendar, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface Habit {
   id: string;
@@ -28,6 +35,9 @@ export default function Rotina() {
   const [showForm, setShowForm] = useState(false);
   const [newHabit, setNewHabit] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Manhã');
+  const [selectedMission, setSelectedMission] = useState<any>(null);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const stageMissions = MISSIONS.filter(m => m.stage === 'rotina');
   const stageInfo = STAGE_INFO.rotina;
@@ -118,6 +128,29 @@ export default function Rotina() {
     }
   };
 
+  const handleEditHabit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingHabit) return;
+
+    try {
+      await supabase
+        .from('daily_habits')
+        .update({ name: editingHabit.name, category: editingHabit.category })
+        .eq('id', editingHabit.id);
+
+      setHabits(habits.map(h => 
+        h.id === editingHabit.id 
+          ? { ...h, name: editingHabit.name, category: editingHabit.category }
+          : h
+      ));
+      toast.success('Hábito atualizado!');
+      setEditingHabit(null);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Erro ao atualizar');
+    }
+  };
+
   const toggleHabit = async (habitId: string) => {
     const habit = habits.find(h => h.id === habitId);
     if (!habit) return;
@@ -151,48 +184,103 @@ export default function Rotina() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   const completedToday = habits.filter(h => h.completedDates.includes(today)).length;
   const totalHabits = habits.length;
+  const progressPercent = totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0;
 
   const groupedHabits = HABIT_CATEGORIES.reduce((acc, cat) => {
     acc[cat] = habits.filter(h => h.category === cat);
     return acc;
   }, {} as Record<string, Habit[]>);
 
+  // Generate week days
+  const weekDays = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    weekDays.push(date);
+  }
+
+  const completedCount = completedMissions.length;
+  const stageProgressPercent = Math.round((completedCount / stageMissions.length) * 100);
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="animate-fade-in">
-        <div className="flex items-center gap-3 mb-2">
-          <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
-            <Heart className="w-6 h-6 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+            <Heart className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              {stageInfo.name}
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              {stageInfo.description}
-            </p>
+            <h1 className="text-xl font-bold text-foreground">{stageInfo.name}</h1>
+            <p className="text-sm text-muted-foreground">{stageInfo.description}</p>
           </div>
         </div>
       </div>
 
-      {/* Daily Progress */}
-      <Card className="animate-slide-up">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-muted-foreground">
-              Hábitos de Hoje
-            </span>
-            <span className="text-sm font-bold text-foreground">
-              {completedToday} / {totalHabits}
-            </span>
+      {/* Week Calendar */}
+      <Card className="border-border/50 animate-slide-up">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            <p className="text-sm font-medium text-foreground">Última Semana</p>
           </div>
-          <div className="h-3 bg-muted rounded-full overflow-hidden">
+          <div className="grid grid-cols-7 gap-2">
+            {weekDays.map((date, idx) => {
+              const dateStr = date.toISOString().split('T')[0];
+              const isToday = dateStr === today;
+              const allCompleted = habits.length > 0 && habits.every(h => h.completedDates.includes(dateStr));
+              const someCompleted = habits.some(h => h.completedDates.includes(dateStr));
+              
+              return (
+                <div
+                  key={idx}
+                  className={cn(
+                    'flex flex-col items-center p-2 rounded-lg transition-all',
+                    isToday && 'ring-1 ring-primary',
+                    allCompleted && 'bg-secondary/20',
+                    !allCompleted && someCompleted && 'bg-primary/10'
+                  )}
+                >
+                  <span className="text-[10px] text-muted-foreground uppercase">
+                    {date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3)}
+                  </span>
+                  <span className={cn(
+                    'text-sm font-medium mt-1',
+                    isToday ? 'text-primary' : 'text-foreground'
+                  )}>
+                    {date.getDate()}
+                  </span>
+                  {allCompleted && (
+                    <CheckCircle2 className="w-3.5 h-3.5 text-secondary mt-1" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Daily Progress */}
+      <Card className="border-border/50 animate-slide-up" style={{ animationDelay: '0.05s' }}>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-foreground">Hábitos de Hoje</p>
+            <p className="text-sm font-bold text-primary">{completedToday}/{totalHabits}</p>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div 
               className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
-              style={{ width: totalHabits > 0 ? `${(completedToday / totalHabits) * 100}%` : '0%' }}
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
         </CardContent>
@@ -200,9 +288,8 @@ export default function Rotina() {
 
       {/* Add Habit Button */}
       <Button 
-        variant="secondary" 
-        className="w-full"
         onClick={() => setShowForm(true)}
+        className="w-full h-11"
       >
         <Plus className="w-4 h-4 mr-2" />
         Adicionar Hábito
@@ -210,41 +297,48 @@ export default function Rotina() {
 
       {/* Add Habit Form */}
       {showForm && (
-        <Card className="animate-scale-in">
-          <CardHeader className="pb-2">
+        <Card className="animate-scale-in border-border/50">
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Novo Hábito</CardTitle>
-              <Button variant="ghost" size="icon" onClick={() => setShowForm(false)}>
+              <CardTitle className="text-base">Novo Hábito</CardTitle>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowForm(false)}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4">
             <form onSubmit={handleAddHabit} className="space-y-4">
-              <Input
-                placeholder="Ex: Beber 2L de água"
-                value={newHabit}
-                onChange={(e) => setNewHabit(e.target.value)}
-                required
-              />
-              <div className="flex flex-wrap gap-2">
-                {HABIT_CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat)}
-                    className={cn(
-                      'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
-                      selectedCategory === cat
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                    )}
-                  >
-                    {cat}
-                  </button>
-                ))}
+              <div className="space-y-2">
+                <Label className="text-sm">Nome do hábito</Label>
+                <Input
+                  placeholder="Ex: Beber 2L de água"
+                  value={newHabit}
+                  onChange={(e) => setNewHabit(e.target.value)}
+                  required
+                  className="h-10"
+                />
               </div>
-              <Button type="submit" className="w-full" variant="secondary">
+              <div className="space-y-2">
+                <Label className="text-sm">Período do dia</Label>
+                <div className="flex flex-wrap gap-2">
+                  {HABIT_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat)}
+                      className={cn(
+                        'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
+                        selectedCategory === cat
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                      )}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <Button type="submit" className="w-full h-10">
                 Adicionar
               </Button>
             </form>
@@ -257,9 +351,9 @@ export default function Rotina() {
         if (categoryHabits.length === 0) return null;
         
         return (
-          <Card key={category} className="animate-slide-up">
+          <Card key={category} className="border-border/50 animate-slide-up">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">{category}</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{category}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {categoryHabits.map((habit) => {
@@ -269,7 +363,7 @@ export default function Rotina() {
                     key={habit.id}
                     className={cn(
                       'flex items-center justify-between p-3 rounded-lg transition-all',
-                      isCompleted ? 'bg-secondary/10 border border-secondary/30' : 'bg-muted'
+                      isCompleted ? 'bg-secondary/10' : 'bg-muted/50'
                     )}
                   >
                     <label className="flex items-center gap-3 cursor-pointer flex-1">
@@ -278,20 +372,30 @@ export default function Rotina() {
                         onCheckedChange={() => toggleHabit(habit.id)}
                       />
                       <span className={cn(
-                        'text-sm font-medium',
+                        'text-sm',
                         isCompleted && 'line-through text-muted-foreground'
                       )}>
                         {habit.name}
                       </span>
                     </label>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => deleteHabit(habit.id)}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => setEditingHabit(habit)}
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-destructive hover:text-destructive"
+                        onClick={() => deleteHabit(habit.id)}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
@@ -301,59 +405,194 @@ export default function Rotina() {
       })}
 
       {habits.length === 0 && !showForm && (
-        <Card className="animate-slide-up">
-          <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">
-              Você ainda não tem hábitos cadastrados. Adicione seu primeiro hábito!
+        <Card className="border-border/50 animate-slide-up">
+          <CardContent className="py-10 text-center">
+            <Heart className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">
+              Adicione seu primeiro hábito diário
             </p>
           </CardContent>
         </Card>
       )}
 
-      {/* Stage Missions */}
-      <div className="space-y-4 mt-8">
-        <h2 className="text-lg font-bold text-foreground">Missões da Etapa</h2>
-        {stageMissions.map((mission) => {
-          const isCompleted = completedMissions.includes(mission.day);
-          const isCurrent = mission.day === currentDay;
-          const isLocked = mission.day > currentDay;
+      {/* Stage Progress */}
+      <Card className="border-border/50 animate-slide-up">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-foreground">Progresso da Etapa</p>
+            <p className="text-sm font-bold text-primary">{completedCount}/{stageMissions.length}</p>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div 
+              className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
+              style={{ width: `${stageProgressPercent}%` }}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-          return (
-            <Card 
-              key={mission.day}
-              className={cn(
-                'transition-all',
-                isCompleted && 'opacity-75',
-                isCurrent && 'ring-2 ring-primary shadow-lg',
-                isLocked && 'opacity-50'
-              )}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" />
-                    ) : isLocked ? (
-                      <Lock className="w-5 h-5 text-muted-foreground shrink-0" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-primary shrink-0" />
-                    )}
-                    <div>
-                      <span className="text-xs font-medium text-muted-foreground">Dia {mission.day}</span>
-                      <CardTitle className={cn('text-base', isCompleted && 'line-through text-muted-foreground')}>
-                        {mission.title}
-                      </CardTitle>
+      {/* Missions */}
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">Missões da Etapa</h2>
+        <div className="grid gap-3">
+          {stageMissions.map((mission, index) => {
+            const isCompleted = completedMissions.includes(mission.day);
+            const isCurrent = mission.day === currentDay;
+            const isLocked = mission.day > currentDay;
+
+            return (
+              <Card 
+                key={mission.day}
+                className={cn(
+                  'cursor-pointer transition-all hover:shadow-md border-border/50',
+                  isCompleted && 'bg-secondary/5',
+                  isCurrent && 'ring-1 ring-primary',
+                  isLocked && 'opacity-60'
+                )}
+                onClick={() => setSelectedMission({ mission, isCompleted, isCurrent, isLocked })}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
+                      isCompleted ? 'bg-secondary/20' : isLocked ? 'bg-muted' : stageInfo.gradient
+                    )}>
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                      ) : isLocked ? (
+                        <Lock className="w-5 h-5 text-muted-foreground" />
+                      ) : (
+                        <span className="text-sm font-bold text-primary-foreground">{mission.day}</span>
+                      )}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">Dia {mission.day}</span>
+                        {isCurrent && (
+                          <span className="text-[10px] font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                            HOJE
+                          </span>
+                        )}
+                      </div>
+                      <h3 className={cn(
+                        'font-medium text-foreground truncate',
+                        isCompleted && 'line-through text-muted-foreground'
+                      )}>
+                        {mission.title}
+                      </h3>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Edit Habit Dialog */}
+      <Dialog open={!!editingHabit} onOpenChange={() => setEditingHabit(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Hábito</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditHabit} className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-sm">Nome do hábito</Label>
+              <Input
+                value={editingHabit?.name || ''}
+                onChange={(e) => setEditingHabit(prev => prev ? { ...prev, name: e.target.value } : null)}
+                required
+                className="h-10"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm">Período do dia</Label>
+              <div className="flex flex-wrap gap-2">
+                {HABIT_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setEditingHabit(prev => prev ? { ...prev, category: cat } : null)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
+                      editingHabit?.category === cat
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Button type="submit" className="w-full h-10">
+              Salvar
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mission Detail Modal */}
+      <Dialog open={!!selectedMission} onOpenChange={() => setSelectedMission(null)}>
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+          {selectedMission && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Dia {selectedMission.mission.day}</span>
+                  {selectedMission.isCurrent && (
+                    <span className="font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
+                      HOJE
+                    </span>
+                  )}
+                  {selectedMission.isCompleted && (
+                    <span className="font-medium bg-secondary/20 text-secondary px-1.5 py-0.5 rounded text-[10px]">
+                      CONCLUÍDO
+                    </span>
+                  )}
+                </div>
+                <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-5 mt-4">
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Descrição</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {selectedMission.mission.description}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-3">Como fazer</h4>
+                  <div className="space-y-2">
+                    {selectedMission.mission.checklist.map((item: string, idx: number) => (
+                      <div 
+                        key={idx}
+                        className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                      >
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-medium text-primary">{idx + 1}</span>
+                        </div>
+                        <p className="text-sm text-foreground">{item}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{mission.description}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+
+                {selectedMission.isLocked && (
+                  <div className="p-4 bg-muted rounded-lg text-center">
+                    <Lock className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      Complete os dias anteriores para desbloquear esta missão
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

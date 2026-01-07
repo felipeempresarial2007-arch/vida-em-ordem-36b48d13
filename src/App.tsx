@@ -10,6 +10,7 @@ import Ambiente from "./pages/Ambiente";
 import Financas from "./pages/Financas";
 import Rotina from "./pages/Rotina";
 import Metas from "./pages/Metas";
+import Continuacao from "./pages/Continuacao";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
 import { Loader2 } from "lucide-react";
@@ -22,7 +23,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -40,7 +41,7 @@ function AuthRoute({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -60,6 +61,7 @@ const AppRoutes = () => (
     <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
     <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
     <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
+    <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

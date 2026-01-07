@@ -7,10 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Wallet, Plus, TrendingUp, TrendingDown, X, CheckCircle2, Circle, Lock } from 'lucide-react';
+import { Wallet, Plus, TrendingUp, TrendingDown, X, CheckCircle2, Lock, ChevronRight, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface FinancialEntry {
   id: string;
@@ -37,6 +42,7 @@ export default function Financas() {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
+  const [selectedMission, setSelectedMission] = useState<any>(null);
 
   const stageMissions = MISSIONS.filter(m => m.stage === 'financas');
   const stageInfo = STAGE_INFO.financas;
@@ -121,6 +127,14 @@ export default function Financas() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   const totalIncome = entries
     .filter(e => e.type === 'income')
     .reduce((sum, e) => sum + Number(e.amount), 0);
@@ -130,104 +144,102 @@ export default function Financas() {
     .reduce((sum, e) => sum + Number(e.amount), 0);
 
   const balance = totalIncome - totalExpense;
+  const completedCount = completedMissions.length;
+  const progressPercent = Math.round((completedCount / stageMissions.length) * 100);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="animate-fade-in">
-        <div className="flex items-center gap-3 mb-2">
-          <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
-            <Wallet className="w-6 h-6 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+            <Wallet className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              {stageInfo.name}
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              {stageInfo.description}
-            </p>
+            <h1 className="text-xl font-bold text-foreground">{stageInfo.name}</h1>
+            <p className="text-sm text-muted-foreground">{stageInfo.description}</p>
           </div>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4 animate-slide-up">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2 text-secondary mb-1">
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-xs font-medium">Entradas</span>
+      <div className="grid grid-cols-3 gap-3 animate-slide-up">
+        <Card className="border-border/50">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5 text-secondary mb-1">
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-medium uppercase">Entradas</span>
             </div>
-            <p className="text-xl font-bold text-foreground">
-              R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            <p className="text-base font-bold text-foreground">
+              R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2 text-destructive mb-1">
-              <TrendingDown className="w-4 h-4" />
-              <span className="text-xs font-medium">Saídas</span>
+        <Card className="border-border/50">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5 text-destructive mb-1">
+              <TrendingDown className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-medium uppercase">Saídas</span>
             </div>
-            <p className="text-xl font-bold text-foreground">
-              R$ {totalExpense.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            <p className="text-base font-bold text-foreground">
+              R$ {totalExpense.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <Wallet className="w-4 h-4" />
-              <span className="text-xs font-medium">Saldo</span>
+        <Card className="border-border/50">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+              <Wallet className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-medium uppercase">Saldo</span>
             </div>
             <p className={cn(
-              'text-xl font-bold',
+              'text-base font-bold',
               balance >= 0 ? 'text-secondary' : 'text-destructive'
             )}>
-              R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Add Entry Button */}
-      <div className="flex gap-2">
+      {/* Add Entry Buttons */}
+      <div className="grid grid-cols-2 gap-3">
         <Button 
           variant="secondary" 
-          className="flex-1"
+          className="h-11"
           onClick={() => { setFormType('income'); setShowForm(true); }}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Adicionar Entrada
+          Entrada
         </Button>
         <Button 
           variant="outline" 
-          className="flex-1"
+          className="h-11"
           onClick={() => { setFormType('expense'); setShowForm(true); }}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Adicionar Saída
+          Saída
         </Button>
       </div>
 
       {/* Entry Form */}
       {showForm && (
-        <Card className="animate-scale-in">
-          <CardHeader className="pb-2">
+        <Card className="animate-scale-in border-border/50">
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">
+              <CardTitle className="text-base">
                 {formType === 'income' ? 'Nova Entrada' : 'Nova Saída'}
               </CardTitle>
-              <Button variant="ghost" size="icon" onClick={() => setShowForm(false)}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowForm(false)}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>Valor</Label>
+                  <Label className="text-sm">Valor</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -235,12 +247,13 @@ export default function Financas() {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     required
+                    className="h-10"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Categoria</Label>
+                  <Label className="text-sm">Categoria</Label>
                   <Select value={category} onValueChange={setCategory} required>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
@@ -252,14 +265,15 @@ export default function Financas() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Descrição (opcional)</Label>
+                <Label className="text-sm">Descrição (opcional)</Label>
                 <Input
                   placeholder="Ex: Conta de luz"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  className="h-10"
                 />
               </div>
-              <Button type="submit" className="w-full" variant={formType === 'income' ? 'secondary' : 'default'}>
+              <Button type="submit" className="w-full h-10" variant={formType === 'income' ? 'secondary' : 'default'}>
                 Salvar
               </Button>
             </form>
@@ -269,21 +283,21 @@ export default function Financas() {
 
       {/* Recent Entries */}
       {entries.length > 0 && (
-        <Card className="animate-slide-up">
-          <CardHeader>
-            <CardTitle className="text-lg">Últimos Registros</CardTitle>
+        <Card className="animate-slide-up border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Últimos Registros</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {entries.slice(0, 10).map((entry) => (
+            {entries.slice(0, 5).map((entry) => (
               <div 
                 key={entry.id}
-                className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   {entry.type === 'income' ? (
-                    <TrendingUp className="w-5 h-5 text-secondary" />
+                    <TrendingUp className="w-4 h-4 text-secondary" />
                   ) : (
-                    <TrendingDown className="w-5 h-5 text-destructive" />
+                    <TrendingDown className="w-4 h-4 text-destructive" />
                   )}
                   <div>
                     <p className="font-medium text-sm text-foreground">{entry.category}</p>
@@ -293,10 +307,10 @@ export default function Financas() {
                   </div>
                 </div>
                 <p className={cn(
-                  'font-bold',
+                  'font-bold text-sm',
                   entry.type === 'income' ? 'text-secondary' : 'text-destructive'
                 )}>
-                  {entry.type === 'income' ? '+' : '-'} R$ {Number(entry.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  {entry.type === 'income' ? '+' : '-'} R$ {Number(entry.amount).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
                 </p>
               </div>
             ))}
@@ -304,50 +318,141 @@ export default function Financas() {
         </Card>
       )}
 
-      {/* Stage Missions */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold text-foreground">Missões da Etapa</h2>
-        {stageMissions.map((mission) => {
-          const isCompleted = completedMissions.includes(mission.day);
-          const isCurrent = mission.day === currentDay;
-          const isLocked = mission.day > currentDay;
+      {/* Stage Progress */}
+      <Card className="border-border/50 animate-slide-up">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-foreground">Progresso da Etapa</p>
+            <p className="text-sm font-bold text-primary">{completedCount}/{stageMissions.length}</p>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div 
+              className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-          return (
-            <Card 
-              key={mission.day}
-              className={cn(
-                'transition-all',
-                isCompleted && 'opacity-75',
-                isCurrent && 'ring-2 ring-primary shadow-lg',
-                isLocked && 'opacity-50'
-              )}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" />
-                    ) : isLocked ? (
-                      <Lock className="w-5 h-5 text-muted-foreground shrink-0" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-primary shrink-0" />
-                    )}
-                    <div>
-                      <span className="text-xs font-medium text-muted-foreground">Dia {mission.day}</span>
-                      <CardTitle className={cn('text-base', isCompleted && 'line-through text-muted-foreground')}>
-                        {mission.title}
-                      </CardTitle>
+      {/* Missions */}
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">Missões da Etapa</h2>
+        <div className="grid gap-3">
+          {stageMissions.map((mission, index) => {
+            const isCompleted = completedMissions.includes(mission.day);
+            const isCurrent = mission.day === currentDay;
+            const isLocked = mission.day > currentDay;
+
+            return (
+              <Card 
+                key={mission.day}
+                className={cn(
+                  'cursor-pointer transition-all hover:shadow-md border-border/50',
+                  isCompleted && 'bg-secondary/5',
+                  isCurrent && 'ring-1 ring-primary',
+                  isLocked && 'opacity-60'
+                )}
+                onClick={() => setSelectedMission({ mission, isCompleted, isCurrent, isLocked })}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
+                      isCompleted ? 'bg-secondary/20' : isLocked ? 'bg-muted' : stageInfo.gradient
+                    )}>
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                      ) : isLocked ? (
+                        <Lock className="w-5 h-5 text-muted-foreground" />
+                      ) : (
+                        <span className="text-sm font-bold text-primary-foreground">{mission.day}</span>
+                      )}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">Dia {mission.day}</span>
+                        {isCurrent && (
+                          <span className="text-[10px] font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                            HOJE
+                          </span>
+                        )}
+                      </div>
+                      <h3 className={cn(
+                        'font-medium text-foreground truncate',
+                        isCompleted && 'line-through text-muted-foreground'
+                      )}>
+                        {mission.title}
+                      </h3>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mission Detail Modal */}
+      <Dialog open={!!selectedMission} onOpenChange={() => setSelectedMission(null)}>
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+          {selectedMission && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Dia {selectedMission.mission.day}</span>
+                  {selectedMission.isCurrent && (
+                    <span className="font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
+                      HOJE
+                    </span>
+                  )}
+                  {selectedMission.isCompleted && (
+                    <span className="font-medium bg-secondary/20 text-secondary px-1.5 py-0.5 rounded text-[10px]">
+                      CONCLUÍDO
+                    </span>
+                  )}
+                </div>
+                <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-5 mt-4">
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Descrição</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {selectedMission.mission.description}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-3">Como fazer</h4>
+                  <div className="space-y-2">
+                    {selectedMission.mission.checklist.map((item: string, idx: number) => (
+                      <div 
+                        key={idx}
+                        className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                      >
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-medium text-primary">{idx + 1}</span>
+                        </div>
+                        <p className="text-sm text-foreground">{item}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{mission.description}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+
+                {selectedMission.isLocked && (
+                  <div className="p-4 bg-muted rounded-lg text-center">
+                    <Lock className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      Complete os dias anteriores para desbloquear esta missão
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
