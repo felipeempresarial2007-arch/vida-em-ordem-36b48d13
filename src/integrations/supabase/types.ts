@@ -122,6 +122,36 @@ export type Database = {
         }
         Relationships: []
       }
+      energy_logs: {
+        Row: {
+          activity: string | null
+          created_at: string
+          date: string
+          energy_level: number
+          id: string
+          time_slot: string
+          user_id: string
+        }
+        Insert: {
+          activity?: string | null
+          created_at?: string
+          date?: string
+          energy_level: number
+          id?: string
+          time_slot: string
+          user_id: string
+        }
+        Update: {
+          activity?: string | null
+          created_at?: string
+          date?: string
+          energy_level?: number
+          id?: string
+          time_slot?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       financial_entries: {
         Row: {
           amount: number
