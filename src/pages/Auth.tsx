@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Loader2, CheckCircle2, Sparkles } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowRight, Shield, Zap, Target } from 'lucide-react';
+import Logo from '@/components/Logo';
+import { motion } from 'framer-motion';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -59,121 +61,172 @@ export default function Auth() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md animate-fade-in">
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-4 shadow-lg">
-            <Sparkles className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Vida em Ordem</h1>
-          <p className="text-muted-foreground">Seu desafio de 30 dias para organização</p>
-        </div>
+  const features = [
+    { icon: Target, text: '30 dias de missões guiadas' },
+    { icon: Zap, text: 'Organize ambiente, finanças e rotina' },
+    { icon: Shield, text: 'Acompanhe seu progresso diário' },
+  ];
 
-        <Card className="shadow-xl border-0">
-          <CardHeader className="text-center pb-2">
-            <CardTitle className="text-xl">
-              {isLogin ? 'Entrar na conta' : 'Criar conta'}
-            </CardTitle>
-            <CardDescription>
-              {isLogin 
-                ? 'Continue sua jornada de transformação' 
-                : 'Comece sua jornada de 30 dias'
-              }
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
+  return (
+    <div className="min-h-screen flex bg-background">
+      {/* Left Side - Branding (hidden on mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-primary" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAzMHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        
+        {/* Decorative circles */}
+        <div className="absolute top-20 right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        
+        <div className="relative z-10 flex flex-col justify-center p-16 text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Logo size="lg" className="[&_span]:text-white [&_.text-foreground]:text-white [&_.text-muted-foreground]:text-white/70 mb-12" />
+            
+            <h1 className="text-4xl font-bold leading-tight mb-4">
+              Transforme sua vida<br />
+              em 30 dias
+            </h1>
+            <p className="text-white/80 text-lg max-w-md leading-relaxed">
+              Um desafio estruturado para organizar seu ambiente, finanças, 
+              rotina e metas. Saia do caos para a clareza.
+            </p>
+
+            <div className="mt-12 space-y-4">
+              {features.map((feature, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                    <feature.icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-white/90 font-medium">{feature.text}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-md"
+        >
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center mb-8">
+            <Logo size="lg" className="justify-center" />
+            <p className="text-muted-foreground mt-2">Seu desafio de 30 dias</p>
+          </div>
+
+          <Card className="border-border/50 shadow-xl">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-2xl font-bold">
+                {isLogin ? 'Bem-vindo de volta' : 'Comece agora'}
+              </CardTitle>
+              <CardDescription className="text-base">
+                {isLogin 
+                  ? 'Entre na sua conta para continuar' 
+                  : 'Crie sua conta e transforme sua vida'
+                }
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-sm font-medium">Nome completo</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="Seu nome"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required={!isLogin}
+                      className="h-12 rounded-xl"
+                    />
+                  </div>
+                )}
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nome completo</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <Input
-                    id="name"
-                    type="text"
-                    placeholder="Seu nome"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required={!isLogin}
-                    className="h-11"
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="h-12 rounded-xl"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium">Senha</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="h-12 rounded-xl"
+                  />
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 rounded-xl text-base font-semibold mt-2"
+                  size="lg"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      {isLogin ? 'Entrar' : 'Criar conta'}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {isLogin ? (
+                    <>Não tem conta? <span className="text-primary font-semibold">Criar agora</span></>
+                  ) : (
+                    <>Já tem conta? <span className="text-primary font-semibold">Fazer login</span></>
+                  )}
+                </button>
+              </div>
+
+              {!isLogin && (
+                <div className="mt-8 pt-6 border-t border-border space-y-3">
+                  {features.map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-secondary shrink-0" />
+                      <span className="text-muted-foreground">{feature.text}</span>
+                    </div>
+                  ))}
+                </div>
               )}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-11"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="h-11"
-                />
-              </div>
-
-              <Button 
-                type="submit" 
-                className="w-full" 
-                variant="accent"
-                size="lg"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : isLogin ? (
-                  'Entrar'
-                ) : (
-                  'Criar conta'
-                )}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                {isLogin ? (
-                  <>Não tem conta? <span className="text-primary font-medium">Criar agora</span></>
-                ) : (
-                  <>Já tem conta? <span className="text-primary font-medium">Fazer login</span></>
-                )}
-              </button>
-            </div>
-
-            {!isLogin && (
-              <div className="mt-6 space-y-3 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-secondary" />
-                  <span>30 dias de missões guiadas</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-secondary" />
-                  <span>Organize ambiente, finanças e rotina</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-secondary" />
-                  <span>Acompanhe seu progresso diário</span>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );

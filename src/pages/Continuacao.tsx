@@ -4,11 +4,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Infinity, CheckCircle2, Calendar, Flame, TrendingUp, Plus, X, Edit2 } from 'lucide-react';
+import { Infinity, CheckCircle2, Calendar, Flame, TrendingUp, Plus, X, Edit2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,15 @@ interface DailyTask {
   completedDates: string[];
 }
 
-const TASK_CATEGORIES = ['Ambiente', 'Finanças', 'Rotina', 'Metas', 'Pessoal'];
+const TASK_CATEGORIES = [
+  { name: 'Ambiente', color: 'bg-orange-500' },
+  { name: 'Finanças', color: 'bg-amber-500' },
+  { name: 'Rotina', color: 'bg-rose-500' },
+  { name: 'Metas', color: 'bg-violet-500' },
+  { name: 'Pessoal', color: 'bg-sky-500' },
+];
+
+const MotionCard = motion.create(Card);
 
 export default function Continuacao() {
   const { user } = useAuth();
@@ -195,242 +204,301 @@ export default function Continuacao() {
   const progressPercent = totalTasks > 0 ? Math.round((completedToday / totalTasks) * 100) : 0;
 
   const groupedTasks = TASK_CATEGORIES.reduce((acc, cat) => {
-    acc[cat] = tasks.filter(t => t.category === cat);
+    acc[cat.name] = tasks.filter(t => t.category === cat.name);
     return acc;
   }, {} as Record<string, DailyTask[]>);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="animate-fade-in">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-            <Infinity className="w-5 h-5 text-primary-foreground" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center">
+            <Infinity className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">Continuação</h1>
-            <p className="text-sm text-muted-foreground">Sua jornada além dos 30 dias</p>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">Continuação</h1>
+            <p className="text-muted-foreground">Sua jornada além dos 30 dias</p>
           </div>
         </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { icon: Flame, value: streak, label: 'dias seguidos', color: 'primary' },
+          { icon: CheckCircle2, value: `${completedToday}/${totalTasks}`, label: 'hoje', color: 'secondary' },
+          { icon: TrendingUp, value: `${progressPercent}%`, label: 'progresso', color: 'primary' },
+        ].map((stat, i) => (
+          <MotionCard 
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
+            className="border-border/50"
+          >
+            <CardContent className="p-5 text-center">
+              <div className={cn(
+                'w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3',
+                stat.color === 'primary' ? 'bg-primary/10' : 'bg-secondary/10'
+              )}>
+                <stat.icon className={cn(
+                  'w-5 h-5',
+                  stat.color === 'primary' ? 'text-primary' : 'text-secondary'
+                )} />
+              </div>
+              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+            </CardContent>
+          </MotionCard>
+        ))}
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 animate-slide-up">
-        <Card className="border-border/50">
-          <CardContent className="p-4 text-center">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2">
-              <Flame className="w-4 h-4 text-primary" />
+      {/* Progress Card */}
+      <MotionCard
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="border-border/50"
+      >
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Progresso de Hoje</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{completedToday} de {totalTasks} tarefas</p>
             </div>
-            <p className="text-xl font-bold text-foreground">{streak}</p>
-            <p className="text-xs text-muted-foreground">dias seguidos</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/50">
-          <CardContent className="p-4 text-center">
-            <div className="w-9 h-9 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-2">
-              <CheckCircle2 className="w-4 h-4 text-secondary" />
-            </div>
-            <p className="text-xl font-bold text-foreground">{completedToday}/{totalTasks}</p>
-            <p className="text-xs text-muted-foreground">hoje</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/50">
-          <CardContent className="p-4 text-center">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2">
-              <TrendingUp className="w-4 h-4 text-primary" />
-            </div>
-            <p className="text-xl font-bold text-foreground">{progressPercent}%</p>
-            <p className="text-xs text-muted-foreground">completo</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Progress */}
-      <Card className="border-border/50 animate-slide-up" style={{ animationDelay: '0.05s' }}>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-medium text-foreground">Progresso de Hoje</p>
-            <p className="text-sm font-bold text-primary">{progressPercent}%</p>
+            <span className="text-lg font-bold text-primary">{progressPercent}%</span>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div 
-              className="h-full gradient-primary rounded-full transition-all duration-500"
-              style={{ width: `${progressPercent}%` }}
+          <div className="h-3 bg-muted rounded-full overflow-hidden">
+            <motion.div 
+              className="h-full gradient-primary rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.8, delay: 0.5 }}
             />
           </div>
         </CardContent>
-      </Card>
+      </MotionCard>
 
       {/* Add Task Button */}
-      <Button 
-        onClick={() => setShowForm(true)}
-        className="w-full h-11"
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <Plus className="w-4 h-4 mr-2" />
-        Adicionar Tarefa Diária
-      </Button>
+        <Button 
+          onClick={() => setShowForm(true)}
+          className="w-full h-12 rounded-xl text-base font-semibold"
+          size="lg"
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          Adicionar Tarefa Diária
+        </Button>
+      </motion.div>
 
       {/* Add Task Form */}
-      {showForm && (
-        <Card className="animate-scale-in border-border/50">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Nova Tarefa</CardTitle>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowForm(false)}>
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <form onSubmit={handleAddTask} className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-sm">Nome da tarefa</Label>
-                <Input
-                  placeholder="Ex: Meditar 10 minutos"
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  required
-                  className="h-10"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm">Categoria</Label>
-                <div className="flex flex-wrap gap-2">
-                  {TASK_CATEGORIES.map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setSelectedCategory(cat)}
-                      className={cn(
-                        'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
-                        selectedCategory === cat
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground hover:bg-muted/70'
-                      )}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+      <AnimatePresence>
+        {showForm && (
+          <MotionCard
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            className="border-border/50 overflow-hidden"
+          >
+            <CardHeader className="pb-4 border-b border-border/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">Nova Tarefa Diária</CardTitle>
                 </div>
+                <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => setShowForm(false)}>
+                  <X className="w-5 h-5" />
+                </Button>
               </div>
-              <Button type="submit" className="w-full h-10">
-                Adicionar
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+            </CardHeader>
+            <CardContent className="p-6">
+              <form onSubmit={handleAddTask} className="space-y-5">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Nome da tarefa</Label>
+                  <Input
+                    placeholder="Ex: Meditar 10 minutos"
+                    value={newTask}
+                    onChange={(e) => setNewTask(e.target.value)}
+                    required
+                    className="h-12 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Categoria</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {TASK_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat.name}
+                        type="button"
+                        onClick={() => setSelectedCategory(cat.name)}
+                        className={cn(
+                          'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all',
+                          selectedCategory === cat.name
+                            ? 'bg-primary text-primary-foreground shadow-md'
+                            : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                        )}
+                      >
+                        <div className={cn('w-2 h-2 rounded-full', cat.color)} />
+                        {cat.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <Button type="submit" className="w-full h-12 rounded-xl text-base font-semibold">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Adicionar Tarefa
+                </Button>
+              </form>
+            </CardContent>
+          </MotionCard>
+        )}
+      </AnimatePresence>
 
       {/* Tasks by Category */}
-      {Object.entries(groupedTasks).map(([category, categoryTasks]) => {
-        if (categoryTasks.length === 0) return null;
+      {TASK_CATEGORIES.map(({ name: category, color }) => {
+        const categoryTasks = groupedTasks[category];
+        if (!categoryTasks || categoryTasks.length === 0) return null;
         
         return (
-          <Card key={category} className="border-border/50 animate-slide-up">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{category}</CardTitle>
+          <MotionCard
+            key={category}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="border-border/50 overflow-hidden"
+          >
+            <CardHeader className="pb-3 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <div className={cn('w-3 h-3 rounded-full', color)} />
+                <CardTitle className="text-sm font-semibold text-foreground">{category}</CardTitle>
+                <span className="text-xs text-muted-foreground ml-auto">
+                  {categoryTasks.filter(t => t.completedDates.includes(today)).length}/{categoryTasks.length}
+                </span>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="p-4 space-y-2">
               {categoryTasks.map((task) => {
                 const isCompleted = task.completedDates.includes(today);
                 return (
-                  <div 
+                  <motion.div 
                     key={task.id}
+                    layout
                     className={cn(
-                      'flex items-center justify-between p-3 rounded-lg transition-all',
-                      isCompleted ? 'bg-secondary/10' : 'bg-muted/50'
+                      'flex items-center justify-between p-4 rounded-xl transition-all',
+                      isCompleted 
+                        ? 'bg-secondary/10 border border-secondary/20' 
+                        : 'bg-muted/50 border border-transparent'
                     )}
                   >
-                    <label className="flex items-center gap-3 cursor-pointer flex-1">
+                    <label className="flex items-center gap-4 cursor-pointer flex-1">
                       <Checkbox
                         checked={isCompleted}
                         onCheckedChange={() => toggleTask(task.id)}
+                        className="w-5 h-5"
                       />
                       <span className={cn(
-                        'text-sm',
+                        'text-sm font-medium',
                         isCompleted && 'line-through text-muted-foreground'
                       )}>
                         {task.name}
                       </span>
                     </label>
                     <div className="flex items-center gap-1">
+                      {isCompleted && (
+                        <CheckCircle2 className="w-4 h-4 text-secondary mr-2" />
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-8 w-8 rounded-lg"
                         onClick={() => setEditingTask(task)}
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
+                        <Edit2 className="w-4 h-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-destructive hover:text-destructive"
+                        className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10"
                         onClick={() => deleteTask(task.id)}
                       >
-                        <X className="w-3.5 h-3.5" />
+                        <X className="w-4 h-4" />
                       </Button>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </CardContent>
-          </Card>
+          </MotionCard>
         );
       })}
 
       {tasks.length === 0 && !showForm && (
-        <Card className="border-border/50 animate-slide-up">
-          <CardContent className="py-12 text-center">
-            <Infinity className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-            <h3 className="font-medium text-foreground mb-1">Comece sua jornada contínua</h3>
-            <p className="text-sm text-muted-foreground">
-              Adicione tarefas diárias para manter os hábitos do desafio
+        <MotionCard
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="border-border/50"
+        >
+          <CardContent className="py-16 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+              <Infinity className="w-8 h-8 text-muted-foreground/40" />
+            </div>
+            <h3 className="font-semibold text-foreground mb-2">Comece sua jornada contínua</h3>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              Adicione tarefas diárias para manter os hábitos do desafio e continuar evoluindo
             </p>
           </CardContent>
-        </Card>
+        </MotionCard>
       )}
 
       {/* Edit Dialog */}
       <Dialog open={!!editingTask} onOpenChange={() => setEditingTask(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Editar Tarefa</DialogTitle>
+            <DialogTitle className="text-xl">Editar Tarefa</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleEditTask} className="space-y-4">
+          <form onSubmit={handleEditTask} className="space-y-5 mt-4">
             <div className="space-y-2">
-              <Label className="text-sm">Nome da tarefa</Label>
+              <Label className="text-sm font-medium">Nome da tarefa</Label>
               <Input
                 value={editingTask?.name || ''}
                 onChange={(e) => setEditingTask(prev => prev ? { ...prev, name: e.target.value } : null)}
                 required
-                className="h-10"
+                className="h-12 rounded-xl"
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-sm">Categoria</Label>
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Categoria</Label>
               <div className="flex flex-wrap gap-2">
                 {TASK_CATEGORIES.map((cat) => (
                   <button
-                    key={cat}
+                    key={cat.name}
                     type="button"
-                    onClick={() => setEditingTask(prev => prev ? { ...prev, category: cat } : null)}
+                    onClick={() => setEditingTask(prev => prev ? { ...prev, category: cat.name } : null)}
                     className={cn(
-                      'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
-                      editingTask?.category === cat
-                        ? 'bg-primary text-primary-foreground'
+                      'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all',
+                      editingTask?.category === cat.name
+                        ? 'bg-primary text-primary-foreground shadow-md'
                         : 'bg-muted text-muted-foreground hover:bg-muted/70'
                     )}
                   >
-                    {cat}
+                    <div className={cn('w-2 h-2 rounded-full', cat.color)} />
+                    {cat.name}
                   </button>
                 ))}
               </div>
             </div>
-            <Button type="submit" className="w-full h-10">
-              Salvar
+            <Button type="submit" className="w-full h-12 rounded-xl text-base font-semibold">
+              Salvar Alterações
             </Button>
           </form>
         </DialogContent>
