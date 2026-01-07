@@ -6,9 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Loader2, CheckCircle2, ArrowRight, Shield, Zap, Target } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowRight, Shield, Zap, Target, Sparkles, Star } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -129,15 +135,25 @@ export default function Auth() {
             <p className="text-muted-foreground mt-2">Seu desafio de 30 dias</p>
           </div>
 
-          <Card className="border-border/50 shadow-xl">
-            <CardHeader className="text-center pb-2">
+          <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95">
+            <CardHeader className="text-center pb-4 pt-8">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="mx-auto mb-4"
+              >
+                <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto shadow-lg">
+                  {isLogin ? <Sparkles className="w-8 h-8 text-white" /> : <Star className="w-8 h-8 text-white" />}
+                </div>
+              </motion.div>
               <CardTitle className="text-2xl font-bold">
-                {isLogin ? 'Bem-vindo de volta' : 'Comece agora'}
+                {isLogin ? 'Bem-vindo de volta' : 'Comece sua jornada'}
               </CardTitle>
-              <CardDescription className="text-base">
+              <CardDescription className="text-base mt-2">
                 {isLogin 
                   ? 'Entre na sua conta para continuar' 
-                  : 'Crie sua conta e transforme sua vida'
+                  : 'Crie sua conta e transforme sua vida em 30 dias'
                 }
               </CardDescription>
             </CardHeader>

@@ -7,15 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Wallet, Plus, TrendingUp, TrendingDown, X, CheckCircle2, Lock, ChevronRight, Loader2 } from 'lucide-react';
+import { Wallet, Plus, TrendingUp, TrendingDown, X, CheckCircle2, Lock, ChevronRight, Loader2, Sparkles, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+
+const MotionCard = motion.create(Card);
 
 interface FinancialEntry {
   id: string;
@@ -148,59 +151,82 @@ export default function Financas() {
   const progressPercent = Math.round((completedCount / stageMissions.length) * 100);
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      className="space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       {/* Header */}
-      <div className="animate-fade-in">
-        <div className="flex items-center gap-3">
-          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
-            <Wallet className="w-5 h-5 text-primary-foreground" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center gap-4">
+          <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg', stageInfo.gradient)}>
+            <Wallet className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{stageInfo.name}</h1>
-            <p className="text-sm text-muted-foreground">{stageInfo.description}</p>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">{stageInfo.name}</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">{stageInfo.description}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-3 animate-slide-up">
-        <Card className="border-border/50">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-secondary mb-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-medium uppercase">Entradas</span>
+      <motion.div 
+        className="grid grid-cols-3 gap-3"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <Card className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <CardContent className="p-4 bg-gradient-to-br from-secondary/10 to-secondary/5">
+            <div className="flex items-center gap-2 text-secondary mb-2">
+              <div className="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider">Entradas</span>
             </div>
-            <p className="text-base font-bold text-foreground">
+            <p className="text-lg font-bold text-foreground">
               R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/50">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-destructive mb-1">
-              <TrendingDown className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-medium uppercase">Saídas</span>
+        <Card className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <CardContent className="p-4 bg-gradient-to-br from-destructive/10 to-destructive/5">
+            <div className="flex items-center gap-2 text-destructive mb-2">
+              <div className="w-8 h-8 rounded-lg bg-destructive/15 flex items-center justify-center">
+                <TrendingDown className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider">Saídas</span>
             </div>
-            <p className="text-base font-bold text-foreground">
+            <p className="text-lg font-bold text-foreground">
               R$ {totalExpense.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/50">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-              <Wallet className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-medium uppercase">Saldo</span>
+        <Card className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <CardContent className={cn(
+            'p-4 bg-gradient-to-br',
+            balance >= 0 ? 'from-primary/10 to-primary/5' : 'from-destructive/10 to-destructive/5'
+          )}>
+            <div className={cn('flex items-center gap-2 mb-2', balance >= 0 ? 'text-primary' : 'text-destructive')}>
+              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', balance >= 0 ? 'bg-primary/15' : 'bg-destructive/15')}>
+                <DollarSign className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider">Saldo</span>
             </div>
             <p className={cn(
-              'text-base font-bold',
-              balance >= 0 ? 'text-secondary' : 'text-destructive'
+              'text-lg font-bold',
+              balance >= 0 ? 'text-primary' : 'text-destructive'
             )}>
               R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Add Entry Buttons */}
       <div className="grid grid-cols-2 gap-3">
@@ -453,6 +479,6 @@ export default function Financas() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </motion.div>
   );
 }
