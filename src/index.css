@@ -6,122 +6,122 @@
 
 @layer base {
   :root {
-    /* FOCUS 30 - Design System */
-    /* Primary: Warm Orange for energy and motivation */
-    --primary: 24 95% 56%;
+    /* FOCUS 30 - Design System com Psicologia das Cores */
+    /* Primary: Coral Suave - Energia gentil, motivação sem agressividade */
+    --primary: 24 68% 67%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary/Success: Soft green for progress */
-    --secondary: 152 48% 57%;
+    /* Secondary: Verde Sálvia - Crescimento, equilíbrio, tranquilidade */
+    --secondary: 152 45% 60%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent: Strong CTA Orange */
-    --accent: 24 100% 48%;
+    /* Accent: Terracota - Ação consciente, foco, determinação calma */
+    --accent: 20 72% 58%;
     --accent-foreground: 0 0% 100%;
     
-    /* Background: Warm off-white */
-    --background: 20 40% 98%;
-    --foreground: 0 0% 18%;
+    /* Background: Creme suave - Pureza, clareza mental */
+    --background: 30 33% 98%;
+    --foreground: 0 0% 24%;
     
     /* Card surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
+    --card-foreground: 0 0% 24%;
     
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
+    --popover-foreground: 0 0% 24%;
     
     /* Muted tones */
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 30 10% 96%;
+    --muted-foreground: 0 0% 46%;
     
     /* Destructive */
-    --destructive: 0 72% 51%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
     
     /* Borders and inputs */
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 24 95% 56%;
+    --border: 30 15% 90%;
+    --input: 30 15% 90%;
+    --ring: 24 68% 67%;
     
     /* Neutral */
     --neutral: 0 0% 85%;
     
     --radius: 0.75rem;
     
-    /* Stage colors - all orange variants */
-    --stage-ambiente: 24 95% 56%;
-    --stage-financas: 24 90% 50%;
-    --stage-rotina: 24 85% 45%;
-    --stage-metas: 24 100% 60%;
+    /* Stage colors - tons suaves e equilibrados */
+    --stage-ambiente: 24 68% 67%;
+    --stage-financas: 20 60% 62%;
+    --stage-rotina: 18 55% 58%;
+    --stage-metas: 26 72% 70%;
     
     /* Progress gradient */
-    --progress-start: 24 95% 56%;
-    --progress-end: 28 100% 65%;
+    --progress-start: 24 68% 67%;
+    --progress-end: 26 72% 72%;
     
     /* Success and info */
-    --success: 152 48% 57%;
-    --info: 24 80% 55%;
+    --success: 152 45% 60%;
+    --info: 24 55% 62%;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.03);
-    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.05), 0 2px 4px -2px hsl(0 0% 0% / 0.03);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.06), 0 4px 6px -4px hsl(0 0% 0% / 0.03);
-    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.08), 0 8px 10px -6px hsl(0 0% 0% / 0.04);
+    /* Shadows - mais suaves */
+    --shadow-sm: 0 1px 2px 0 hsl(30 20% 0% / 0.02);
+    --shadow-md: 0 4px 6px -1px hsl(30 20% 0% / 0.04), 0 2px 4px -2px hsl(30 20% 0% / 0.02);
+    --shadow-lg: 0 10px 15px -3px hsl(30 20% 0% / 0.05), 0 4px 6px -4px hsl(30 20% 0% / 0.02);
+    --shadow-xl: 0 20px 25px -5px hsl(30 20% 0% / 0.06), 0 8px 10px -6px hsl(30 20% 0% / 0.03);
     
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 18%;
-    --sidebar-primary: 24 95% 56%;
+    --sidebar-foreground: 0 0% 24%;
+    --sidebar-primary: 24 68% 67%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 20 40% 96%;
-    --sidebar-accent-foreground: 24 95% 56%;
-    --sidebar-border: 0 0% 92%;
-    --sidebar-ring: 24 95% 56%;
+    --sidebar-accent: 30 25% 96%;
+    --sidebar-accent-foreground: 24 68% 60%;
+    --sidebar-border: 30 15% 92%;
+    --sidebar-ring: 24 68% 67%;
   }
 
   .dark {
-    --primary: 24 90% 60%;
+    --primary: 24 65% 65%;
     --primary-foreground: 0 0% 10%;
     
-    --secondary: 152 40% 50%;
+    --secondary: 152 40% 55%;
     --secondary-foreground: 0 0% 100%;
     
-    --accent: 24 100% 55%;
+    --accent: 20 68% 60%;
     --accent-foreground: 0 0% 10%;
     
-    --background: 0 0% 8%;
-    --foreground: 0 0% 92%;
+    --background: 20 8% 9%;
+    --foreground: 30 10% 92%;
     
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 92%;
+    --card: 20 8% 12%;
+    --card-foreground: 30 10% 92%;
     
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 92%;
+    --popover: 20 8% 12%;
+    --popover-foreground: 30 10% 92%;
     
-    --muted: 0 0% 16%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 20 8% 16%;
+    --muted-foreground: 30 5% 55%;
     
-    --destructive: 0 65% 55%;
+    --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 24 90% 60%;
+    --border: 20 8% 18%;
+    --input: 20 8% 18%;
+    --ring: 24 65% 65%;
     
-    --stage-ambiente: 24 90% 55%;
-    --stage-financas: 24 85% 50%;
-    --stage-rotina: 24 80% 48%;
-    --stage-metas: 24 95% 60%;
+    --stage-ambiente: 24 65% 62%;
+    --stage-financas: 20 58% 58%;
+    --stage-rotina: 18 52% 55%;
+    --stage-metas: 26 68% 65%;
     
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 92%;
-    --sidebar-primary: 24 90% 60%;
+    --sidebar-background: 20 8% 10%;
+    --sidebar-foreground: 30 10% 92%;
+    --sidebar-primary: 24 65% 65%;
     --sidebar-primary-foreground: 0 0% 10%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 24 90% 60%;
-    --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 24 90% 60%;
+    --sidebar-accent: 20 8% 15%;
+    --sidebar-accent-foreground: 24 65% 65%;
+    --sidebar-border: 20 8% 16%;
+    --sidebar-ring: 24 65% 65%;
   }
 }
 
@@ -144,9 +144,9 @@
     text-wrap: balance;
   }
   
-  /* Gradient backgrounds */
+  /* Gradient backgrounds - Suaves e equilibrados */
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(24 95% 56%) 0%, hsl(24 100% 48%) 50%, hsl(28 100% 65%) 100%);
+    background: linear-gradient(135deg, hsl(24 68% 67%) 0%, hsl(22 65% 62%) 50%, hsl(26 70% 72%) 100%);
   }
   
   .gradient-progress {
@@ -154,28 +154,28 @@
   }
   
   .gradient-accent {
-    background: linear-gradient(135deg, hsl(24 95% 56%) 0%, hsl(24 100% 42%) 100%);
+    background: linear-gradient(135deg, hsl(20 72% 58%) 0%, hsl(18 68% 52%) 100%);
   }
   
   .gradient-card {
     background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
   }
   
-  /* Stage-specific gradients - all orange variations */
+  /* Stage-specific gradients - tons harmoniosos */
   .gradient-ambiente {
-    background: linear-gradient(135deg, hsl(24 95% 56%) 0%, hsl(24 90% 50%) 100%);
+    background: linear-gradient(135deg, hsl(24 68% 67%) 0%, hsl(22 62% 60%) 100%);
   }
   
   .gradient-financas {
-    background: linear-gradient(135deg, hsl(24 90% 50%) 0%, hsl(24 85% 45%) 100%);
+    background: linear-gradient(135deg, hsl(20 60% 62%) 0%, hsl(18 55% 56%) 100%);
   }
   
   .gradient-rotina {
-    background: linear-gradient(135deg, hsl(24 85% 45%) 0%, hsl(24 80% 40%) 100%);
+    background: linear-gradient(135deg, hsl(18 55% 58%) 0%, hsl(16 50% 52%) 100%);
   }
   
   .gradient-metas {
-    background: linear-gradient(135deg, hsl(24 100% 60%) 0%, hsl(28 100% 55%) 100%);
+    background: linear-gradient(135deg, hsl(26 72% 70%) 0%, hsl(24 68% 65%) 100%);
   }
   
   /* Glass effect */
