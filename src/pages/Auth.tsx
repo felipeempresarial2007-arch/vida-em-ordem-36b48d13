@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Loader2, CheckCircle2, Sparkles } from 'lucide-react';
+import { Loader2, CheckCircle2 } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -63,12 +64,11 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-4 shadow-lg">
-            <Sparkles className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Vida em Ordem</h1>
-          <p className="text-muted-foreground">Seu desafio de 30 dias para organização</p>
+        <div className="flex flex-col items-center mb-8">
+          <Logo size="lg" className="mb-4" />
+          <p className="text-muted-foreground text-center">
+            Seu desafio de 30 dias para transformação
+          </p>
         </div>
 
         <Card className="shadow-xl border-0">
