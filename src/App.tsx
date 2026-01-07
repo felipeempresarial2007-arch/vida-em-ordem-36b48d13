@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Landing from "./pages/Landing";
 import Ambiente from "./pages/Ambiente";
 import Financas from "./pages/Financas";
 import Rotina from "./pages/Rotina";
@@ -55,6 +56,7 @@ function AuthRoute({ children }: { children: React.ReactNode }) {
 
 const AppRoutes = () => (
   <Routes>
+    <Route path="/landing" element={<Landing />} />
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/" element={<Index />} />
     <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
