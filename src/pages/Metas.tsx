@@ -8,15 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Target, Plus, X, CheckCircle2, Lock, ChevronRight, Star, Edit2, Loader2 } from 'lucide-react';
+import { Target, Plus, X, CheckCircle2, Lock, ChevronRight, Star, Edit2, Loader2, Trophy, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+
+const MotionCard = motion.create(Card);
 
 interface Goal {
   id: string;
@@ -231,35 +234,61 @@ export default function Metas() {
   const stageProgressPercent = Math.round((completedCount / stageMissions.length) * 100);
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      className="space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       {/* Header */}
-      <div className="animate-fade-in">
-        <div className="flex items-center gap-3">
-          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
-            <Target className="w-5 h-5 text-primary-foreground" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center gap-4">
+          <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg', stageInfo.gradient)}>
+            <Target className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{stageInfo.name}</h1>
-            <p className="text-sm text-muted-foreground">{stageInfo.description}</p>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">{stageInfo.name}</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">{stageInfo.description}</p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Goals Progress */}
-      <Card className="border-border/50 animate-slide-up">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-medium text-foreground">Metas Concluídas</p>
-            <p className="text-sm font-bold text-primary">{completedGoals}/{goals.length}</p>
+      <MotionCard 
+        className="border-border/50 overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-primary" />
+              <p className="text-sm font-semibold text-foreground">Metas Concluídas</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-primary">{completedGoals}</span>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-muted-foreground">{goals.length}</span>
+            </div>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div 
-              className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
-              style={{ width: `${progressPercent}%` }}
+          <div className="h-3 bg-muted rounded-full overflow-hidden">
+            <motion.div 
+              className={cn('h-full rounded-full', stageInfo.gradient)}
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             />
           </div>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            {progressPercent}% concluído
+          </p>
         </CardContent>
-      </Card>
+      </MotionCard>
 
       {/* Primary Goal */}
       {primaryGoal && (
@@ -622,6 +651,6 @@ export default function Metas() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </motion.div>
   );
 }

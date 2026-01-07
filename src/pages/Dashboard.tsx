@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Flame, Sparkles, TrendingUp, Zap } from 'lucide-react';
+import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Flame, Sparkles, TrendingUp, Zap, Star, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +11,20 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 const MotionCard = motion.create(Card);
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
 
 export default function Dashboard() {
   const { 
@@ -56,21 +70,24 @@ export default function Dashboard() {
   const canComplete = allChecked && reflection.trim().length > 0;
 
   return (
-    <div className="space-y-8">
+    <motion.div 
+      className="space-y-8"
+      initial="initial"
+      animate="animate"
+      variants={staggerContainer}
+    >
       {/* Welcome Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-2 mb-1">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <p className="text-sm font-medium text-primary">Bem-vindo de volta</p>
+      <motion.div variants={fadeInUp}>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <p className="text-xs font-semibold text-primary uppercase tracking-wider">Bem-vindo de volta</p>
+          </div>
         </div>
-        <h1 className="text-3xl font-bold text-foreground tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
           Seu Progresso
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-2 text-base">
           Continue sua jornada de transformação pessoal
         </p>
       </motion.div>
@@ -78,76 +95,83 @@ export default function Dashboard() {
       {/* Challenge Completed */}
       {isCompleted && (
         <MotionCard
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="border-0 overflow-hidden"
+          variants={fadeInUp}
+          className="border-0 overflow-hidden shadow-2xl"
         >
-          <div className="gradient-primary p-8 text-center text-primary-foreground">
-            <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-4">
-              <Trophy className="w-8 h-8" />
+          <div className="gradient-primary p-8 md:p-10 text-center text-primary-foreground relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="relative">
+              <motion.div 
+                className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-5"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Crown className="w-10 h-10" />
+              </motion.div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">Parabéns! 🎉</h2>
+              <p className="text-white/90 max-w-md mx-auto text-base leading-relaxed">
+                Você completou o desafio FOCUS 30! Sua dedicação trouxe resultados incríveis.
+              </p>
+              <Link to="/continuacao">
+                <Button variant="secondary" size="lg" className="mt-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Continuar Jornada
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
-            <h2 className="text-2xl font-bold mb-2">Parabéns! 🎉</h2>
-            <p className="text-white/90 max-w-md mx-auto">
-              Você completou o desafio FOCUS 30! Sua dedicação trouxe resultados incríveis.
-            </p>
-            <Link to="/continuacao">
-              <Button variant="secondary" size="lg" className="mt-6 rounded-xl">
-                Continuar Jornada
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
           </div>
         </MotionCard>
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-4">
+      <motion.div variants={fadeInUp} className="grid grid-cols-3 gap-3 md:gap-4">
         {[
           { 
             icon: Calendar, 
             value: progress.currentDay, 
             label: 'de 30 dias',
             color: 'primary',
-            delay: 0.1
+            gradient: 'from-primary/10 to-primary/5'
           },
           { 
             icon: TrendingUp, 
             value: `${progressPercent}%`, 
             label: 'completo',
             color: 'secondary',
-            delay: 0.2
+            gradient: 'from-secondary/10 to-secondary/5'
           },
           { 
-            icon: Zap, 
+            icon: Star, 
             value: stageInfo.name.split(' ')[0], 
             label: 'etapa atual',
-            color: 'primary',
-            delay: 0.3
+            color: 'violet',
+            gradient: 'from-violet-500/10 to-purple-500/5'
           },
         ].map((stat, i) => (
-          <MotionCard 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: stat.delay, duration: 0.5 }}
-            className="border-border/50 overflow-hidden"
-          >
-            <CardContent className="p-5 text-center relative">
+          <Card key={i} className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
+            <CardContent className={cn('p-4 md:p-5 text-center relative bg-gradient-to-br', stat.gradient)}>
               <div className={cn(
-                'w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3',
-                stat.color === 'primary' ? 'bg-primary/10' : 'bg-secondary/10'
+                'w-11 h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center mx-auto mb-3 transition-transform group-hover:scale-110',
+                stat.color === 'primary' ? 'bg-primary/15 border border-primary/20' : 
+                stat.color === 'secondary' ? 'bg-secondary/15 border border-secondary/20' :
+                'bg-violet-500/15 border border-violet-500/20'
               )}>
                 <stat.icon className={cn(
                   'w-5 h-5',
-                  stat.color === 'primary' ? 'text-primary' : 'text-secondary'
+                  stat.color === 'primary' ? 'text-primary' : 
+                  stat.color === 'secondary' ? 'text-secondary' :
+                  'text-violet-500'
                 )} />
               </div>
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+              <p className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground mt-1 uppercase tracking-wider font-medium">{stat.label}</p>
             </CardContent>
-          </MotionCard>
+          </Card>
         ))}
-      </div>
+      </motion.div>
 
       {/* Progress Bar Card */}
       <MotionCard
@@ -398,6 +422,6 @@ export default function Dashboard() {
           })}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
