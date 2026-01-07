@@ -3,15 +3,29 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { MISSIONS, STAGE_INFO } from '@/lib/missions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Home, CheckCircle2, Circle, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Home, CheckCircle2, Circle, Lock, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
+interface MissionDetail {
+  mission: typeof MISSIONS[0];
+  isCompleted: boolean;
+  isCurrent: boolean;
+  isLocked: boolean;
+}
 
 export default function Ambiente() {
   const { user } = useAuth();
   const [currentDay, setCurrentDay] = useState(1);
   const [completedMissions, setCompletedMissions] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMission, setSelectedMission] = useState<MissionDetail | null>(null);
 
   const stageMissions = MISSIONS.filter(m => m.stage === 'ambiente');
   const stageInfo = STAGE_INFO.ambiente;
@@ -21,7 +35,6 @@ export default function Ambiente() {
       if (!user) return;
 
       try {
-        // Get current progress
         const { data: progress } = await supabase
           .from('challenge_progress')
           .select('current_day')
@@ -32,7 +45,6 @@ export default function Ambiente() {
           setCurrentDay(progress.current_day);
         }
 
-        // Get completed missions for this stage
         const { data: missions } = await supabase
           .from('daily_missions')
           .select('day_number')
@@ -53,48 +65,51 @@ export default function Ambiente() {
     fetchData();
   }, [user]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const completedCount = completedMissions.length;
+  const progressPercent = Math.round((completedCount / stageMissions.length) * 100);
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="animate-fade-in">
-        <div className="flex items-center gap-3 mb-2">
-          <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
-            <Home className="w-6 h-6 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+            <Home className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              {stageInfo.name}
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              {stageInfo.description}
-            </p>
+            <h1 className="text-xl font-bold text-foreground">{stageInfo.name}</h1>
+            <p className="text-sm text-muted-foreground">{stageInfo.description}</p>
           </div>
         </div>
       </div>
 
       {/* Progress */}
-      <Card className="animate-slide-up">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-muted-foreground">
-              Progresso da Etapa
-            </span>
-            <span className="text-sm font-bold text-foreground">
-              {completedMissions.length} / {stageMissions.length}
-            </span>
+      <Card className="border-border/50 animate-slide-up">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-foreground">Progresso da Etapa</p>
+            <p className="text-sm font-bold text-primary">{completedCount}/{stageMissions.length}</p>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div 
               className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
-              style={{ width: `${(completedMissions.length / stageMissions.length) * 100}%` }}
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Missions List */}
-      <div className="space-y-4">
-        {stageMissions.map((mission) => {
+      {/* Missions Grid */}
+      <div className="grid gap-3">
+        {stageMissions.map((mission, index) => {
           const isCompleted = completedMissions.includes(mission.day);
           const isCurrent = mission.day === currentDay;
           const isLocked = mission.day > currentDay;
@@ -103,70 +118,112 @@ export default function Ambiente() {
             <Card 
               key={mission.day}
               className={cn(
-                'transition-all animate-slide-up',
-                isCompleted && 'opacity-75',
-                isCurrent && 'ring-2 ring-primary shadow-lg',
-                isLocked && 'opacity-50'
+                'cursor-pointer transition-all hover:shadow-md border-border/50 animate-slide-up',
+                isCompleted && 'bg-secondary/5',
+                isCurrent && 'ring-1 ring-primary',
+                isLocked && 'opacity-60'
               )}
-              style={{ animationDelay: `${mission.day * 0.05}s` }}
+              style={{ animationDelay: `${index * 0.03}s` }}
+              onClick={() => setSelectedMission({ mission, isCompleted, isCurrent, isLocked })}
             >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                  <div className={cn(
+                    'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
+                    isCompleted ? 'bg-secondary/20' : isLocked ? 'bg-muted' : stageInfo.gradient
+                  )}>
                     {isCompleted ? (
-                      <CheckCircle2 className="w-6 h-6 text-secondary shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-secondary" />
                     ) : isLocked ? (
-                      <Lock className="w-6 h-6 text-muted-foreground shrink-0" />
+                      <Lock className="w-5 h-5 text-muted-foreground" />
                     ) : (
-                      <Circle className="w-6 h-6 text-primary shrink-0" />
+                      <span className="text-sm font-bold text-primary-foreground">{mission.day}</span>
                     )}
-                    <div>
-                      <span className="text-xs font-medium text-muted-foreground">
-                        Dia {mission.day}
-                      </span>
-                      <CardTitle className={cn(
-                        'text-lg',
-                        isCompleted && 'line-through text-muted-foreground'
-                      )}>
-                        {mission.title}
-                      </CardTitle>
-                    </div>
                   </div>
-                  {isCurrent && (
-                    <span className="text-xs font-medium bg-primary text-primary-foreground px-2 py-1 rounded-full">
-                      Hoje
-                    </span>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {mission.description}
-                </p>
-                <div className="space-y-2">
-                  {mission.checklist.map((item, idx) => (
-                    <div 
-                      key={idx}
-                      className="flex items-start gap-2 text-sm"
-                    >
-                      <Checkbox 
-                        checked={isCompleted} 
-                        disabled 
-                        className="mt-0.5"
-                      />
-                      <span className={cn(
-                        isCompleted && 'line-through text-muted-foreground'
-                      )}>
-                        {item}
-                      </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">Dia {mission.day}</span>
+                      {isCurrent && (
+                        <span className="text-[10px] font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                          HOJE
+                        </span>
+                      )}
                     </div>
-                  ))}
+                    <h3 className={cn(
+                      'font-medium text-foreground truncate',
+                      isCompleted && 'line-through text-muted-foreground'
+                    )}>
+                      {mission.title}
+                    </h3>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>
           );
         })}
       </div>
+
+      {/* Mission Detail Modal */}
+      <Dialog open={!!selectedMission} onOpenChange={() => setSelectedMission(null)}>
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+          {selectedMission && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Dia {selectedMission.mission.day}</span>
+                  {selectedMission.isCurrent && (
+                    <span className="font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
+                      HOJE
+                    </span>
+                  )}
+                  {selectedMission.isCompleted && (
+                    <span className="font-medium bg-secondary/20 text-secondary px-1.5 py-0.5 rounded text-[10px]">
+                      CONCLUÍDO
+                    </span>
+                  )}
+                </div>
+                <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-5 mt-4">
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Descrição</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {selectedMission.mission.description}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-3">Como fazer</h4>
+                  <div className="space-y-2">
+                    {selectedMission.mission.checklist.map((item, idx) => (
+                      <div 
+                        key={idx}
+                        className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                      >
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-medium text-primary">{idx + 1}</span>
+                        </div>
+                        <p className="text-sm text-foreground">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedMission.isLocked && (
+                  <div className="p-4 bg-muted rounded-lg text-center">
+                    <Lock className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      Complete os dias anteriores para desbloquear esta missão
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

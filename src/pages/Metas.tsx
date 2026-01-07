@@ -5,11 +5,18 @@ import { MISSIONS, STAGE_INFO } from '@/lib/missions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Target, Plus, X, CheckCircle2, Circle, Lock, Star } from 'lucide-react';
+import { Target, Plus, X, CheckCircle2, Lock, ChevronRight, Star, Edit2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface Goal {
   id: string;
@@ -30,6 +37,8 @@ export default function Metas() {
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [isPrimary, setIsPrimary] = useState(false);
+  const [selectedMission, setSelectedMission] = useState<any>(null);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
   const stageMissions = MISSIONS.filter(m => m.stage === 'metas');
   const stageInfo = STAGE_INFO.metas;
@@ -92,7 +101,6 @@ export default function Metas() {
     if (!user || !newTitle.trim()) return;
 
     try {
-      // If marking as primary, unmark existing primary
       if (isPrimary) {
         await supabase
           .from('goals')
@@ -142,6 +150,43 @@ export default function Metas() {
     }
   };
 
+  const handleEditGoal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingGoal) return;
+
+    try {
+      if (editingGoal.isPrimary) {
+        await supabase
+          .from('goals')
+          .update({ is_primary: false })
+          .eq('user_id', user!.id)
+          .eq('is_primary', true)
+          .neq('id', editingGoal.id);
+      }
+
+      await supabase
+        .from('goals')
+        .update({ 
+          title: editingGoal.title,
+          description: editingGoal.description,
+          is_primary: editingGoal.isPrimary
+        })
+        .eq('id', editingGoal.id);
+
+      setGoals(goals.map(g => {
+        if (g.id === editingGoal.id) return editingGoal;
+        if (editingGoal.isPrimary && g.isPrimary) return { ...g, isPrimary: false };
+        return g;
+      }));
+      
+      toast.success('Meta atualizada!');
+      setEditingGoal(null);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Erro ao atualizar');
+    }
+  };
+
   const toggleGoal = async (goalId: string) => {
     const goal = goals.find(g => g.id === goalId);
     if (!goal) return;
@@ -170,44 +215,47 @@ export default function Metas() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   const primaryGoal = goals.find(g => g.isPrimary);
   const secondaryGoals = goals.filter(g => !g.isPrimary);
   const completedGoals = goals.filter(g => g.completed).length;
+  const progressPercent = goals.length > 0 ? Math.round((completedGoals / goals.length) * 100) : 0;
+  const completedCount = completedMissions.length;
+  const stageProgressPercent = Math.round((completedCount / stageMissions.length) * 100);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="animate-fade-in">
-        <div className="flex items-center gap-3 mb-2">
-          <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
-            <Target className="w-6 h-6 text-primary-foreground" />
+        <div className="flex items-center gap-3">
+          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+            <Target className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              {stageInfo.name}
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              {stageInfo.description}
-            </p>
+            <h1 className="text-xl font-bold text-foreground">{stageInfo.name}</h1>
+            <p className="text-sm text-muted-foreground">{stageInfo.description}</p>
           </div>
         </div>
       </div>
 
-      {/* Progress */}
-      <Card className="animate-slide-up">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-muted-foreground">
-              Metas Concluídas
-            </span>
-            <span className="text-sm font-bold text-foreground">
-              {completedGoals} / {goals.length}
-            </span>
+      {/* Goals Progress */}
+      <Card className="border-border/50 animate-slide-up">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-foreground">Metas Concluídas</p>
+            <p className="text-sm font-bold text-primary">{completedGoals}/{goals.length}</p>
           </div>
-          <div className="h-3 bg-muted rounded-full overflow-hidden">
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div 
               className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
-              style={{ width: goals.length > 0 ? `${(completedGoals / goals.length) * 100}%` : '0%' }}
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
         </CardContent>
@@ -215,17 +263,17 @@ export default function Metas() {
 
       {/* Primary Goal */}
       {primaryGoal && (
-        <Card className="animate-slide-up border-2 border-accent/50 shadow-lg">
+        <Card className="border-primary/30 bg-primary/5 animate-slide-up" style={{ animationDelay: '0.05s' }}>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-accent fill-accent" />
-              <span className="text-xs font-bold text-accent uppercase tracking-wider">
+              <Star className="w-4 h-4 text-primary fill-primary" />
+              <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
                 Meta Principal
               </span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between gap-3">
               <label className="flex items-start gap-3 cursor-pointer flex-1">
                 <Checkbox
                   checked={primaryGoal.completed}
@@ -234,7 +282,7 @@ export default function Metas() {
                 />
                 <div>
                   <h3 className={cn(
-                    'text-xl font-bold',
+                    'text-base font-bold',
                     primaryGoal.completed && 'line-through text-muted-foreground'
                   )}>
                     {primaryGoal.title}
@@ -246,13 +294,24 @@ export default function Metas() {
                   )}
                 </div>
               </label>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => deleteGoal(primaryGoal.id)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setEditingGoal(primaryGoal)}
+                >
+                  <Edit2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                  onClick={() => deleteGoal(primaryGoal.id)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -260,9 +319,8 @@ export default function Metas() {
 
       {/* Add Goal Button */}
       <Button 
-        variant="secondary" 
-        className="w-full"
         onClick={() => setShowForm(true)}
+        className="w-full h-11"
       >
         <Plus className="w-4 h-4 mr-2" />
         Adicionar Meta
@@ -270,40 +328,47 @@ export default function Metas() {
 
       {/* Add Goal Form */}
       {showForm && (
-        <Card className="animate-scale-in">
-          <CardHeader className="pb-2">
+        <Card className="animate-scale-in border-border/50">
+          <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Nova Meta</CardTitle>
-              <Button variant="ghost" size="icon" onClick={() => setShowForm(false)}>
+              <CardTitle className="text-base">Nova Meta</CardTitle>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowForm(false)}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4">
             <form onSubmit={handleAddGoal} className="space-y-4">
-              <Input
-                placeholder="Título da meta"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                required
-              />
-              <Textarea
-                placeholder="Descrição (opcional)"
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-                className="min-h-20"
-              />
+              <div className="space-y-2">
+                <Label className="text-sm">Título da meta</Label>
+                <Input
+                  placeholder="Ex: Ler 12 livros este ano"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  required
+                  className="h-10"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm">Descrição (opcional)</Label>
+                <Textarea
+                  placeholder="Detalhes sobre como alcançar..."
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  className="min-h-16 resize-none"
+                />
+              </div>
               <label className="flex items-center gap-2 cursor-pointer">
                 <Checkbox
                   checked={isPrimary}
                   onCheckedChange={(checked) => setIsPrimary(checked as boolean)}
                 />
                 <span className="text-sm font-medium flex items-center gap-2">
-                  <Star className="w-4 h-4 text-accent" />
+                  <Star className="w-3.5 h-3.5 text-primary" />
                   Definir como meta principal
                 </span>
               </label>
-              <Button type="submit" className="w-full" variant="accent">
+              <Button type="submit" className="w-full h-10">
                 Adicionar
               </Button>
             </form>
@@ -313,9 +378,9 @@ export default function Metas() {
 
       {/* Secondary Goals */}
       {secondaryGoals.length > 0 && (
-        <Card className="animate-slide-up">
-          <CardHeader>
-            <CardTitle className="text-base">Metas Secundárias</CardTitle>
+        <Card className="border-border/50 animate-slide-up">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Outras Metas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {secondaryGoals.map((goal) => (
@@ -323,7 +388,7 @@ export default function Metas() {
                 key={goal.id}
                 className={cn(
                   'flex items-start justify-between p-3 rounded-lg transition-all',
-                  goal.completed ? 'bg-secondary/10 border border-secondary/30' : 'bg-muted'
+                  goal.completed ? 'bg-secondary/10' : 'bg-muted/50'
                 )}
               >
                 <label className="flex items-start gap-3 cursor-pointer flex-1">
@@ -346,14 +411,24 @@ export default function Metas() {
                     )}
                   </div>
                 </label>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => deleteGoal(goal.id)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    onClick={() => setEditingGoal(goal)}
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-destructive hover:text-destructive"
+                    onClick={() => deleteGoal(goal.id)}
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
               </div>
             ))}
           </CardContent>
@@ -361,59 +436,192 @@ export default function Metas() {
       )}
 
       {goals.length === 0 && !showForm && (
-        <Card className="animate-slide-up">
-          <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">
-              Você ainda não tem metas definidas. Comece definindo sua meta principal!
+        <Card className="border-border/50 animate-slide-up">
+          <CardContent className="py-10 text-center">
+            <Target className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">
+              Defina sua primeira meta e comece a transformar sua vida
             </p>
           </CardContent>
         </Card>
       )}
 
-      {/* Stage Missions */}
-      <div className="space-y-4 mt-8">
-        <h2 className="text-lg font-bold text-foreground">Missões da Etapa</h2>
-        {stageMissions.map((mission) => {
-          const isCompleted = completedMissions.includes(mission.day);
-          const isCurrent = mission.day === currentDay;
-          const isLocked = mission.day > currentDay;
+      {/* Stage Progress */}
+      <Card className="border-border/50 animate-slide-up">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-foreground">Progresso da Etapa</p>
+            <p className="text-sm font-bold text-primary">{completedCount}/{stageMissions.length}</p>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div 
+              className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
+              style={{ width: `${stageProgressPercent}%` }}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-          return (
-            <Card 
-              key={mission.day}
-              className={cn(
-                'transition-all',
-                isCompleted && 'opacity-75',
-                isCurrent && 'ring-2 ring-primary shadow-lg',
-                isLocked && 'opacity-50'
-              )}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 text-secondary shrink-0" />
-                    ) : isLocked ? (
-                      <Lock className="w-5 h-5 text-muted-foreground shrink-0" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-primary shrink-0" />
-                    )}
-                    <div>
-                      <span className="text-xs font-medium text-muted-foreground">Dia {mission.day}</span>
-                      <CardTitle className={cn('text-base', isCompleted && 'line-through text-muted-foreground')}>
-                        {mission.title}
-                      </CardTitle>
+      {/* Missions */}
+      <div>
+        <h2 className="text-sm font-medium text-muted-foreground mb-3">Missões da Etapa</h2>
+        <div className="grid gap-3">
+          {stageMissions.map((mission, index) => {
+            const isCompleted = completedMissions.includes(mission.day);
+            const isCurrent = mission.day === currentDay;
+            const isLocked = mission.day > currentDay;
+
+            return (
+              <Card 
+                key={mission.day}
+                className={cn(
+                  'cursor-pointer transition-all hover:shadow-md border-border/50',
+                  isCompleted && 'bg-secondary/5',
+                  isCurrent && 'ring-1 ring-primary',
+                  isLocked && 'opacity-60'
+                )}
+                onClick={() => setSelectedMission({ mission, isCompleted, isCurrent, isLocked })}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
+                      isCompleted ? 'bg-secondary/20' : isLocked ? 'bg-muted' : stageInfo.gradient
+                    )}>
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-5 h-5 text-secondary" />
+                      ) : isLocked ? (
+                        <Lock className="w-5 h-5 text-muted-foreground" />
+                      ) : (
+                        <span className="text-sm font-bold text-primary-foreground">{mission.day}</span>
+                      )}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">Dia {mission.day}</span>
+                        {isCurrent && (
+                          <span className="text-[10px] font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                            HOJE
+                          </span>
+                        )}
+                      </div>
+                      <h3 className={cn(
+                        'font-medium text-foreground truncate',
+                        isCompleted && 'line-through text-muted-foreground'
+                      )}>
+                        {mission.title}
+                      </h3>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Edit Goal Dialog */}
+      <Dialog open={!!editingGoal} onOpenChange={() => setEditingGoal(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Meta</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditGoal} className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-sm">Título da meta</Label>
+              <Input
+                value={editingGoal?.title || ''}
+                onChange={(e) => setEditingGoal(prev => prev ? { ...prev, title: e.target.value } : null)}
+                required
+                className="h-10"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm">Descrição (opcional)</Label>
+              <Textarea
+                value={editingGoal?.description || ''}
+                onChange={(e) => setEditingGoal(prev => prev ? { ...prev, description: e.target.value } : null)}
+                className="min-h-16 resize-none"
+              />
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <Checkbox
+                checked={editingGoal?.isPrimary || false}
+                onCheckedChange={(checked) => setEditingGoal(prev => prev ? { ...prev, isPrimary: checked as boolean } : null)}
+              />
+              <span className="text-sm font-medium flex items-center gap-2">
+                <Star className="w-3.5 h-3.5 text-primary" />
+                Definir como meta principal
+              </span>
+            </label>
+            <Button type="submit" className="w-full h-10">
+              Salvar
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mission Detail Modal */}
+      <Dialog open={!!selectedMission} onOpenChange={() => setSelectedMission(null)}>
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+          {selectedMission && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Dia {selectedMission.mission.day}</span>
+                  {selectedMission.isCurrent && (
+                    <span className="font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
+                      HOJE
+                    </span>
+                  )}
+                  {selectedMission.isCompleted && (
+                    <span className="font-medium bg-secondary/20 text-secondary px-1.5 py-0.5 rounded text-[10px]">
+                      CONCLUÍDO
+                    </span>
+                  )}
+                </div>
+                <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-5 mt-4">
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Descrição</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {selectedMission.mission.description}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-foreground mb-3">Como fazer</h4>
+                  <div className="space-y-2">
+                    {selectedMission.mission.checklist.map((item: string, idx: number) => (
+                      <div 
+                        key={idx}
+                        className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                      >
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-xs font-medium text-primary">{idx + 1}</span>
+                        </div>
+                        <p className="text-sm text-foreground">{item}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{mission.description}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+
+                {selectedMission.isLocked && (
+                  <div className="p-4 bg-muted rounded-lg text-center">
+                    <Lock className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      Complete os dias anteriores para desbloquear esta missão
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
