@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Flame, Sparkles, TrendingUp, Zap, Star, Crown } from 'lucide-react';
+import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Flame, Sparkles, TrendingUp, Zap, Star, Crown, Users, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -476,6 +476,57 @@ export default function Dashboard() {
           })}
         </div>
       </div>
+
+      {/* Community Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.5 }}
+      >
+        <a
+          href="#" // TODO: Substituir pelo link do grupo Telegram/WhatsApp
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block group"
+        >
+          <Card className="border-border/50 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30">
+            <CardContent className="p-6 relative">
+              {/* Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              <div className="relative flex items-center gap-5">
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="w-7 h-7 text-white" />
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-lg font-bold text-foreground">Comunidade</h3>
+                    <MessageCircle className="w-4 h-4 text-primary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Junte-se ao nosso grupo exclusivo e conecte-se com outros participantes do desafio
+                  </p>
+                </div>
+                
+                {/* Arrow */}
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </div>
+              
+              {/* Badge */}
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 rounded-full">
+                  Em breve
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        </a>
+      </motion.div>
     </motion.div>
   );
 }
