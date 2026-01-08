@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
+import { toast } from '@/hooks/use-toast';
 import { 
   ArrowRight, 
   CheckCircle2, 
@@ -44,6 +47,41 @@ const staggerContainer = {
 };
 
 export default function Landing() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { openCheckout, isSubscribed } = useSubscription();
+  const [isLoading, setIsLoading] = useState(false);
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
+
+  const handleCheckout = async (plan: 'monthly' | 'annual') => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    if (isSubscribed) {
+      navigate('/');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const priceId = plan === 'monthly' 
+        ? STRIPE_PRICES.monthly.priceId 
+        : STRIPE_PRICES.annual.priceId;
+      await openCheckout(priceId);
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: 'Erro ao iniciar checkout',
+        description: 'Por favor, tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const benefits = [
     {
       icon: Home,
@@ -148,7 +186,6 @@ export default function Landing() {
     }
   ];
 
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
 
   const pricing = {
     monthly: {
@@ -416,12 +453,15 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mt-12"
           >
-            <Link to="/auth">
-              <Button size="lg" className="rounded-full px-8">
-                Começar agora
-                <ChevronRight className="w-5 h-5 ml-1" />
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="rounded-full px-8"
+              onClick={() => handleCheckout('annual')}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Processando...' : 'Começar agora'}
+              <ChevronRight className="w-5 h-5 ml-1" />
+            </Button>
           </motion.div>
         </div>
       </section>
@@ -592,12 +632,15 @@ export default function Landing() {
               </div>
 
               {/* CTA Button */}
-              <Link to="/auth">
-                <Button size="xl" className="w-full rounded-xl text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all">
-                  Começar agora
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
+              <Button 
+                size="xl" 
+                className="w-full rounded-xl text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
+                onClick={() => handleCheckout(billingPeriod)}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processando...' : 'Começar agora'}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
 
               {/* Trust Elements */}
               <div className="mt-6 pt-6 border-t border-border">
