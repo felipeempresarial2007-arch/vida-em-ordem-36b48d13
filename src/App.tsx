@@ -14,6 +14,7 @@ import Metas from "./pages/Metas";
 import Continuacao from "./pages/Continuacao";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
 import { Loader2 } from "lucide-react";
@@ -62,6 +63,7 @@ const AppRoutes = () => (
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/payment-success" element={<PaymentSuccess />} />
     <Route path="/payment-canceled" element={<PaymentCanceled />} />
+    <Route path="/install" element={<Install />} />
     <Route path="/" element={<Index />} />
     <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
     <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
