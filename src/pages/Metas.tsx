@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 
 const MotionCard = motion.create(Card);
@@ -555,6 +556,9 @@ export default function Metas() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Editar Meta</DialogTitle>
+            <DialogDescription className="sr-only">
+              Formulário para editar título, descrição e prioridade da meta
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEditGoal} className="space-y-4">
             <div className="space-y-2">
@@ -611,6 +615,9 @@ export default function Metas() {
                   )}
                 </div>
                 <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+                <DialogDescription className="sr-only">
+                  Detalhes da missão do dia {selectedMission.mission.day}
+                </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-5 mt-4">

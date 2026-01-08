@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 
 const MotionCard = motion.create(Card);
@@ -522,6 +523,9 @@ export default function Rotina() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Editar Hábito</DialogTitle>
+            <DialogDescription className="sr-only">
+              Formulário para editar nome e categoria do hábito
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEditHabit} className="space-y-4">
             <div className="space-y-2">
@@ -580,6 +584,9 @@ export default function Rotina() {
                   )}
                 </div>
                 <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+                <DialogDescription className="sr-only">
+                  Detalhes da missão do dia {selectedMission.mission.day}
+                </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-5 mt-4">
