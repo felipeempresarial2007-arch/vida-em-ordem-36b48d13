@@ -227,23 +227,77 @@ export default function Dashboard() {
         </CardContent>
       </MotionCard>
 
-      {/* Quote Card */}
+      {/* Quote Card - Premium Design */}
       <MotionCard
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
-        className="border-border/50 bg-gradient-to-br from-card to-muted/30"
+        className="border-0 overflow-hidden relative group"
       >
-        <CardContent className="p-6">
-          <div className="flex gap-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-primary" />
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-60" />
+        
+        {/* Decorative Elements */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl" />
+        
+        {/* Large Quote Mark - Decorative */}
+        <div className="absolute top-4 left-4 text-primary/10 pointer-events-none">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/>
+          </svg>
+        </div>
+        
+        <CardContent className="relative p-6 md:p-8">
+          <div className="flex flex-col items-center text-center">
+            {/* Icon Badge */}
+            <motion.div 
+              className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center mb-5 shadow-lg shadow-primary/25"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Sparkles className="w-7 h-7 text-white" />
+            </motion.div>
+            
+            {/* Label */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-px w-8 bg-gradient-to-r from-transparent to-primary/30" />
+              <span className="text-xs font-bold text-primary uppercase tracking-[0.2em]">
+                Pensamento do Dia
+              </span>
+              <div className="h-px w-8 bg-gradient-to-l from-transparent to-primary/30" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-foreground mb-1">Pensamento do dia</p>
-              <p className="text-muted-foreground italic leading-relaxed">
-                "{quote}"
-              </p>
+            
+            {/* Quote Text */}
+            <motion.p 
+              className="text-lg md:text-xl font-medium text-foreground leading-relaxed max-w-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+            >
+              <span className="text-primary/60">"</span>
+              {quote}
+              <span className="text-primary/60">"</span>
+            </motion.p>
+            
+            {/* Decorative Bottom Element */}
+            <div className="flex items-center gap-1.5 mt-6">
+              <motion.div 
+                className="w-1.5 h-1.5 rounded-full bg-primary/40"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+              />
+              <motion.div 
+                className="w-2 h-2 rounded-full bg-primary/60"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.2 }}
+              />
+              <motion.div 
+                className="w-1.5 h-1.5 rounded-full bg-primary/40"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.4 }}
+              />
             </div>
           </div>
         </CardContent>
