@@ -431,13 +431,22 @@ export default function Dashboard() {
         </MotionCard>
       )}
 
-      {/* Quick Access */}
+      {/* Stage Progress Cards */}
       <div>
-        <h2 className="text-lg font-semibold text-foreground mb-4">Acesso Rápido</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-semibold text-foreground">Progresso por Etapa</h2>
+          <span className="text-xs text-muted-foreground">Clique para explorar</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {(Object.keys(STAGE_INFO) as Array<keyof typeof STAGE_INFO>).map((stage, index) => {
             const info = STAGE_INFO[stage];
             const isActive = stage === currentStage;
+            const stageDays = info.days;
+            const completedDays = stageDays.filter(day => day < progress.currentDay).length;
+            const totalDays = stageDays.length;
+            const stageProgress = Math.round((completedDays / totalDays) * 100);
+            const isStageCompleted = completedDays === totalDays;
+            const isLocked = stageDays[0] > progress.currentDay;
             
             return (
               <motion.div
@@ -449,27 +458,118 @@ export default function Dashboard() {
                 <Link
                   to={`/${stage}`}
                   className={cn(
-                    'block p-5 rounded-2xl border transition-all duration-300 group',
+                    'block p-5 rounded-2xl border transition-all duration-300 group relative overflow-hidden',
                     isActive 
-                      ? 'border-primary/30 bg-primary/5 shadow-md' 
-                      : 'border-border/50 bg-card hover:border-primary/20 hover:shadow-lg hover:-translate-y-1'
+                      ? 'border-primary/40 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-lg shadow-primary/10' 
+                      : isStageCompleted
+                      ? 'border-secondary/40 bg-gradient-to-br from-secondary/10 via-secondary/5 to-transparent'
+                      : isLocked
+                      ? 'border-border/30 bg-muted/30 opacity-60'
+                      : 'border-border/50 bg-card hover:border-primary/30 hover:shadow-xl hover:-translate-y-1'
                   )}
                 >
+                  {/* Background Decoration */}
                   <div className={cn(
-                    'w-11 h-11 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-110',
-                    info.gradient
-                  )}>
-                    <ArrowRight className="w-5 h-5 text-white" />
+                    'absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl transition-opacity',
+                    isActive ? 'bg-primary/20 opacity-100' : 'bg-primary/10 opacity-0 group-hover:opacity-100'
+                  )} />
+                  
+                  <div className="relative">
+                    {/* Header with Icon and Status */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110',
+                        isActive ? 'gradient-primary shadow-lg shadow-primary/30' :
+                        isStageCompleted ? 'bg-secondary/20 border border-secondary/30' :
+                        'bg-muted border border-border/50 group-hover:border-primary/30'
+                      )}>
+                        {isStageCompleted ? (
+                          <CheckCircle2 className="w-6 h-6 text-secondary" />
+                        ) : (
+                          <ArrowRight className={cn(
+                            'w-5 h-5 transition-colors',
+                            isActive ? 'text-white' : 'text-muted-foreground group-hover:text-primary'
+                          )} />
+                        )}
+                      </div>
+                      
+                      {/* Status Badge */}
+                      {isActive && (
+                        <motion.span 
+                          className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground"
+                          animate={{ scale: [1, 1.05, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
+                          Em Andamento
+                        </motion.span>
+                      )}
+                      {isStageCompleted && (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary/20 text-secondary">
+                          Concluída
+                        </span>
+                      )}
+                      {isLocked && (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-muted text-muted-foreground">
+                          Bloqueada
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Stage Name and Description */}
+                    <h3 className="font-bold text-foreground text-base mb-1">{info.name}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-1 mb-4">
+                      {info.description}
+                    </p>
+                    
+                    {/* Progress Section */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground font-medium">
+                          Dias {stageDays[0]} - {stageDays[stageDays.length - 1]}
+                        </span>
+                        <span className={cn(
+                          'font-bold',
+                          isStageCompleted ? 'text-secondary' : 
+                          isActive ? 'text-primary' : 'text-muted-foreground'
+                        )}>
+                          {completedDays}/{totalDays} dias
+                        </span>
+                      </div>
+                      
+                      {/* Progress Bar */}
+                      <div className="h-2 bg-muted/80 rounded-full overflow-hidden">
+                        <motion.div 
+                          className={cn(
+                            'h-full rounded-full',
+                            isStageCompleted ? 'bg-secondary' :
+                            isActive ? 'gradient-primary' : 'bg-muted-foreground/30'
+                          )}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${stageProgress}%` }}
+                          transition={{ duration: 0.8, delay: 0.8 + index * 0.1, ease: "easeOut" }}
+                        />
+                      </div>
+                      
+                      {/* Percentage */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          {isActive && <Zap className="w-3 h-3 text-primary" />}
+                          {isStageCompleted && <Trophy className="w-3 h-3 text-secondary" />}
+                          <span className={cn(
+                            'text-xs font-semibold',
+                            isStageCompleted ? 'text-secondary' :
+                            isActive ? 'text-primary' : 'text-muted-foreground'
+                          )}>
+                            {stageProgress}% completo
+                          </span>
+                        </div>
+                        <ArrowRight className={cn(
+                          'w-4 h-4 transition-transform group-hover:translate-x-1',
+                          isActive ? 'text-primary' : 'text-muted-foreground'
+                        )} />
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-foreground">{info.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                    {info.description}
-                  </p>
-                  {isActive && (
-                    <span className="inline-block mt-3 text-[10px] font-bold text-primary uppercase tracking-wider">
-                      Etapa Atual
-                    </span>
-                  )}
                 </Link>
               </motion.div>
             );
