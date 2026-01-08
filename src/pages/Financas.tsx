@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 
 const MotionCard = motion.create(Card);
@@ -439,6 +440,9 @@ export default function Financas() {
                   )}
                 </div>
                 <DialogTitle className="text-lg">{selectedMission.mission.title}</DialogTitle>
+                <DialogDescription className="sr-only">
+                  Detalhes da missão do dia {selectedMission.mission.day}
+                </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-5 mt-4">

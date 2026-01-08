@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { HabitCalendar } from '@/components/continuacao/HabitCalendar';
 
@@ -470,6 +471,9 @@ export default function Continuacao() {
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl">Editar Tarefa</DialogTitle>
+            <DialogDescription className="sr-only">
+              Formulário para editar nome e categoria da tarefa
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEditTask} className="space-y-5 mt-4">
             <div className="space-y-2">
