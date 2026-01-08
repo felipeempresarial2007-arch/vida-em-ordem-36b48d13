@@ -17,7 +17,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { HabitCalendar } from '@/components/continuacao/HabitCalendar';
-import { EnergyFlow } from '@/components/continuacao/EnergyFlow';
 
 interface DailyTask {
   id: string;
@@ -286,8 +285,6 @@ export default function Continuacao() {
         </CardContent>
       </MotionCard>
 
-      {/* Energy Flow - Innovative Feature */}
-      <EnergyFlow />
 
       {/* Habit Calendar */}
       <HabitCalendar tasks={tasks} />
