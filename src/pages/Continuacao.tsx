@@ -26,12 +26,14 @@ interface DailyTask {
   completedDates: string[];
 }
 
+// Categorias sincronizadas com a aba Rotina
 const TASK_CATEGORIES = [
-  { name: 'Ambiente', color: 'bg-orange-500' },
-  { name: 'Finanças', color: 'bg-amber-500' },
-  { name: 'Rotina', color: 'bg-rose-500' },
-  { name: 'Metas', color: 'bg-violet-500' },
-  { name: 'Pessoal', color: 'bg-sky-500' },
+  { name: 'Manhã', color: 'bg-amber-500' },
+  { name: 'Tarde', color: 'bg-orange-500' },
+  { name: 'Noite', color: 'bg-indigo-500' },
+  { name: 'Saúde', color: 'bg-rose-500' },
+  { name: 'Movimento', color: 'bg-emerald-500' },
+  { name: 'Mente', color: 'bg-violet-500' },
 ];
 
 const MotionCard = motion.create(Card);
@@ -42,7 +44,7 @@ export default function Continuacao() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [newTask, setNewTask] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Pessoal');
+  const [selectedCategory, setSelectedCategory] = useState('Manhã');
   const [editingTask, setEditingTask] = useState<DailyTask | null>(null);
   const [streak, setStreak] = useState(0);
 
