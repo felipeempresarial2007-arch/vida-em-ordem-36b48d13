@@ -158,10 +158,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </div>
       </main>
 
-      {/* Floating AI Coach - Adjusted position for bottom nav */}
-      <div className="lg:block hidden">
-        <FloatingAICoach />
-      </div>
+      {/* Floating AI Coach */}
+      <FloatingAICoach />
     </div>
   );
 }
