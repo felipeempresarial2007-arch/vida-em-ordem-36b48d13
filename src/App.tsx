@@ -16,6 +16,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import Install from "./pages/Install";
 import FocusProtocol from "./pages/FocusProtocol";
+import AICoach from "./pages/AICoach";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
 import { Loader2 } from "lucide-react";
@@ -66,6 +67,7 @@ const AppRoutes = () => (
     <Route path="/payment-canceled" element={<PaymentCanceled />} />
     <Route path="/install" element={<Install />} />
     <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
+    <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
     <Route path="/" element={<Index />} />
     <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
     <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
