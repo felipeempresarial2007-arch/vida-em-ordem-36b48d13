@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
+import { FloatingAICoach } from '@/components/ai/FloatingAICoach';
 import { 
   LayoutDashboard, 
   Home, 
@@ -186,6 +187,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
           {children}
         </div>
       </main>
+
+      {/* Floating AI Coach */}
+      <FloatingAICoach />
     </div>
   );
 }
