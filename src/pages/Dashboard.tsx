@@ -56,18 +56,18 @@ export default function Dashboard() {
 
   return (
     <motion.div 
-      className="space-y-6"
+      className="space-y-4 md:space-y-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Header */}
+      {/* Header - Compact for mobile */}
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">
+        <h1 className="text-xl md:text-2xl font-semibold text-foreground">
           Seu Progresso
         </h1>
-        <p className="text-muted-foreground mt-1">
-          Dia {progress.currentDay} de 30 • {stageInfo.name}
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Dia {progress.currentDay}/30 • {stageInfo.name}
         </p>
       </div>
 
@@ -76,47 +76,47 @@ export default function Dashboard() {
         <ChallengeCompleteCard completedAt={progress.completedAt} />
       )}
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* Stats Grid - Compact for mobile */}
+      <div className="grid grid-cols-3 gap-2">
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-2">
-              <Calendar className="w-5 h-5 text-primary" />
+          <CardContent className="p-3 text-center">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
+              <Calendar className="w-4 h-4 text-primary" />
             </div>
-            <p className="text-xl font-semibold text-foreground">{progress.currentDay}</p>
-            <p className="text-xs text-muted-foreground">de 30 dias</p>
+            <p className="text-lg font-semibold text-foreground">{progress.currentDay}</p>
+            <p className="text-[10px] text-muted-foreground">de 30</p>
           </CardContent>
         </Card>
         
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-2">
-              <TrendingUp className="w-5 h-5 text-secondary" />
+          <CardContent className="p-3 text-center">
+            <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-1.5">
+              <TrendingUp className="w-4 h-4 text-secondary" />
             </div>
-            <p className="text-xl font-semibold text-foreground">{progressPercent}%</p>
-            <p className="text-xs text-muted-foreground">completo</p>
+            <p className="text-lg font-semibold text-foreground">{progressPercent}%</p>
+            <p className="text-[10px] text-muted-foreground">completo</p>
           </CardContent>
         </Card>
         
         <Card>
-          <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mx-auto mb-2">
-              <Trophy className="w-5 h-5 text-muted-foreground" />
+          <CardContent className="p-3 text-center">
+            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center mx-auto mb-1.5">
+              <Trophy className="w-4 h-4 text-muted-foreground" />
             </div>
-            <p className="text-xl font-semibold text-foreground">{stageInfo.name.split(' ')[0]}</p>
-            <p className="text-xs text-muted-foreground">etapa</p>
+            <p className="text-lg font-semibold text-foreground">{stageInfo.name.split(' ')[0]}</p>
+            <p className="text-[10px] text-muted-foreground">etapa</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress Bar - Compact */}
       <Card>
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-foreground">Progresso do Desafio</span>
-            <span className="text-sm font-semibold text-primary">{progressPercent}%</span>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-foreground">Progresso</span>
+            <span className="text-xs font-semibold text-primary">{progressPercent}%</span>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
             <motion.div 
               className="h-full bg-primary rounded-full"
               initial={{ width: 0 }}
@@ -124,7 +124,7 @@ export default function Dashboard() {
               transition={{ duration: 0.8, ease: "easeOut" }}
             />
           </div>
-          <div className="flex gap-1.5 mt-4">
+          <div className="flex gap-1 mt-3 overflow-x-auto pb-1 -mx-1 px-1">
             {(Object.keys(STAGE_INFO) as Array<keyof typeof STAGE_INFO>).map((stage) => {
               const info = STAGE_INFO[stage];
               const isActive = stage === currentStage;
@@ -134,7 +134,7 @@ export default function Dashboard() {
                 <div
                   key={stage}
                   className={cn(
-                    'px-2.5 py-1 rounded text-xs font-medium transition-colors',
+                    'px-2 py-0.5 rounded text-[10px] font-medium transition-colors whitespace-nowrap',
                     isActive && 'bg-primary text-primary-foreground',
                     isDone && 'bg-secondary/15 text-secondary',
                     !isActive && !isDone && 'bg-muted text-muted-foreground'
@@ -148,18 +148,18 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Quote Card */}
-      <Card className="bg-muted/50">
-        <CardContent className="p-5">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-primary" />
+      {/* Quote Card - Compact */}
+      <Card className="bg-muted/30">
+        <CardContent className="p-3">
+          <div className="flex items-start gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
             </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5">
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-0.5">
                 Pensamento do dia
               </p>
-              <p className="text-sm text-foreground leading-relaxed">
+              <p className="text-xs text-foreground leading-relaxed">
                 "{quote}"
               </p>
             </div>
@@ -167,17 +167,17 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Focus Protocol Card */}
+      {/* Focus Protocol Card - Compact */}
       <Link to="/focus-protocol">
         <Card className="group hover:border-primary/30 transition-colors cursor-pointer">
-          <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-              <Brain className="w-5 h-5 text-primary" />
+          <CardContent className="p-3 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+              <Brain className="w-4 h-4 text-primary" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-foreground">Protocolo de Foco</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Técnicas de neuro-performance para entrar em flow
+              <p className="text-[11px] text-muted-foreground">
+                Técnicas de neuro-performance
               </p>
             </div>
             <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
