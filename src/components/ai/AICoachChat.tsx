@@ -14,6 +14,55 @@ const suggestions = [
   "Técnicas para vencer a procrastinação",
 ];
 
+// Simple markdown-like formatting for AI responses
+function formatMessage(content: string) {
+  // Process the content line by line for better formatting
+  const lines = content.split('\n');
+  
+  return lines.map((line, index) => {
+    let formattedLine = line;
+    
+    // Bold text: **text** or __text__
+    formattedLine = formattedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    formattedLine = formattedLine.replace(/__(.*?)__/g, '<strong>$1</strong>');
+    
+    // Italic text: *text* or _text_
+    formattedLine = formattedLine.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+    
+    // Headers with emoji support
+    if (formattedLine.startsWith('### ')) {
+      formattedLine = `<span class="block text-sm font-semibold text-foreground mt-3 mb-1">${formattedLine.slice(4)}</span>`;
+    } else if (formattedLine.startsWith('## ')) {
+      formattedLine = `<span class="block text-base font-bold text-foreground mt-3 mb-1">${formattedLine.slice(3)}</span>`;
+    } else if (formattedLine.startsWith('# ')) {
+      formattedLine = `<span class="block text-lg font-bold text-foreground mt-2 mb-2">${formattedLine.slice(2)}</span>`;
+    }
+    
+    // Numbered lists
+    const numberedMatch = formattedLine.match(/^(\d+)\.\s+(.+)/);
+    if (numberedMatch) {
+      formattedLine = `<span class="block pl-1 my-1"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold mr-2">${numberedMatch[1]}</span>${numberedMatch[2]}</span>`;
+    }
+    
+    // Bullet points
+    if (formattedLine.startsWith('• ') || formattedLine.startsWith('- ')) {
+      formattedLine = `<span class="block pl-2 my-0.5">→ ${formattedLine.slice(2)}</span>`;
+    }
+    
+    // Horizontal rule
+    if (formattedLine.trim() === '---' || formattedLine.trim() === '***') {
+      formattedLine = '<span class="block my-2 border-t border-border/50"></span>';
+    }
+    
+    // Empty lines = spacing
+    if (formattedLine.trim() === '') {
+      return '<span class="block h-2"></span>';
+    }
+    
+    return formattedLine + ' ';
+  }).join('');
+}
+
 function MessageBubble({ message, isLast }: { message: Message; isLast: boolean }) {
   const isUser = message.role === 'user';
   
@@ -28,7 +77,7 @@ function MessageBubble({ message, isLast }: { message: Message; isLast: boolean 
     >
       {/* Avatar */}
       <div className={cn(
-        'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
+        'w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-1',
         isUser 
           ? 'bg-primary text-primary-foreground' 
           : 'gradient-primary text-white shadow-lg shadow-primary/20'
@@ -38,21 +87,26 @@ function MessageBubble({ message, isLast }: { message: Message; isLast: boolean 
       
       {/* Message */}
       <div className={cn(
-        'max-w-[80%] rounded-2xl px-4 py-3',
+        'max-w-[85%] rounded-2xl px-4 py-3',
         isUser 
           ? 'bg-primary text-primary-foreground rounded-tr-sm' 
           : 'bg-muted border border-border/50 rounded-tl-sm'
       )}>
-        <p className="text-sm whitespace-pre-wrap leading-relaxed">
-          {message.content}
-          {!isUser && isLast && (
-            <motion.span
-              className="inline-block w-1.5 h-4 bg-primary/60 ml-0.5 rounded-sm"
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-            />
-          )}
-        </p>
+        {isUser ? (
+          <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+        ) : (
+          <div 
+            className="text-sm leading-relaxed prose-sm"
+            dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
+          />
+        )}
+        {!isUser && isLast && (
+          <motion.span
+            className="inline-block w-1.5 h-4 bg-primary/60 ml-0.5 rounded-sm align-middle"
+            animate={{ opacity: [1, 0] }}
+            transition={{ duration: 0.8, repeat: Infinity }}
+          />
+        )}
       </div>
     </motion.div>
   );
