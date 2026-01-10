@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export type Message = {
   id: string;
@@ -10,9 +12,32 @@ export type Message = {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-coach`;
 
 export function useAICoach() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  // Fetch user name from profile
+  const fetchUserName = useCallback(async () => {
+    if (!user || userName) return userName;
+    
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (data?.full_name) {
+        setUserName(data.full_name);
+        return data.full_name;
+      }
+    } catch (err) {
+      console.log('Could not fetch user name');
+    }
+    return null;
+  }, [user, userName]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isLoading) return;
@@ -28,6 +53,9 @@ export function useAICoach() {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
+    // Get user name for personalization
+    const name = await fetchUserName();
+
     const apiMessages = [...messages, userMessage].map(m => ({
       role: m.role,
       content: m.content,
@@ -42,7 +70,10 @@ export function useAICoach() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: apiMessages }),
+        body: JSON.stringify({ 
+          messages: apiMessages,
+          userName: name,
+        }),
       });
 
       if (!response.ok) {
@@ -147,7 +178,7 @@ export function useAICoach() {
     } finally {
       setIsLoading(false);
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, fetchUserName]);
 
   const clearChat = useCallback(() => {
     setMessages([]);
