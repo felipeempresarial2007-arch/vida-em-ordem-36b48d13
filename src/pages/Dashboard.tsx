@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Flame, Sparkles, TrendingUp, Zap, Star, Crown, Users, MessageCircle, Brain } from 'lucide-react';
+import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Flame, Sparkles, TrendingUp, Zap, Star, Crown, Users, MessageCircle, Brain, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -476,6 +476,56 @@ export default function Dashboard() {
           })}
         </div>
       </div>
+
+      {/* AI Coach Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.85, duration: 0.5 }}
+      >
+        <Link to="/ai-coach" className="block group">
+          <Card className="border-secondary/30 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-secondary/5 to-primary/5">
+            <CardContent className="p-6 relative">
+              {/* Animated Background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-secondary/10 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              <div className="relative flex items-center gap-5">
+                {/* Icon */}
+                <motion.div 
+                  className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shadow-lg shadow-secondary/30"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Bot className="w-7 h-7 text-white" />
+                </motion.div>
+                
+                {/* Content */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-lg font-bold text-foreground">Coach de IA</h3>
+                    <Sparkles className="w-4 h-4 text-secondary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Converse com seu mentor de produtividade e receba dicas personalizadas
+                  </p>
+                </div>
+                
+                {/* Arrow */}
+                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                  <ArrowRight className="w-5 h-5 text-secondary group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </div>
+              
+              {/* Badge */}
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-secondary to-primary rounded-full animate-pulse">
+                  IA
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      </motion.div>
 
       {/* Focus Protocol Section */}
       <motion.div
