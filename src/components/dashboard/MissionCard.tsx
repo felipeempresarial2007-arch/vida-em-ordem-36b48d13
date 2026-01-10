@@ -120,7 +120,6 @@ export default function MissionCard({
       {/* Complete Button */}
       <div className="p-6 pt-0">
         <Button
-          variant="accent"
           size="lg"
           className="w-full"
           disabled={!canComplete}

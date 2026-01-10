@@ -2,130 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Premium Font Stack - Clean & Professional */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+/* FOCUS 30 - Professional Design System
+   Inspired by: Linear, Things, Apple Fitness, Notion
+   Philosophy: Clarity through restraint, function over decoration */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* FOCUS 30 - Premium Design System with Neuromarketing Principles */
+    /* ========================================
+       FOCUS 30 Professional Color System
+       ======================================== */
     
-    /* Primary: Warm Orange - Energy, Motivation, Action (Dopamine trigger) */
-    --primary: 24 95% 53%;
+    /* Primary: Sophisticated Warm Orange
+       Purposeful, not aggressive. Inspires action without anxiety */
+    --primary: 24 75% 50%;
     --primary-foreground: 0 0% 100%;
     
-    /* Secondary: Soft Green - Success, Growth, Calm Confidence */
-    --secondary: 152 55% 52%;
+    /* Secondary: Muted Sage Green
+       Success, calm confidence, natural progression */
+    --secondary: 158 35% 45%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Accent: Deep Coral Orange - Strong CTA, Urgency without anxiety */
-    --accent: 18 100% 50%;
+    /* Accent: Deep Burnt Orange
+       Reserved for critical CTAs only */
+    --accent: 20 80% 48%;
     --accent-foreground: 0 0% 100%;
     
-    /* Background: Warm cream - Reduces cognitive fatigue, feels premium */
-    --background: 30 50% 98%;
-    --foreground: 220 15% 18%;
+    /* Backgrounds: Warm Neutral System
+       Off-white base reduces eye strain, feels premium */
+    --background: 40 20% 98%;
+    --foreground: 220 20% 14%;
     
-    /* Card: Pure white with warmth - Clean, trustworthy */
-    --card: 30 30% 99%;
-    --card-foreground: 220 15% 18%;
+    /* Card: Clean white with subtle warmth */
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 14%;
     
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 18%;
+    --popover-foreground: 220 20% 14%;
     
-    /* Muted: Subtle warm grays - Sophisticated hierarchy */
-    --muted: 30 20% 96%;
-    --muted-foreground: 220 10% 50%;
+    /* Muted: Sophisticated grays */
+    --muted: 220 10% 96%;
+    --muted-foreground: 220 10% 45%;
     
     /* Destructive */
-    --destructive: 0 72% 51%;
+    --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    /* Borders and inputs - Subtle, premium feel */
-    --border: 30 15% 90%;
-    --input: 30 15% 90%;
-    --ring: 24 95% 53%;
+    /* Borders: Subtle, functional */
+    --border: 220 10% 90%;
+    --input: 220 10% 90%;
+    --ring: 24 75% 50%;
     
-    /* Neutral */
-    --neutral: 30 10% 85%;
+    /* Radius: Slightly softer for modern feel */
+    --radius: 0.75rem;
     
-    --radius: 1rem;
+    /* Success state */
+    --success: 158 35% 45%;
     
-    /* Stage colors - Orange spectrum with psychological progression */
-    --stage-ambiente: 24 95% 53%;
-    --stage-financas: 20 90% 48%;
-    --stage-rotina: 16 85% 45%;
-    --stage-metas: 28 100% 58%;
+    /* ========================================
+       Spacing Scale (8px base grid)
+       ======================================== */
+    --space-1: 0.25rem;  /* 4px */
+    --space-2: 0.5rem;   /* 8px */
+    --space-3: 0.75rem;  /* 12px */
+    --space-4: 1rem;     /* 16px */
+    --space-5: 1.25rem;  /* 20px */
+    --space-6: 1.5rem;   /* 24px */
+    --space-8: 2rem;     /* 32px */
+    --space-10: 2.5rem;  /* 40px */
+    --space-12: 3rem;    /* 48px */
+    --space-16: 4rem;    /* 64px */
     
-    /* Progress gradient - Dopamine-inducing warm tones */
-    --progress-start: 24 95% 53%;
-    --progress-end: 32 100% 62%;
+    /* ========================================
+       Shadow System (Subtle, functional)
+       ======================================== */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.03);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.03);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.06), 0 8px 10px -6px rgb(0 0 0 / 0.03);
     
-    /* Success - Achievement, satisfaction */
-    --success: 152 55% 52%;
-    --info: 24 80% 55%;
+    /* Focus ring glow */
+    --shadow-ring: 0 0 0 3px hsl(24 75% 50% / 0.15);
     
-    /* Premium Shadows - Depth and sophistication */
-    --shadow-xs: 0 1px 2px 0 hsl(24 30% 10% / 0.02);
-    --shadow-sm: 0 1px 3px 0 hsl(24 30% 10% / 0.04), 0 1px 2px -1px hsl(24 30% 10% / 0.03);
-    --shadow-md: 0 4px 6px -1px hsl(24 30% 10% / 0.05), 0 2px 4px -2px hsl(24 30% 10% / 0.03);
-    --shadow-lg: 0 10px 15px -3px hsl(24 30% 10% / 0.06), 0 4px 6px -4px hsl(24 30% 10% / 0.03);
-    --shadow-xl: 0 20px 25px -5px hsl(24 30% 10% / 0.08), 0 8px 10px -6px hsl(24 30% 10% / 0.04);
-    --shadow-glow: 0 0 20px -5px hsl(24 95% 53% / 0.25);
-    
-    /* Sidebar */
+    /* ========================================
+       Sidebar System
+       ======================================== */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 18%;
-    --sidebar-primary: 24 95% 53%;
+    --sidebar-foreground: 220 20% 14%;
+    --sidebar-primary: 24 75% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 30 40% 97%;
-    --sidebar-accent-foreground: 24 95% 53%;
-    --sidebar-border: 30 15% 92%;
-    --sidebar-ring: 24 95% 53%;
+    --sidebar-accent: 220 10% 97%;
+    --sidebar-accent-foreground: 24 75% 50%;
+    --sidebar-border: 220 10% 92%;
+    --sidebar-ring: 24 75% 50%;
   }
 
   .dark {
-    --primary: 24 90% 58%;
-    --primary-foreground: 0 0% 8%;
+    --primary: 24 70% 55%;
+    --primary-foreground: 220 20% 8%;
     
-    --secondary: 152 45% 48%;
+    --secondary: 158 30% 50%;
     --secondary-foreground: 0 0% 100%;
     
-    --accent: 24 100% 55%;
-    --accent-foreground: 0 0% 8%;
+    --accent: 20 75% 52%;
+    --accent-foreground: 220 20% 8%;
     
-    --background: 220 20% 6%;
-    --foreground: 30 20% 94%;
+    --background: 220 15% 8%;
+    --foreground: 220 10% 92%;
     
-    --card: 220 18% 10%;
-    --card-foreground: 30 20% 94%;
+    --card: 220 15% 10%;
+    --card-foreground: 220 10% 92%;
     
-    --popover: 220 18% 10%;
-    --popover-foreground: 30 20% 94%;
+    --popover: 220 15% 10%;
+    --popover-foreground: 220 10% 92%;
     
-    --muted: 220 15% 14%;
-    --muted-foreground: 30 15% 55%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 10% 55%;
     
-    --destructive: 0 65% 55%;
+    --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 15% 16%;
-    --input: 220 15% 16%;
-    --ring: 24 90% 58%;
+    --border: 220 12% 18%;
+    --input: 220 12% 18%;
+    --ring: 24 70% 55%;
     
-    --stage-ambiente: 24 90% 55%;
-    --stage-financas: 20 85% 50%;
-    --stage-rotina: 16 80% 46%;
-    --stage-metas: 28 95% 58%;
-    
-    --sidebar-background: 220 18% 8%;
-    --sidebar-foreground: 30 20% 94%;
-    --sidebar-primary: 24 90% 58%;
-    --sidebar-primary-foreground: 0 0% 8%;
-    --sidebar-accent: 220 15% 12%;
-    --sidebar-accent-foreground: 24 90% 58%;
-    --sidebar-border: 220 15% 14%;
-    --sidebar-ring: 24 90% 58%;
+    --sidebar-background: 220 15% 9%;
+    --sidebar-foreground: 220 10% 92%;
+    --sidebar-primary: 24 70% 55%;
+    --sidebar-primary-foreground: 220 20% 8%;
+    --sidebar-accent: 220 12% 12%;
+    --sidebar-accent-foreground: 24 70% 55%;
+    --sidebar-border: 220 12% 16%;
+    --sidebar-ring: 24 70% 55%;
   }
 }
 
@@ -135,20 +146,45 @@
   }
 
   html {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    letter-spacing: -0.011em;
   }
   
-  /* Premium text rendering */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
-    text-rendering: optimizeLegibility;
+  /* Typography Scale - Clear hierarchy */
+  h1 {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight text-foreground;
+    letter-spacing: -0.025em;
+  }
+  
+  h2 {
+    @apply text-xl md:text-2xl font-semibold tracking-tight text-foreground;
+    letter-spacing: -0.02em;
+  }
+  
+  h3 {
+    @apply text-lg font-semibold text-foreground;
+    letter-spacing: -0.015em;
+  }
+  
+  h4 {
+    @apply text-base font-medium text-foreground;
+  }
+  
+  p {
+    @apply text-sm text-muted-foreground leading-relaxed;
+  }
+  
+  /* Small/caption text */
+  small, .text-caption {
+    @apply text-xs text-muted-foreground;
   }
 }
 
@@ -157,118 +193,83 @@
     text-wrap: balance;
   }
   
-  /* Premium Gradients - Neuromarketing optimized */
+  /* ========================================
+     Minimal Gradient Utilities
+     Use sparingly - only for emphasis
+     ======================================== */
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(18 100% 48%) 50%, hsl(32 100% 60%) 100%);
-  }
-  
-  .gradient-progress {
-    background: linear-gradient(90deg, hsl(var(--progress-start)) 0%, hsl(var(--progress-end)) 100%);
-  }
-  
-  .gradient-accent {
-    background: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(18 100% 45%) 100%);
-  }
-  
-  .gradient-card {
-    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(30 30% 98%) 100%);
+    background: linear-gradient(135deg, hsl(24 75% 50%) 0%, hsl(20 80% 45%) 100%);
   }
   
   .gradient-subtle {
-    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(30 40% 96%) 100%);
+    background: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(220 10% 96%) 100%);
   }
   
-  /* Stage-specific gradients - Psychological progression */
-  .gradient-ambiente {
-    background: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(20 90% 48%) 100%);
-  }
-  
-  .gradient-financas {
-    background: linear-gradient(135deg, hsl(20 90% 48%) 0%, hsl(16 85% 45%) 100%);
-  }
-  
-  .gradient-rotina {
-    background: linear-gradient(135deg, hsl(16 85% 45%) 0%, hsl(12 80% 42%) 100%);
-  }
-  
-  .gradient-metas {
-    background: linear-gradient(135deg, hsl(28 100% 58%) 0%, hsl(32 100% 55%) 100%);
-  }
-  
-  /* Glass morphism - Modern premium effect */
-  .glass {
-    background: hsl(var(--card) / 0.8);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-  }
-  
-  .glass-border {
-    @apply glass;
-    border: 1px solid hsl(var(--border) / 0.5);
-  }
-  
-  /* Premium card styles */
+  /* ========================================
+     Card Styles - Clean, functional
+     ======================================== */
   .card-elevated {
-    @apply bg-card rounded-2xl border border-border/40;
-    box-shadow: var(--shadow-md);
+    @apply bg-card rounded-xl border border-border;
+    box-shadow: var(--shadow-sm);
   }
   
   .card-interactive {
-    @apply card-elevated transition-all duration-300;
+    @apply card-elevated transition-all duration-200;
   }
   
   .card-interactive:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: hsl(var(--border) / 0.8);
   }
   
-  /* Glow effects */
-  .glow-primary {
-    box-shadow: var(--shadow-glow);
+  /* ========================================
+     Button Enhancements
+     ======================================== */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground font-medium;
+    box-shadow: var(--shadow-sm);
   }
   
-  /* Animations - Smooth, professional */
+  .btn-primary:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(1px);
+  }
+  
+  /* ========================================
+     Focus States - Accessible + Clean
+     ======================================== */
+  .focus-ring {
+    @apply outline-none ring-2 ring-primary/20 ring-offset-2 ring-offset-background;
+  }
+  
+  /* ========================================
+     Animations - Subtle, purposeful
+     ======================================== */
   .animate-fade-in {
-    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.3s ease-out forwards;
   }
   
   .animate-slide-up {
-    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideUp 0.4s ease-out forwards;
   }
   
   .animate-scale-in {
-    animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  
-  .animate-pulse-soft {
-    animation: pulseSoft 3s ease-in-out infinite;
-  }
-  
-  .animate-shimmer {
-    animation: shimmer 2s linear infinite;
-    background: linear-gradient(
-      90deg,
-      hsl(var(--muted)) 0%,
-      hsl(var(--background)) 50%,
-      hsl(var(--muted)) 100%
-    );
-    background-size: 200% 100%;
+    animation: scaleIn 0.2s ease-out forwards;
   }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -279,7 +280,7 @@
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
@@ -287,25 +288,19 @@
   }
 }
 
-@keyframes pulseSoft {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.85;
-  }
+/* Subtle slide for mobile menu */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+.animate-slide-in-right {
+  animation: slideInRight 0.25s ease-out forwards;
 }
 
-/* Premium scrollbar */
+/* ========================================
+   Scrollbar - Minimal, unobtrusive
+   ======================================== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -317,20 +312,43 @@
 
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--border));
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.25);
+  background: hsl(var(--muted-foreground) / 0.3);
 }
 
-/* Focus states - Accessibility + Premium */
+/* ========================================
+   Focus Visible States
+   ======================================== */
 :focus-visible {
-  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  @apply outline-none ring-2 ring-primary/30 ring-offset-2 ring-offset-background;
 }
 
-/* Selection color */
+/* ========================================
+   Selection Color
+   ======================================== */
 ::selection {
-  background: hsl(24 95% 53% / 0.2);
+  background: hsl(24 75% 50% / 0.15);
   color: hsl(var(--foreground));
+}
+
+/* ========================================
+   Form Input Enhancements
+   ======================================== */
+input::placeholder,
+textarea::placeholder {
+  color: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Number input arrows hidden for cleaner look */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
