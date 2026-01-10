@@ -11,6 +11,11 @@ interface ChallengeProgress {
   completedAt: string | null;
 }
 
+interface UserProfile {
+  fullName: string | null;
+  onboardingCompleted: boolean;
+}
+
 interface DailyMission {
   id: string;
   dayNumber: number;
@@ -30,11 +35,27 @@ export function useChallengeProgress() {
   const [progress, setProgress] = useState<ChallengeProgress | null>(null);
   const [todayMission, setTodayMission] = useState<DailyMission | null>(null);
   const [missionTemplate, setMissionTemplate] = useState<MissionTemplate | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isNewUser, setIsNewUser] = useState(false);
 
   const fetchProgress = async () => {
     if (!user) return;
 
     try {
+      // Fetch user profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('full_name, onboarding_completed')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileData) {
+        setProfile({
+          fullName: profileData.full_name,
+          onboardingCompleted: profileData.onboarding_completed ?? false,
+        });
+      }
+
       // Fetch challenge progress
       const { data: progressData, error: progressError } = await supabase
         .from('challenge_progress')
@@ -53,6 +74,11 @@ export function useChallengeProgress() {
           startedAt: progressData.started_at,
           completedAt: progressData.completed_at,
         });
+
+        // Check if new user (day 1 with no completed missions)
+        const hasNoCompletedMissions = !progressData.completed_at && progressData.current_day === 1;
+        const needsOnboarding = hasNoCompletedMissions && !(profileData?.onboarding_completed);
+        setIsNewUser(needsOnboarding);
 
         // Fetch today's mission
         const { data: missionData, error: missionError } = await supabase
@@ -201,14 +227,33 @@ export function useChallengeProgress() {
     }
   };
 
+  const completeOnboarding = async () => {
+    if (!user) return;
+    
+    try {
+      await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('user_id', user.id);
+      
+      setIsNewUser(false);
+      setProfile(prev => prev ? { ...prev, onboardingCompleted: true } : null);
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
+    }
+  };
+
   return {
     loading,
     progress,
     todayMission,
     missionTemplate,
+    profile,
+    isNewUser,
     updateChecklist,
     updateReflection,
     completeMission,
+    completeOnboarding,
     refetch: fetchProgress,
   };
 }
