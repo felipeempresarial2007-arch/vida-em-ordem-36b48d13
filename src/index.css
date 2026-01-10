@@ -352,3 +352,105 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* ========================================
+   Habit Calendar - Professional Day Markers
+   ======================================== */
+.habit-calendar {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: hsl(var(--primary));
+}
+
+.habit-calendar .rdp-day {
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+}
+
+.habit-calendar .rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled) {
+  background: hsl(var(--muted));
+}
+
+.habit-calendar .rdp-day_selected {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 600;
+}
+
+.habit-calendar .rdp-day_today:not(.rdp-day_selected) {
+  background: transparent;
+  border: 2px solid hsl(var(--primary) / 0.4);
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+/* Complete day - subtle green indicator */
+.habit-day-complete:not(.rdp-day_selected) {
+  position: relative;
+  background: hsl(var(--secondary) / 0.12) !important;
+  color: hsl(var(--secondary)) !important;
+  font-weight: 600;
+}
+
+.habit-day-complete:not(.rdp-day_selected)::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: hsl(var(--secondary));
+}
+
+/* Partial day - subtle orange indicator */
+.habit-day-partial:not(.rdp-day_selected) {
+  position: relative;
+  background: hsl(var(--primary) / 0.08) !important;
+  color: hsl(var(--primary)) !important;
+  font-weight: 500;
+}
+
+.habit-day-partial:not(.rdp-day_selected)::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.6);
+}
+
+/* Missed day - minimal muted state */
+.habit-day-missed:not(.rdp-day_selected) {
+  color: hsl(var(--muted-foreground) / 0.5) !important;
+}
+
+/* Caption styling */
+.habit-calendar .rdp-caption_label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: hsl(var(--foreground));
+}
+
+.habit-calendar .rdp-nav_button {
+  border-radius: 8px;
+  opacity: 0.6;
+}
+
+.habit-calendar .rdp-nav_button:hover {
+  opacity: 1;
+  background: hsl(var(--muted));
+}
+
+.habit-calendar .rdp-head_cell {
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
