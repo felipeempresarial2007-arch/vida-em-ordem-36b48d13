@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { ChallengeCompleteCard } from '@/components/dashboard/ChallengeCompleteCard';
 
 const MotionCard = motion.create(Card);
 
@@ -70,27 +71,9 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* Challenge Completed */}
-      {isCompleted && (
-        <Card className="border-secondary/30 bg-secondary/5">
-          <CardContent className="p-6 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center">
-              <Crown className="w-6 h-6 text-secondary" />
-            </div>
-            <div className="flex-1">
-              <h2 className="font-semibold text-foreground">Desafio Completo! 🎉</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">
-                Você completou os 30 dias. Continue sua jornada.
-              </p>
-            </div>
-            <Link to="/continuacao">
-              <Button size="sm">
-                Continuar
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+      {/* Challenge Completed - Full Card */}
+      {isCompleted && progress.completedAt && (
+        <ChallengeCompleteCard completedAt={progress.completedAt} />
       )}
 
       {/* Stats Grid */}

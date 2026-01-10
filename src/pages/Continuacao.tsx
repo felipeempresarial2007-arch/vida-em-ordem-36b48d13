@@ -229,6 +229,36 @@ export default function Continuacao() {
         </div>
       </motion.div>
 
+      {/* Welcome message for new completion */}
+      {tasks.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-5">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Parabéns por completar os 30 dias! 🎉</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Agora você pode criar tarefas diárias personalizadas para manter os hábitos 
+                    que construiu durante o desafio. Comece adicionando suas primeiras tarefas 
+                    baseadas nos 4 pilares: <span className="text-foreground font-medium">Ambiente</span>, {' '}
+                    <span className="text-foreground font-medium">Finanças</span>, {' '}
+                    <span className="text-foreground font-medium">Rotina</span> e {' '}
+                    <span className="text-foreground font-medium">Metas</span>.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* Habit Calendar */}
       <HabitCalendar tasks={tasks} />
 
@@ -390,23 +420,6 @@ export default function Continuacao() {
         );
       })}
 
-      {tasks.length === 0 && !showForm && (
-        <MotionCard
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="border-border/50"
-        >
-          <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-              <Infinity className="w-8 h-8 text-muted-foreground/40" />
-            </div>
-            <h3 className="font-semibold text-foreground mb-2">Comece sua jornada contínua</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              Adicione tarefas diárias para manter os hábitos do desafio e continuar evoluindo
-            </p>
-          </CardContent>
-        </MotionCard>
-      )}
 
       {/* Edit Dialog */}
       <Dialog open={!!editingTask} onOpenChange={() => setEditingTask(null)}>
