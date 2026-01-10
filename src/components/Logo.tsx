@@ -8,25 +8,24 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', showText = true, className }: LogoProps) {
   const sizes = {
-    sm: { icon: 'w-8 h-8', text: 'text-base', gap: 'gap-2' },
-    md: { icon: 'w-10 h-10', text: 'text-lg', gap: 'gap-2.5' },
-    lg: { icon: 'w-12 h-12', text: 'text-xl', gap: 'gap-3' },
+    sm: { icon: 'w-7 h-7', text: 'text-sm', gap: 'gap-2' },
+    md: { icon: 'w-8 h-8', text: 'text-base', gap: 'gap-2' },
+    lg: { icon: 'w-9 h-9', text: 'text-lg', gap: 'gap-2.5' },
   };
 
   const s = sizes[size];
 
   return (
     <div className={cn('flex items-center', s.gap, className)}>
-      {/* Logo Icon */}
+      {/* Logo Icon - Clean, minimal */}
       <div className={cn(
-        'relative flex items-center justify-center rounded-xl gradient-primary shadow-md',
+        'relative flex items-center justify-center rounded-lg bg-primary',
         s.icon
       )}>
-        {/* F shape */}
         <svg 
           viewBox="0 0 24 24" 
           fill="none" 
-          className="w-5/6 h-5/6"
+          className="w-4/5 h-4/5"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path 
@@ -34,17 +33,13 @@ export default function Logo({ size = 'md', showText = true, className }: LogoPr
             fill="white"
           />
         </svg>
-        {/* Circle accent */}
-        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-secondary rounded-full border-2 border-white" />
       </div>
 
-      {/* Text */}
+      {/* Text - Clean typography */}
       {showText && (
-        <div className="flex flex-col leading-tight">
-          <span className={cn('font-bold text-foreground tracking-tight', s.text)}>
-            FOCUS <span className="text-primary">30</span>
-          </span>
-        </div>
+        <span className={cn('font-semibold text-foreground tracking-tight', s.text)}>
+          FOCUS<span className="text-primary ml-0.5">30</span>
+        </span>
       )}
     </div>
   );
