@@ -165,40 +165,6 @@ export function HabitCalendar({ tasks }: HabitCalendarProps) {
             </div>
           </div>
 
-          {/* Selected Date Tasks */}
-          {selectedDate && selectedDateTasks.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              className="mt-4 pt-4 border-t border-border/50"
-            >
-              <p className="text-sm font-semibold text-foreground mb-3">
-                {isToday(selectedDate) ? 'Tarefas de Hoje' : format(selectedDate, "d 'de' MMMM", { locale: ptBR })}
-              </p>
-              <div className="space-y-2">
-                {selectedDateTasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className={cn(
-                      'flex items-center gap-3 p-3 rounded-xl text-sm',
-                      task.completed 
-                        ? 'bg-secondary/10 text-secondary' 
-                        : 'bg-muted/50 text-muted-foreground'
-                    )}
-                  >
-                    {task.completed ? (
-                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                    ) : isFuture(selectedDate) && !isToday(selectedDate) ? (
-                      <Minus className="w-4 h-4 flex-shrink-0" />
-                    ) : (
-                      <XCircle className="w-4 h-4 flex-shrink-0" />
-                    )}
-                    <span className={cn(task.completed && 'line-through')}>{task.name}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
         </CardContent>
       </Card>
     </motion.div>
