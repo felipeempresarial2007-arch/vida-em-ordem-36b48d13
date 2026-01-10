@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Brain, Wind, Target, Zap, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, Brain, Wind, Target, Zap, VolumeX, Timer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import PomodoroTimer from "@/components/focus/PomodoroTimer";
 
-type Phase = "intro" | "breathing" | "task" | "visualization" | "countdown" | "execute" | "silence";
+type Phase = "intro" | "breathing" | "task" | "visualization" | "countdown" | "execute" | "silence" | "pomodoro";
 
 interface Message {
   text: string;
@@ -206,6 +207,7 @@ const FocusProtocol = () => {
       case "countdown":
       case "execute": return <Zap className="w-8 h-8" />;
       case "silence": return <VolumeX className="w-8 h-8" />;
+      case "pomodoro": return <Timer className="w-8 h-8" />;
       default: return <Brain className="w-8 h-8" />;
     }
   };
@@ -219,6 +221,7 @@ const FocusProtocol = () => {
       case "countdown": return "Ativação";
       case "execute": return "Execução";
       case "silence": return "Estado de Fluxo";
+      case "pomodoro": return "Timer Pomodoro";
       default: return "";
     }
   };
@@ -410,37 +413,79 @@ const FocusProtocol = () => {
                 Modo silêncio ativo. Foque na sua tarefa.
               </p>
               
-              <Button
-                variant="outline"
-                onClick={() => navigate("/dashboard")}
-                className="border-primary/20 text-primary hover:bg-primary/10"
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={() => setPhase("pomodoro")}
+                  className="bg-gradient-to-r from-primary to-accent text-primary-foreground"
+                >
+                  <Timer className="w-4 h-4 mr-2" />
+                  Iniciar Timer Pomodoro
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/dashboard")}
+                  className="border-primary/20 text-primary hover:bg-primary/10"
+                >
+                  Voltar ao Dashboard
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Pomodoro Timer */}
+        <AnimatePresence>
+          {phase === "pomodoro" && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="py-4"
+            >
+              <PomodoroTimer task={task} />
+              
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="mt-8 text-center"
               >
-                Voltar ao Dashboard
-              </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate("/dashboard")}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Voltar ao Dashboard
+                </Button>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       {/* Progress indicator */}
-      <div className="p-4">
-        <div className="flex justify-center gap-2">
-          {["intro", "breathing", "task", "visualization", "countdown", "execute", "silence"].map((p, i) => (
-            <motion.div
-              key={p}
-              className={`w-2 h-2 rounded-full ${
-                phase === p 
-                  ? "bg-primary" 
-                  : ["intro", "breathing", "task", "visualization", "countdown", "execute", "silence"].indexOf(phase) > i
-                  ? "bg-primary/50"
-                  : "bg-muted"
-              }`}
-              animate={phase === p ? { scale: [1, 1.3, 1] } : {}}
-              transition={{ duration: 1, repeat: Infinity }}
-            />
-          ))}
+      {phase !== "pomodoro" && (
+        <div className="p-4">
+          <div className="flex justify-center gap-2">
+            {["intro", "breathing", "task", "visualization", "countdown", "execute", "silence"].map((p, i) => (
+              <motion.div
+                key={p}
+                className={`w-2 h-2 rounded-full ${
+                  phase === p 
+                    ? "bg-primary" 
+                    : ["intro", "breathing", "task", "visualization", "countdown", "execute", "silence"].indexOf(phase as Phase) > i
+                    ? "bg-primary/50"
+                    : "bg-muted"
+                }`}
+                animate={phase === p ? { scale: [1, 1.3, 1] } : {}}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
