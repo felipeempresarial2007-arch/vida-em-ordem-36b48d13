@@ -68,7 +68,7 @@ const AppRoutes = () => (
     <Route path="/install" element={<Install />} />
     <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
     <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
-    <Route path="/" element={<Index />} />
+    <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
     <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
     <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
