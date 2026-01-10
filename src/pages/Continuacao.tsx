@@ -229,64 +229,6 @@ export default function Continuacao() {
         </div>
       </motion.div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { icon: Flame, value: streak, label: 'dias seguidos', color: 'primary' },
-          { icon: CheckCircle2, value: `${completedToday}/${totalTasks}`, label: 'hoje', color: 'secondary' },
-          { icon: TrendingUp, value: `${progressPercent}%`, label: 'progresso', color: 'primary' },
-        ].map((stat, i) => (
-          <MotionCard 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
-            className="border-border/50"
-          >
-            <CardContent className="p-5 text-center">
-              <div className={cn(
-                'w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3',
-                stat.color === 'primary' ? 'bg-primary/10' : 'bg-secondary/10'
-              )}>
-                <stat.icon className={cn(
-                  'w-5 h-5',
-                  stat.color === 'primary' ? 'text-primary' : 'text-secondary'
-                )} />
-              </div>
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
-            </CardContent>
-          </MotionCard>
-        ))}
-      </div>
-
-      {/* Progress Card */}
-      <MotionCard
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-        className="border-border/50"
-      >
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm font-semibold text-foreground">Progresso de Hoje</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{completedToday} de {totalTasks} tarefas</p>
-            </div>
-            <span className="text-lg font-bold text-primary">{progressPercent}%</span>
-          </div>
-          <div className="h-3 bg-muted rounded-full overflow-hidden">
-            <motion.div 
-              className="h-full gradient-primary rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            />
-          </div>
-        </CardContent>
-      </MotionCard>
-
-
       {/* Habit Calendar */}
       <HabitCalendar tasks={tasks} />
 
