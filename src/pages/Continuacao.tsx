@@ -211,72 +211,48 @@ export default function Continuacao() {
   }, {} as Record<string, DailyTask[]>);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center">
-            <Infinity className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Continuação</h1>
-            <p className="text-muted-foreground">Sua jornada além dos 30 dias</p>
-          </div>
+    <div className="space-y-4">
+      {/* Header - Compact for mobile */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+          <Infinity className="w-5 h-5 text-white" />
         </div>
-      </motion.div>
+        <div>
+          <h1 className="text-lg font-bold text-foreground">Continuação</h1>
+          <p className="text-xs text-muted-foreground">Sua jornada além dos 30 dias</p>
+        </div>
+      </div>
 
       {/* Welcome message for new completion */}
       {tasks.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Parabéns por completar os 30 dias! 🎉</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Agora você pode criar tarefas diárias personalizadas para manter os hábitos 
-                    que construiu durante o desafio. Comece adicionando suas primeiras tarefas 
-                    baseadas nos 4 pilares: <span className="text-foreground font-medium">Ambiente</span>, {' '}
-                    <span className="text-foreground font-medium">Finanças</span>, {' '}
-                    <span className="text-foreground font-medium">Rotina</span> e {' '}
-                    <span className="text-foreground font-medium">Metas</span>.
-                  </p>
-                </div>
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4 text-primary" />
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground mb-1">Parabéns! 🎉</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Crie tarefas diárias baseadas nos 4 pilares para manter seus hábitos.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Habit Calendar */}
       <HabitCalendar tasks={tasks} />
 
-      {/* Add Task Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
+      {/* Add Task Button - Compact */}
+      <Button 
+        onClick={() => setShowForm(true)}
+        className="w-full h-10 text-sm"
       >
-        <Button 
-          onClick={() => setShowForm(true)}
-          className="w-full h-12 rounded-xl text-base font-semibold"
-          size="lg"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Adicionar Tarefa Diária
-        </Button>
-      </motion.div>
+        <Plus className="w-4 h-4 mr-1.5" />
+        Adicionar Tarefa
+      </Button>
 
       {/* Add Task Form */}
       <AnimatePresence>

@@ -218,47 +218,36 @@ export default function Rotina() {
 
   return (
     <motion.div 
-      className="space-y-6"
+      className="space-y-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-4">
-          <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg', stageInfo.gradient)}>
-            <Heart className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">{stageInfo.name}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{stageInfo.description}</p>
-          </div>
+      {/* Header - Compact for mobile */}
+      <div className="flex items-center gap-3">
+        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+          <Heart className="w-5 h-5 text-primary-foreground" />
         </div>
-      </motion.div>
+        <div>
+          <h1 className="text-lg font-bold text-foreground">{stageInfo.name}</h1>
+          <p className="text-xs text-muted-foreground">{stageInfo.description}</p>
+        </div>
+      </div>
 
-      {/* Week Calendar */}
-      <MotionCard 
-        className="border-border/50 overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" />
-              <p className="text-sm font-semibold text-foreground">Última Semana</p>
+      {/* Week Calendar - Compact */}
+      <Card className="border-border/50">
+        <CardContent className="p-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-primary" />
+              <p className="text-xs font-semibold text-foreground">Última Semana</p>
             </div>
             <div className="flex items-center gap-1">
-              <Flame className="w-4 h-4 text-primary" />
-              <span className="text-sm font-bold text-primary">{progressPercent}%</span>
+              <Flame className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-bold text-primary">{progressPercent}%</span>
             </div>
           </div>
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1">
             {weekDays.map((date, idx) => {
               const dateStr = date.toISOString().split('T')[0];
               const isToday = dateStr === today;
@@ -266,46 +255,43 @@ export default function Rotina() {
               const someCompleted = habits.some(h => h.completedDates.includes(dateStr));
               
               return (
-                <motion.div
+                <div
                   key={idx}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: idx * 0.05 }}
                   className={cn(
-                    'flex flex-col items-center p-2.5 rounded-xl transition-all cursor-pointer hover:scale-105',
-                    isToday && 'ring-2 ring-primary shadow-lg',
-                    allCompleted && 'bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/30',
-                    !allCompleted && someCompleted && 'bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20',
-                    !allCompleted && !someCompleted && 'bg-muted/50'
+                    'flex flex-col items-center p-1.5 rounded-lg transition-all',
+                    isToday && 'ring-1.5 ring-primary',
+                    allCompleted && 'bg-secondary/15',
+                    !allCompleted && someCompleted && 'bg-primary/10',
+                    !allCompleted && !someCompleted && 'bg-muted/30'
                   )}
                 >
-                  <span className="text-[10px] text-muted-foreground uppercase font-medium">
+                  <span className="text-[9px] text-muted-foreground uppercase font-medium">
                     {date.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3)}
                   </span>
                   <span className={cn(
-                    'text-sm font-bold mt-1',
+                    'text-xs font-bold mt-0.5',
                     isToday ? 'text-primary' : 'text-foreground'
                   )}>
                     {date.getDate()}
                   </span>
                   {allCompleted && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-secondary mt-1" />
+                    <CheckCircle2 className="w-3 h-3 text-secondary mt-0.5" />
                   )}
-                </motion.div>
+                </div>
               );
             })}
           </div>
         </CardContent>
-      </MotionCard>
+      </Card>
 
-      {/* Daily Progress */}
-      <Card className="border-border/50 animate-slide-up" style={{ animationDelay: '0.05s' }}>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-medium text-foreground">Hábitos de Hoje</p>
-            <p className="text-sm font-bold text-primary">{completedToday}/{totalHabits}</p>
+      {/* Daily Progress - Compact */}
+      <Card className="border-border/50">
+        <CardContent className="p-3">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-medium text-foreground">Hábitos de Hoje</p>
+            <p className="text-xs font-bold text-primary">{completedToday}/{totalHabits}</p>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
             <div 
               className={cn('h-full rounded-full transition-all duration-500', stageInfo.gradient)}
               style={{ width: `${progressPercent}%` }}
@@ -314,12 +300,12 @@ export default function Rotina() {
         </CardContent>
       </Card>
 
-      {/* Add Habit Button */}
+      {/* Add Habit Button - Compact */}
       <Button 
         onClick={() => setShowForm(true)}
-        className="w-full h-11"
+        className="w-full h-10 text-sm"
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="w-4 h-4 mr-1.5" />
         Adicionar Hábito
       </Button>
 

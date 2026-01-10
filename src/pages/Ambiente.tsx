@@ -82,48 +82,37 @@ export default function Ambiente() {
 
   return (
     <motion.div 
-      className="space-y-6"
+      className="space-y-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-4">
-          <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg', stageInfo.gradient)}>
-            <Home className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">{stageInfo.name}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{stageInfo.description}</p>
-          </div>
+      {/* Header - Compact for mobile */}
+      <div className="flex items-center gap-3">
+        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+          <Home className="w-5 h-5 text-primary-foreground" />
         </div>
-      </motion.div>
+        <div>
+          <h1 className="text-lg font-bold text-foreground">{stageInfo.name}</h1>
+          <p className="text-xs text-muted-foreground">{stageInfo.description}</p>
+        </div>
+      </div>
 
-      {/* Progress */}
-      <MotionCard 
-        className="border-border/50 overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between mb-4">
+      {/* Progress - Compact */}
+      <Card className="border-border/50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <p className="text-sm font-semibold text-foreground">Progresso da Etapa</p>
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <p className="text-xs font-semibold text-foreground">Progresso</p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-primary">{completedCount}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-muted-foreground">{stageMissions.length}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold text-primary">{completedCount}</span>
+              <span className="text-muted-foreground text-xs">/</span>
+              <span className="text-muted-foreground text-xs">{stageMissions.length}</span>
             </div>
           </div>
-          <div className="h-3 bg-muted rounded-full overflow-hidden">
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
             <motion.div 
               className={cn('h-full rounded-full', stageInfo.gradient)}
               initial={{ width: 0 }}
@@ -131,14 +120,11 @@ export default function Ambiente() {
               transition={{ duration: 0.8, delay: 0.3 }}
             />
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            {progressPercent}% concluído
-          </p>
         </CardContent>
-      </MotionCard>
+      </Card>
 
-      {/* Missions Grid */}
-      <div className="grid gap-3">
+      {/* Missions Grid - Compact */}
+      <div className="grid gap-2">
         {stageMissions.map((mission, index) => {
           const isCompleted = completedMissions.includes(mission.day);
           const isCurrent = mission.day === currentDay;
@@ -148,45 +134,44 @@ export default function Ambiente() {
             <Card 
               key={mission.day}
               className={cn(
-                'cursor-pointer transition-all hover:shadow-md border-border/50 animate-slide-up',
+                'cursor-pointer transition-all active:scale-[0.98] border-border/50',
                 isCompleted && 'bg-secondary/5',
                 isCurrent && 'ring-1 ring-primary',
                 isLocked && 'opacity-60'
               )}
-              style={{ animationDelay: `${index * 0.03}s` }}
               onClick={() => setSelectedMission({ mission, isCompleted, isCurrent, isLocked })}
             >
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-3">
                   <div className={cn(
-                    'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
+                    'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
                     isCompleted ? 'bg-secondary/20' : isLocked ? 'bg-muted' : stageInfo.gradient
                   )}>
                     {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 text-secondary" />
+                      <CheckCircle2 className="w-4 h-4 text-secondary" />
                     ) : isLocked ? (
-                      <Lock className="w-5 h-5 text-muted-foreground" />
+                      <Lock className="w-4 h-4 text-muted-foreground" />
                     ) : (
-                      <span className="text-sm font-bold text-primary-foreground">{mission.day}</span>
+                      <span className="text-xs font-bold text-primary-foreground">{mission.day}</span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">Dia {mission.day}</span>
+                      <span className="text-[10px] text-muted-foreground">Dia {mission.day}</span>
                       {isCurrent && (
-                        <span className="text-[10px] font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                        <span className="text-[9px] font-medium bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
                           HOJE
                         </span>
                       )}
                     </div>
                     <h3 className={cn(
-                      'font-medium text-foreground truncate',
+                      'text-sm font-medium text-foreground truncate',
                       isCompleted && 'line-through text-muted-foreground'
                     )}>
                       {mission.title}
                     </h3>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
                 </div>
               </CardContent>
             </Card>

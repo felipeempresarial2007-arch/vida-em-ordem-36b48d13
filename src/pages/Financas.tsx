@@ -153,98 +153,87 @@ export default function Financas() {
 
   return (
     <motion.div 
-      className="space-y-6"
+      className="space-y-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-4">
-          <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg', stageInfo.gradient)}>
-            <Wallet className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">{stageInfo.name}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{stageInfo.description}</p>
-          </div>
+      {/* Header - Compact for mobile */}
+      <div className="flex items-center gap-3">
+        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+          <Wallet className="w-5 h-5 text-primary-foreground" />
         </div>
-      </motion.div>
+        <div>
+          <h1 className="text-lg font-bold text-foreground">{stageInfo.name}</h1>
+          <p className="text-xs text-muted-foreground">{stageInfo.description}</p>
+        </div>
+      </div>
 
-      {/* Summary Cards */}
-      <motion.div 
-        className="grid grid-cols-3 gap-3"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <Card className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
-          <CardContent className="p-4 bg-gradient-to-br from-secondary/10 to-secondary/5">
-            <div className="flex items-center gap-2 text-secondary mb-2">
-              <div className="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4" />
+      {/* Summary Cards - Compact */}
+      <div className="grid grid-cols-3 gap-2">
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-3 bg-gradient-to-br from-secondary/10 to-secondary/5">
+            <div className="flex items-center gap-1.5 text-secondary mb-1.5">
+              <div className="w-6 h-6 rounded-md bg-secondary/15 flex items-center justify-center">
+                <TrendingUp className="w-3 h-3" />
               </div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider">Entradas</span>
+              <span className="text-[9px] font-semibold uppercase">Entradas</span>
             </div>
-            <p className="text-lg font-bold text-foreground">
+            <p className="text-sm font-bold text-foreground truncate">
               R$ {totalIncome.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
-          <CardContent className="p-4 bg-gradient-to-br from-destructive/10 to-destructive/5">
-            <div className="flex items-center gap-2 text-destructive mb-2">
-              <div className="w-8 h-8 rounded-lg bg-destructive/15 flex items-center justify-center">
-                <TrendingDown className="w-4 h-4" />
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-3 bg-gradient-to-br from-destructive/10 to-destructive/5">
+            <div className="flex items-center gap-1.5 text-destructive mb-1.5">
+              <div className="w-6 h-6 rounded-md bg-destructive/15 flex items-center justify-center">
+                <TrendingDown className="w-3 h-3" />
               </div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider">Saídas</span>
+              <span className="text-[9px] font-semibold uppercase">Saídas</span>
             </div>
-            <p className="text-lg font-bold text-foreground">
+            <p className="text-sm font-bold text-foreground truncate">
               R$ {totalExpense.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/50 overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <Card className="border-border/50 overflow-hidden">
           <CardContent className={cn(
-            'p-4 bg-gradient-to-br',
+            'p-3 bg-gradient-to-br',
             balance >= 0 ? 'from-primary/10 to-primary/5' : 'from-destructive/10 to-destructive/5'
           )}>
-            <div className={cn('flex items-center gap-2 mb-2', balance >= 0 ? 'text-primary' : 'text-destructive')}>
-              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', balance >= 0 ? 'bg-primary/15' : 'bg-destructive/15')}>
-                <DollarSign className="w-4 h-4" />
+            <div className={cn('flex items-center gap-1.5 mb-1.5', balance >= 0 ? 'text-primary' : 'text-destructive')}>
+              <div className={cn('w-6 h-6 rounded-md flex items-center justify-center', balance >= 0 ? 'bg-primary/15' : 'bg-destructive/15')}>
+                <DollarSign className="w-3 h-3" />
               </div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider">Saldo</span>
+              <span className="text-[9px] font-semibold uppercase">Saldo</span>
             </div>
             <p className={cn(
-              'text-lg font-bold',
+              'text-sm font-bold truncate',
               balance >= 0 ? 'text-primary' : 'text-destructive'
             )}>
               R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </p>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
-      {/* Add Entry Buttons */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Add Entry Buttons - Compact */}
+      <div className="grid grid-cols-2 gap-2">
         <Button 
           variant="secondary" 
-          className="h-11"
+          className="h-10 text-sm"
           onClick={() => { setFormType('income'); setShowForm(true); }}
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 mr-1.5" />
           Entrada
         </Button>
         <Button 
           variant="outline" 
-          className="h-11"
+          className="h-10 text-sm"
           onClick={() => { setFormType('expense'); setShowForm(true); }}
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 mr-1.5" />
           Saída
         </Button>
       </div>

@@ -236,48 +236,37 @@ export default function Metas() {
 
   return (
     <motion.div 
-      className="space-y-6"
+      className="space-y-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-4">
-          <div className={cn('w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg', stageInfo.gradient)}>
-            <Target className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">{stageInfo.name}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{stageInfo.description}</p>
-          </div>
+      {/* Header - Compact for mobile */}
+      <div className="flex items-center gap-3">
+        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', stageInfo.gradient)}>
+          <Target className="w-5 h-5 text-primary-foreground" />
         </div>
-      </motion.div>
+        <div>
+          <h1 className="text-lg font-bold text-foreground">{stageInfo.name}</h1>
+          <p className="text-xs text-muted-foreground">{stageInfo.description}</p>
+        </div>
+      </div>
 
-      {/* Goals Progress */}
-      <MotionCard 
-        className="border-border/50 overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between mb-4">
+      {/* Goals Progress - Compact */}
+      <Card className="border-border/50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-primary" />
-              <p className="text-sm font-semibold text-foreground">Metas Concluídas</p>
+              <Trophy className="w-3.5 h-3.5 text-primary" />
+              <p className="text-xs font-semibold text-foreground">Metas Concluídas</p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-primary">{completedGoals}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-muted-foreground">{goals.length}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold text-primary">{completedGoals}</span>
+              <span className="text-muted-foreground text-xs">/</span>
+              <span className="text-muted-foreground text-xs">{goals.length}</span>
             </div>
           </div>
-          <div className="h-3 bg-muted rounded-full overflow-hidden">
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
             <motion.div 
               className={cn('h-full rounded-full', stageInfo.gradient)}
               initial={{ width: 0 }}
@@ -285,11 +274,8 @@ export default function Metas() {
               transition={{ duration: 0.8, delay: 0.3 }}
             />
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            {progressPercent}% concluído
-          </p>
         </CardContent>
-      </MotionCard>
+      </Card>
 
       {/* Primary Goal */}
       {primaryGoal && (
@@ -347,12 +333,12 @@ export default function Metas() {
         </Card>
       )}
 
-      {/* Add Goal Button */}
+      {/* Add Goal Button - Compact */}
       <Button 
         onClick={() => setShowForm(true)}
-        className="w-full h-11"
+        className="w-full h-10 text-sm"
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="w-4 h-4 mr-1.5" />
         Adicionar Meta
       </Button>
 
