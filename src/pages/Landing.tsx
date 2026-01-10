@@ -2,34 +2,22 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
-import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
-import { toast } from '@/hooks/use-toast';
 import { 
   ArrowRight, 
-  CheckCircle2, 
   Target, 
   Zap, 
-  Shield, 
-  TrendingUp,
   Calendar,
   Wallet,
   Home,
   Star,
   Quote,
-  Play,
   ChevronRight,
   Clock,
   Users,
-  Award,
   Sparkles,
   Check,
-  Crown,
-  Flame,
-  Gift,
-  Lock,
-  BadgePercent
+  Rocket
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -49,36 +37,12 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { openCheckout, isSubscribed } = useSubscription();
-  const [isLoading, setIsLoading] = useState(false);
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
 
-  const handleCheckout = async (plan: 'monthly' | 'annual') => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-
-    if (isSubscribed) {
+  const handleGetStarted = () => {
+    if (user) {
       navigate('/');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const priceId = plan === 'monthly' 
-        ? STRIPE_PRICES.monthly.priceId 
-        : STRIPE_PRICES.annual.priceId;
-      await openCheckout(priceId);
-    } catch (error) {
-      console.error('Checkout error:', error);
-      toast({
-        title: 'Erro ao iniciar checkout',
-        description: 'Por favor, tente novamente.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
+    } else {
+      navigate('/auth');
     }
   };
 
@@ -165,10 +129,6 @@ export default function Landing() {
 
   const faqs = [
     {
-      question: 'Qual a diferença entre o plano mensal e anual?',
-      answer: 'O plano anual oferece 37% de desconto em relação ao mensal, além de acesso prioritário a novos recursos e suporte VIP.'
-    },
-    {
       question: 'Quanto tempo preciso dedicar por dia?',
       answer: 'As missões foram desenhadas para serem práticas. A maioria leva entre 15 a 30 minutos por dia.'
     },
@@ -177,42 +137,24 @@ export default function Landing() {
       answer: 'Sem problemas! Você pode continuar de onde parou. O importante é não desistir e manter a consistência.'
     },
     {
-      question: 'Posso cancelar a qualquer momento?',
-      answer: 'Sim! Você pode cancelar sua assinatura a qualquer momento, sem taxas ou multas. Simples assim.'
-    },
-    {
       question: 'Como funciona o Coach IA?',
       answer: 'O Coach IA é seu assistente pessoal disponível 24/7. Ele responde dúvidas, dá orientações personalizadas e te ajuda a manter o foco durante todo o desafio.'
+    },
+    {
+      question: 'O app é gratuito?',
+      answer: 'Sim! Durante a fase de testes, o acesso é totalmente gratuito para todos os usuários cadastrados.'
     }
   ];
-
-
-  const pricing = {
-    monthly: {
-      price: 27.90,
-      period: '/mês',
-      savings: null
-    },
-    annual: {
-      price: 17.57,
-      originalPrice: 27.90,
-      period: '/mês',
-      savings: '37% OFF',
-      totalAnnual: 210.88
-    }
-  };
 
   const planFeatures = [
     { text: 'Desafio completo de 30 dias', included: true },
     { text: 'Coach IA disponível 24/7', included: true },
     { text: 'Protocolo de Foco (Neuro-Performance)', included: true },
-    { text: 'Acesso à Comunidade exclusiva', included: true },
     { text: 'Missões diárias personalizadas', included: true },
     { text: 'Módulo de Ambiente e Organização', included: true },
     { text: 'Módulo de Finanças avançado', included: true },
     { text: 'Módulo de Rotina e Hábitos', included: true },
-    { text: 'Módulo de Metas e Objetivos', included: true },
-    { text: 'Atualizações gratuitas', included: true }
+    { text: 'Módulo de Metas e Objetivos', included: true }
   ];
 
   return (
@@ -223,20 +165,18 @@ export default function Landing() {
           <div className="flex items-center justify-between h-16 md:h-20">
             <Logo size="md" />
             <div className="hidden md:flex items-center gap-6">
-              <a href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                Preços
+              <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                Recursos
               </a>
               <Link to="/auth">
                 <Button variant="ghost" className="text-sm">
                   Entrar
                 </Button>
               </Link>
-              <a href="#pricing">
-                <Button className="rounded-full px-6">
-                  Assinar agora
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </a>
+              <Button className="rounded-full px-6" onClick={handleGetStarted}>
+                Começar grátis
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
             </div>
             <div className="md:hidden flex items-center gap-2">
               <Link to="/auth">
@@ -244,11 +184,9 @@ export default function Landing() {
                   Entrar
                 </Button>
               </Link>
-              <a href="#pricing">
-                <Button size="sm" className="rounded-full">
-                  Assinar
-                </Button>
-              </a>
+              <Button size="sm" className="rounded-full" onClick={handleGetStarted}>
+                Começar
+              </Button>
             </div>
           </div>
         </div>
@@ -272,10 +210,10 @@ export default function Landing() {
             {/* Badge */}
             <motion.div 
               variants={fadeInUp}
-              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-6"
             >
-              <Sparkles className="w-4 h-4" />
-              Método completo de organização pessoal
+              <Rocket className="w-4 h-4" />
+              Acesso gratuito durante o MVP
             </motion.div>
 
             {/* Headline */}
@@ -301,25 +239,14 @@ export default function Landing() {
               variants={fadeInUp}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
             >
-              <a href="#pricing">
-                <Button size="xl" className="rounded-full w-full sm:w-auto px-8 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all">
-                  Começar minha transformação
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </a>
-            </motion.div>
-
-            {/* Price Anchor */}
-            <motion.div
-              variants={fadeInUp}
-              className="flex items-center justify-center gap-2 mb-8"
-            >
-              <span className="text-muted-foreground">A partir de</span>
-              <span className="text-2xl font-bold text-primary">R$ 17,57</span>
-              <span className="text-muted-foreground">/mês</span>
-              <span className="bg-secondary/20 text-secondary text-xs font-bold px-2 py-1 rounded-full ml-2">
-                37% OFF
-              </span>
+              <Button 
+                size="xl" 
+                className="rounded-full w-full sm:w-auto px-8 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
+                onClick={handleGetStarted}
+              >
+                Começar minha transformação
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </motion.div>
 
             {/* Trust Badges */}
@@ -366,7 +293,7 @@ export default function Landing() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 md:py-32">
+      <section id="features" className="py-20 md:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -457,10 +384,9 @@ export default function Landing() {
             <Button 
               size="lg" 
               className="rounded-full px-8"
-              onClick={() => handleCheckout('annual')}
-              disabled={isLoading}
+              onClick={handleGetStarted}
             >
-              {isLoading ? 'Processando...' : 'Começar agora'}
+              Começar agora
               <ChevronRight className="w-5 h-5 ml-1" />
             </Button>
           </motion.div>
@@ -517,7 +443,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Features Section (replaced pricing) */}
       <section id="pricing" className="py-20 md:py-32 bg-muted/30 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[100px]" />
@@ -529,95 +455,47 @@ export default function Landing() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-primary font-semibold text-sm uppercase tracking-wider">Investimento</span>
+            <span className="text-secondary font-semibold text-sm uppercase tracking-wider">Acesso Antecipado</span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
-              Invista em você
+              Gratuito durante o MVP
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Menos que um café por dia para transformar completamente sua vida.
+              Seja um dos primeiros a experimentar o FOCUS 30 e ajude a moldar o futuro do app.
             </p>
           </motion.div>
 
-          {/* Billing Toggle */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-center gap-4 mb-12"
-          >
-            <button
-              onClick={() => setBillingPeriod('monthly')}
-              className={`px-6 py-3 rounded-full text-sm font-semibold transition-all ${
-                billingPeriod === 'monthly'
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-card text-muted-foreground border border-border hover:border-primary/30'
-              }`}
-            >
-              Mensal
-            </button>
-            <button
-              onClick={() => setBillingPeriod('annual')}
-              className={`px-6 py-3 rounded-full text-sm font-semibold transition-all relative ${
-                billingPeriod === 'annual'
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-card text-muted-foreground border border-border hover:border-primary/30'
-              }`}
-            >
-              Anual
-              <span className="absolute -top-2 -right-2 bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                -37%
-              </span>
-            </button>
-          </motion.div>
-
-          {/* Pricing Card */}
+          {/* Features Card */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="max-w-lg mx-auto"
           >
-            <div className="relative p-8 md:p-10 rounded-3xl bg-card border-2 border-primary/20 shadow-2xl shadow-primary/10">
-              {/* Popular Badge */}
+            <div className="relative p-8 md:p-10 rounded-3xl bg-card border-2 border-secondary/20 shadow-2xl shadow-secondary/10">
+              {/* Badge */}
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <div className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  <Crown className="w-4 h-4" />
-                  Mais Popular
+                <div className="flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                  <Sparkles className="w-4 h-4" />
+                  Acesso Gratuito
                 </div>
               </div>
 
               {/* Header */}
               <div className="text-center mb-8 pt-4">
                 <h3 className="text-2xl font-bold text-foreground mb-2">Acesso Completo</h3>
-                <p className="text-muted-foreground">Tudo que você precisa para transformar sua vida</p>
+                <p className="text-muted-foreground">Todos os recursos liberados para você testar</p>
               </div>
 
               {/* Price */}
               <div className="text-center mb-8">
-                {billingPeriod === 'annual' && (
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <span className="text-lg text-muted-foreground line-through">R$ {pricing.annual.originalPrice.toFixed(2).replace('.', ',')}</span>
-                    <span className="bg-secondary/20 text-secondary text-sm font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                      <BadgePercent className="w-4 h-4" />
-                      {pricing.annual.savings}
-                    </span>
-                  </div>
-                )}
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-lg text-muted-foreground">R$</span>
                   <span className="text-6xl md:text-7xl font-bold text-foreground">
-                    {billingPeriod === 'annual' 
-                      ? pricing.annual.price.toFixed(2).replace('.', ',')
-                      : pricing.monthly.price.toFixed(2).replace('.', ',')
-                    }
+                    Grátis
                   </span>
-                  <span className="text-muted-foreground">/mês</span>
                 </div>
-                {billingPeriod === 'annual' && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Cobrado anualmente: <span className="font-semibold text-foreground">R$ {pricing.annual.totalAnnual.toFixed(2).replace('.', ',')}</span>
-                  </p>
-                )}
+                <p className="text-sm text-muted-foreground mt-2">
+                  Durante a fase de testes
+                </p>
               </div>
 
               {/* Features */}
@@ -636,10 +514,9 @@ export default function Landing() {
               <Button 
                 size="xl" 
                 className="w-full rounded-xl text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all"
-                onClick={() => handleCheckout(billingPeriod)}
-                disabled={isLoading}
+                onClick={handleGetStarted}
               >
-                {isLoading ? 'Processando...' : 'Começar agora'}
+                Criar conta gratuita
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
@@ -647,32 +524,15 @@ export default function Landing() {
               <div className="mt-6 pt-6 border-t border-border">
                 <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1.5">
-                    <Shield className="w-4 h-4 text-secondary" />
-                    <span>Pagamento seguro</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
                     <Zap className="w-4 h-4 text-secondary" />
                     <span>Acesso imediato</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Lock className="w-4 h-4 text-secondary" />
-                    <span>Cancele quando quiser</span>
+                    <Users className="w-4 h-4 text-secondary" />
+                    <span>Vagas limitadas</span>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Urgency Element */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-8 text-center"
-          >
-            <div className="inline-flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-full text-sm font-medium">
-              <Flame className="w-4 h-4 animate-pulse" />
-              <span>Oferta por tempo limitado — Economize 37% no plano anual</span>
             </div>
           </motion.div>
         </div>
@@ -724,33 +584,28 @@ export default function Landing() {
             className="max-w-3xl mx-auto"
           >
             <div className="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Flame className="w-4 h-4" />
-              Oferta especial: 37% de desconto no plano anual
+              <Rocket className="w-4 h-4" />
+              Acesso gratuito por tempo limitado
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
               Comece sua jornada de organização
             </h2>
-            <p className="text-white/80 text-lg md:text-xl mb-4 max-w-2xl mx-auto">
-              Por menos de R$ 1 por dia, tenha acesso ao método completo com Coach IA, Protocolo de Foco e Comunidade exclusiva.
+            <p className="text-white/80 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+              Tenha acesso ao método completo com Coach IA, Protocolo de Foco e todos os módulos — tudo gratuito durante o MVP.
             </p>
-            <div className="flex items-center justify-center gap-2 mb-8">
-              <span className="text-white/60 text-lg line-through">R$ 27,90</span>
-              <span className="text-3xl font-bold text-white">R$ 17,57/mês</span>
-            </div>
-            <a href="#pricing">
-              <Button 
-                size="xl" 
-                variant="secondary"
-                className="rounded-full px-10 shadow-xl hover:shadow-2xl transition-all bg-white text-primary hover:bg-white/90"
-              >
-                Começar agora
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </a>
+            <Button 
+              size="xl" 
+              variant="secondary"
+              className="rounded-full px-10 shadow-xl hover:shadow-2xl transition-all bg-white text-primary hover:bg-white/90"
+              onClick={handleGetStarted}
+            >
+              Começar agora
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
             <p className="text-white/60 text-sm mt-6 flex flex-wrap items-center justify-center gap-4">
               <span className="flex items-center gap-1.5"><Zap className="w-4 h-4" /> Coach IA 24/7</span>
-              <span className="flex items-center gap-1.5"><Lock className="w-4 h-4" /> Pagamento seguro</span>
-              <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> Comunidade exclusiva</span>
+              <span className="flex items-center gap-1.5"><Target className="w-4 h-4" /> Protocolo de Foco</span>
+              <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> Vagas limitadas</span>
             </p>
           </motion.div>
         </div>
