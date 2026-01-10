@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAICoach, type Message } from '@/hooks/useAICoach';
 import { cn } from '@/lib/utils';
+import DOMPurify from 'dompurify';
 
 const suggestions = [
   "Como posso melhorar meu foco?",
@@ -14,12 +15,12 @@ const suggestions = [
   "Técnicas para vencer a procrastinação",
 ];
 
-// Simple markdown-like formatting for AI responses
+// Simple markdown-like formatting for AI responses with XSS protection
 function formatMessage(content: string) {
   // Process the content line by line for better formatting
   const lines = content.split('\n');
   
-  return lines.map((line, index) => {
+  const formatted = lines.map((line, index) => {
     let formattedLine = line;
     
     // Bold text: **text** or __text__
@@ -61,6 +62,12 @@ function formatMessage(content: string) {
     
     return formattedLine + ' ';
   }).join('');
+
+  // Sanitize the HTML to prevent XSS attacks
+  return DOMPurify.sanitize(formatted, {
+    ALLOWED_TAGS: ['strong', 'em', 'span', 'br'],
+    ALLOWED_ATTR: ['class']
+  });
 }
 
 function MessageBubble({ message, isLast }: { message: Message; isLast: boolean }) {
