@@ -78,21 +78,10 @@ export function HabitCalendar({ tasks }: HabitCalendarProps) {
     missed: (date: Date) => getDayStatus(date) === 'none' && !isFuture(date) && !isToday(date) && tasks.length > 0,
   };
 
-  const modifiersStyles = {
-    complete: {
-      backgroundColor: 'hsl(var(--secondary))',
-      color: 'hsl(var(--secondary-foreground))',
-      fontWeight: 600,
-    },
-    partial: {
-      backgroundColor: 'hsl(var(--primary) / 0.2)',
-      color: 'hsl(var(--primary))',
-      fontWeight: 600,
-    },
-    missed: {
-      backgroundColor: 'hsl(var(--muted))',
-      color: 'hsl(var(--muted-foreground))',
-    },
+  const modifiersClassNames = {
+    complete: 'habit-day-complete',
+    partial: 'habit-day-partial',
+    missed: 'habit-day-missed',
   };
 
   return (
@@ -144,24 +133,24 @@ export function HabitCalendar({ tasks }: HabitCalendarProps) {
               onMonthChange={setCurrentMonth}
               locale={ptBR}
               modifiers={modifiers}
-              modifiersStyles={modifiersStyles}
-              className="rounded-xl border border-border/50 p-3 pointer-events-auto"
+              modifiersClassNames={modifiersClassNames}
+              className="habit-calendar rounded-xl border border-border/30 p-4 pointer-events-auto"
             />
           </div>
 
           {/* Legend */}
-          <div className="flex items-center justify-center gap-4 mt-4 text-xs">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-secondary" />
-              <span className="text-muted-foreground">Completo</span>
+          <div className="flex items-center justify-center gap-6 mt-5 text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-secondary" />
+              <span className="text-muted-foreground font-medium">Completo</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-primary/30" />
-              <span className="text-muted-foreground">Parcial</span>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary/50" />
+              <span className="text-muted-foreground font-medium">Parcial</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-muted" />
-              <span className="text-muted-foreground">Sem tarefas</span>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+              <span className="text-muted-foreground font-medium">Pendente</span>
             </div>
           </div>
 
