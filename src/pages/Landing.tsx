@@ -157,10 +157,10 @@ export default function Landing() {
   ];
 
   const stats = [
-    { value: '10.000+', label: 'Usuários ativos' },
-    { value: '94%', label: 'Taxa de conclusão' },
+    { value: '4', label: 'Pilares de organização' },
+    { value: '30', label: 'Dias de desafio' },
     { value: '4.9', label: 'Avaliação média' },
-    { value: '30', label: 'Dias transformadores' }
+    { value: '24/7', label: 'Coach IA disponível' }
   ];
 
   const faqs = [
@@ -181,8 +181,8 @@ export default function Landing() {
       answer: 'Sim! Você pode cancelar sua assinatura a qualquer momento, sem taxas ou multas. Simples assim.'
     },
     {
-      question: 'Tem garantia de reembolso?',
-      answer: 'Sim! Oferecemos garantia de 7 dias. Se não gostar, devolvemos 100% do seu dinheiro, sem perguntas.'
+      question: 'Como funciona o Coach IA?',
+      answer: 'O Coach IA é seu assistente pessoal disponível 24/7. Ele responde dúvidas, dá orientações personalizadas e te ajuda a manter o foco durante todo o desafio.'
     }
   ];
 
@@ -204,13 +204,14 @@ export default function Landing() {
 
   const planFeatures = [
     { text: 'Desafio completo de 30 dias', included: true },
+    { text: 'Coach IA disponível 24/7', included: true },
+    { text: 'Protocolo de Foco (Neuro-Performance)', included: true },
+    { text: 'Acesso à Comunidade exclusiva', included: true },
     { text: 'Missões diárias personalizadas', included: true },
-    { text: 'Acompanhamento de progresso', included: true },
+    { text: 'Módulo de Ambiente e Organização', included: true },
     { text: 'Módulo de Finanças avançado', included: true },
     { text: 'Módulo de Rotina e Hábitos', included: true },
     { text: 'Módulo de Metas e Objetivos', included: true },
-    { text: 'Continuação ilimitada pós-30 dias', included: true },
-    { text: 'Suporte prioritário', included: true },
     { text: 'Atualizações gratuitas', included: true }
   ];
 
@@ -274,7 +275,7 @@ export default function Landing() {
               className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6"
             >
               <Sparkles className="w-4 h-4" />
-              Mais de 10.000 pessoas já transformaram suas vidas
+              Método completo de organização pessoal
             </motion.div>
 
             {/* Headline */}
@@ -282,8 +283,8 @@ export default function Landing() {
               variants={fadeInUp}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6"
             >
-              Transforme sua vida
-              <span className="block text-primary">em apenas 30 dias</span>
+              Organize sua vida
+              <span className="block text-primary">com clareza e foco</span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -327,16 +328,16 @@ export default function Landing() {
               className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground"
             >
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-secondary" />
-                <span>Garantia 7 dias</span>
+                <Zap className="w-4 h-4 text-secondary" />
+                <span>Coach IA incluso</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-secondary" />
                 <span>15-30 min/dia</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-secondary" />
-                <span>+10k usuários</span>
+                <Target className="w-4 h-4 text-secondary" />
+                <span>Protocolo de Foco</span>
               </div>
             </motion.div>
           </motion.div>
@@ -650,8 +651,8 @@ export default function Landing() {
                     <span>Pagamento seguro</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Gift className="w-4 h-4 text-secondary" />
-                    <span>Garantia de 7 dias</span>
+                    <Zap className="w-4 h-4 text-secondary" />
+                    <span>Acesso imediato</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Lock className="w-4 h-4 text-secondary" />
@@ -727,10 +728,10 @@ export default function Landing() {
               Oferta especial: 37% de desconto no plano anual
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-              Sua transformação começa hoje
+              Comece sua jornada de organização
             </h2>
             <p className="text-white/80 text-lg md:text-xl mb-4 max-w-2xl mx-auto">
-              Por menos de R$ 1 por dia, você terá acesso completo ao método que já transformou mais de 10.000 vidas.
+              Por menos de R$ 1 por dia, tenha acesso ao método completo com Coach IA, Protocolo de Foco e Comunidade exclusiva.
             </p>
             <div className="flex items-center justify-center gap-2 mb-8">
               <span className="text-white/60 text-lg line-through">R$ 27,90</span>
@@ -742,14 +743,14 @@ export default function Landing() {
                 variant="secondary"
                 className="rounded-full px-10 shadow-xl hover:shadow-2xl transition-all bg-white text-primary hover:bg-white/90"
               >
-                Quero transformar minha vida
+                Começar agora
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </a>
             <p className="text-white/60 text-sm mt-6 flex flex-wrap items-center justify-center gap-4">
-              <span className="flex items-center gap-1.5"><Shield className="w-4 h-4" /> Garantia de 7 dias</span>
+              <span className="flex items-center gap-1.5"><Zap className="w-4 h-4" /> Coach IA 24/7</span>
               <span className="flex items-center gap-1.5"><Lock className="w-4 h-4" /> Pagamento seguro</span>
-              <span className="flex items-center gap-1.5"><Gift className="w-4 h-4" /> Cancele quando quiser</span>
+              <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> Comunidade exclusiva</span>
             </p>
           </motion.div>
         </div>
