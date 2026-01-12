@@ -1,9 +1,33 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Simple in-memory rate limiting per user
+const userRequestTimes = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 20; // 20 requests per minute per user
+
+function isRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const userTimes = userRequestTimes.get(userId) || [];
+  
+  // Filter out old requests outside the window
+  const recentRequests = userTimes.filter(time => now - time < RATE_LIMIT_WINDOW_MS);
+  userRequestTimes.set(userId, recentRequests);
+  
+  if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+    return true;
+  }
+  
+  // Add current request
+  recentRequests.push(now);
+  userRequestTimes.set(userId, recentRequests);
+  return false;
+}
 
 const buildSystemPrompt = (userName?: string) => {
   const nameInstruction = userName 
@@ -80,14 +104,64 @@ serve(async (req) => {
   }
 
   try {
+    // Validate Authorization header
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      console.error("Missing or invalid Authorization header");
+      return new Response(
+        JSON.stringify({ error: "Não autorizado" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Verify JWT and get user claims
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+
+    if (claimsError || !claimsData?.claims) {
+      console.error("JWT verification failed:", claimsError);
+      return new Response(
+        JSON.stringify({ error: "Token inválido ou expirado" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const userId = claimsData.claims.sub as string;
+    console.log("AI Coach request - Authenticated user:", userId);
+
+    // Check rate limiting
+    if (isRateLimited(userId)) {
+      console.warn("Rate limit exceeded for user:", userId);
+      return new Response(
+        JSON.stringify({ error: "Muitas requisições. Aguarde um momento e tente novamente." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const { messages, userName } = await req.json();
+    
+    // Validate messages array
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Mensagens inválidas" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log("AI Coach request - User:", userName || "Unknown", "- Messages:", messages?.length || 0);
+    console.log("AI Coach - User:", userName || "Unknown", "- Messages:", messages.length);
 
     const systemPrompt = buildSystemPrompt(userName);
 
@@ -130,7 +204,7 @@ serve(async (req) => {
       );
     }
 
-    console.log("Streaming response from AI gateway");
+    console.log("Streaming response from AI gateway for user:", userId);
 
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },

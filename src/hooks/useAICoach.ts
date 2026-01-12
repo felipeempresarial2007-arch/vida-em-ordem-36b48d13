@@ -64,11 +64,19 @@ export function useAICoach() {
     let assistantContent = '';
 
     try {
+      // Get the user's session access token for secure backend auth
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      
+      if (!accessToken) {
+        throw new Error('Sessão expirada. Faça login novamente.');
+      }
+
       const response = await fetch(CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ 
           messages: apiMessages,
