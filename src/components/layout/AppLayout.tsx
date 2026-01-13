@@ -15,6 +15,7 @@ import {
   Menu, 
   X,
   Settings,
+  Download,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -66,7 +67,19 @@ export default function AppLayout({ children }: AppLayoutProps) {
           })}
         </nav>
 
-        <div className="p-3 border-t border-border">
+        <div className="p-3 border-t border-border space-y-1">
+          <NavLink
+            to="/install"
+            className={cn(
+              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
+              location.pathname === '/install' 
+                ? 'bg-primary text-primary-foreground' 
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            )}
+          >
+            <Download className="w-4 h-4" />
+            <span>Instalar App</span>
+          </NavLink>
           <Button 
             variant="ghost" 
             className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground h-9" 
@@ -99,7 +112,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
             onClick={() => setMobileMenuOpen(false)}
           />
           <div className="lg:hidden fixed right-0 top-12 w-56 bg-card border-l border-b border-border rounded-bl-xl z-50 animate-scale-in shadow-lg">
-            <div className="p-2">
+            <div className="p-2 space-y-1">
+              <NavLink
+                to="/install"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <Download className="w-4 h-4" />
+                <span>Instalar App</span>
+              </NavLink>
               <Button 
                 variant="ghost" 
                 className="w-full justify-start gap-3 text-muted-foreground h-10" 
