@@ -17,7 +17,8 @@ import {
   Users,
   Sparkles,
   Check,
-  Rocket
+  Rocket,
+  Smartphone
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -266,6 +267,13 @@ export default function Landing() {
                 <Target className="w-4 h-4 text-secondary" />
                 <span>Protocolo de Foco</span>
               </div>
+              <Link 
+                to="/install" 
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+              >
+                <Smartphone className="w-4 h-4 text-primary" />
+                <span>Instale o app</span>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
