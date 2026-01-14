@@ -17,14 +17,19 @@ import PaymentCanceled from "./pages/PaymentCanceled";
 import Install from "./pages/Install";
 import FocusProtocol from "./pages/FocusProtocol";
 import AICoach from "./pages/AICoach";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
+import { useNotificationScheduler } from "./hooks/useNotificationScheduler";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  
+  // Initialize notification scheduler for logged in users
+  useNotificationScheduler();
 
   if (loading) {
     return (
@@ -68,6 +73,7 @@ const AppRoutes = () => (
     <Route path="/install" element={<Install />} />
     <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
     <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
+    <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
     <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
     <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
