@@ -33,6 +33,17 @@ export default function Auth() {
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
 
+  const googleRedirectTo = `${window.location.origin}/auth`;
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success('Copiado!');
+    } catch {
+      toast.error('Não foi possível copiar automaticamente. Copie manualmente.');
+    }
+  };
+
   useEffect(() => {
     const safeDecode = (value: string) => {
       try {
@@ -68,7 +79,6 @@ export default function Auth() {
     // Evita repetir o toast ao recarregar
     window.history.replaceState({}, document.title, window.location.pathname);
   }, []);
-
 
   const isInAppBrowser = () => {
     const ua = navigator.userAgent || '';
@@ -375,6 +385,31 @@ export default function Auth() {
                   {oauthError.description ? <> — {oauthError.description}</> : null}
                 </p>
               )}
+
+              <details className="mt-3 rounded-lg border border-border bg-muted/20 p-3">
+                <summary className="cursor-pointer text-xs font-medium text-muted-foreground">
+                  Diagnóstico do Google
+                </summary>
+                <div className="mt-2 space-y-2 text-xs text-muted-foreground">
+                  <p>
+                    Origem atual: <span className="font-medium break-all">{window.location.origin}</span>
+                  </p>
+                  <p>
+                    Redirect usado: <span className="font-medium break-all">{googleRedirectTo}</span>
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button type="button" variant="outline" size="sm" onClick={() => copyToClipboard(`${window.location.origin}/*`)}>
+                      Copiar origem/*
+                    </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => copyToClipboard(googleRedirectTo)}>
+                      Copiar redirect
+                    </Button>
+                  </div>
+                  <p>
+                    Adicione esses valores em <span className="font-medium">View Backend → Users → Auth Settings → URL Configuration</span>.
+                  </p>
+                </div>
+              </details>
 
               <div className="mt-5 text-center space-y-2">
 
