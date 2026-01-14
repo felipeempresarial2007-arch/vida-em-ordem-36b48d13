@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { FloatingAICoach } from '@/components/ai/FloatingAICoach';
+import { NotificationPrompt } from '@/components/reminders/NotificationPrompt';
 import { 
   LayoutDashboard, 
   Home, 
@@ -202,6 +203,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
       {/* Floating AI Coach */}
       <FloatingAICoach />
+
+      {/* Notification Prompt */}
+      <NotificationPrompt />
     </div>
   );
 }
