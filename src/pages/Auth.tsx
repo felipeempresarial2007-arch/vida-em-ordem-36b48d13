@@ -5,6 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { Loader2, ArrowRight, Target, Zap, Shield } from 'lucide-react';
 import Logo from '@/components/Logo';
@@ -18,21 +28,37 @@ export default function Auth() {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showGoogleInAppDialog, setShowGoogleInAppDialog] = useState(false);
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
 
-  const handleGoogleSignIn = async () => {
+  const isInAppBrowser = () => {
+    const ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line|TikTok|LinkedInApp/i.test(ua);
+  };
+
+  const startGoogleOAuth = async () => {
     setGoogleLoading(true);
     try {
       const { error } = await signInWithGoogle();
       if (error) {
         toast.error('Erro ao entrar com Google');
       }
-    } catch (error) {
+    } catch {
       toast.error('Ocorreu um erro inesperado');
     } finally {
       setGoogleLoading(false);
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    // Google OAuth frequentemente falha em navegadores embutidos (ex.: Instagram/Facebook)
+    if (isInAppBrowser()) {
+      setShowGoogleInAppDialog(true);
+      return;
+    }
+
+    await startGoogleOAuth();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,6 +119,39 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex bg-background">
+      <AlertDialog open={showGoogleInAppDialog} onOpenChange={setShowGoogleInAppDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Abrir no navegador</AlertDialogTitle>
+            <AlertDialogDescription>
+              O login com Google pode dar erro dentro do navegador do Instagram/Facebook. Para funcionar, abra este site no
+              Safari/Chrome e tente novamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                // Tenta abrir em uma nova aba (em alguns celulares isso abre o navegador padrão)
+                window.open(window.location.href, '_blank', 'noopener,noreferrer');
+                toast.message('Se não abrir, copie o link e cole no Safari/Chrome.');
+              }}
+            >
+              Abrir no navegador
+            </AlertDialogAction>
+            <AlertDialogAction
+              onClick={() => {
+                setShowGoogleInAppDialog(false);
+                // Permite tentar mesmo no navegador embutido
+                void startGoogleOAuth();
+              }}
+            >
+              Tentar mesmo assim
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-primary">
         <div className="relative z-10 flex flex-col justify-center p-16 text-white max-w-lg">
