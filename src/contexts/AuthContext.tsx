@@ -70,7 +70,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`,
+        // Use a public route to avoid race conditions with protected routes
+        redirectTo: `${window.location.origin}/auth`,
+        // Improves UX when user has multiple Google accounts
+        queryParams: {
+          prompt: 'select_account',
+        },
       },
     });
 
