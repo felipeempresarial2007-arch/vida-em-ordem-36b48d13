@@ -12,12 +12,13 @@ import { motion } from 'framer-motion';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const handleGoogleSignIn = async () => {
@@ -39,7 +40,15 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (isForgotPassword) {
+        const { error } = await resetPassword(email);
+        if (error) {
+          toast.error('Erro ao enviar email de recuperação');
+        } else {
+          toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+          setIsForgotPassword(false);
+        }
+      } else if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
@@ -138,18 +147,20 @@ export default function Auth() {
           <Card className="border-border shadow-lg">
             <CardHeader className="text-center pb-2 pt-6">
               <CardTitle className="text-xl font-semibold">
-                {isLogin ? 'Entrar' : 'Criar conta'}
+                {isForgotPassword ? 'Recuperar senha' : isLogin ? 'Entrar' : 'Criar conta'}
               </CardTitle>
               <CardDescription className="text-sm mt-1">
-                {isLogin 
-                  ? 'Entre para continuar sua jornada' 
-                  : 'Comece sua transformação hoje'
+                {isForgotPassword
+                  ? 'Digite seu email para receber um link de recuperação'
+                  : isLogin 
+                    ? 'Entre para continuar sua jornada' 
+                    : 'Comece sua transformação hoje'
                 }
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-4 pb-6">
               <form onSubmit={handleSubmit} className="space-y-4">
-                {!isLogin && (
+                {!isLogin && !isForgotPassword && (
                   <div className="space-y-1.5">
                     <Label htmlFor="name" className="text-sm">Nome</Label>
                     <Input
@@ -158,7 +169,7 @@ export default function Auth() {
                       placeholder="Seu nome"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      required={!isLogin}
+                      required={!isLogin && !isForgotPassword}
                       className="h-10"
                     />
                   </div>
@@ -175,19 +186,32 @@ export default function Auth() {
                     className="h-10"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="password" className="text-sm">Senha</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    className="h-10"
-                  />
-                </div>
+                {!isForgotPassword && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password" className="text-sm">Senha</Label>
+                      {isLogin && (
+                        <button
+                          type="button"
+                          onClick={() => setIsForgotPassword(true)}
+                          className="text-xs text-primary hover:underline"
+                        >
+                          Esqueci a senha
+                        </button>
+                      )}
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                      className="h-10"
+                    />
+                  </div>
+                )}
 
                 <Button 
                   type="submit" 
@@ -198,7 +222,7 @@ export default function Auth() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      {isLogin ? 'Entrar' : 'Criar conta'}
+                      {isForgotPassword ? 'Enviar link' : isLogin ? 'Entrar' : 'Criar conta'}
                       <ArrowRight className="w-4 h-4 ml-1.5" />
                     </>
                   )}
@@ -248,18 +272,28 @@ export default function Auth() {
                 )}
               </Button>
 
-              <div className="mt-5 text-center">
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {isLogin ? (
-                    <>Não tem conta? <span className="text-primary font-medium">Criar agora</span></>
-                  ) : (
-                    <>Já tem conta? <span className="text-primary font-medium">Fazer login</span></>
-                  )}
-                </button>
+              <div className="mt-5 text-center space-y-2">
+                {isForgotPassword ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(false)}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <span className="text-primary font-medium">Voltar ao login</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsLogin(!isLogin)}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {isLogin ? (
+                      <>Não tem conta? <span className="text-primary font-medium">Criar agora</span></>
+                    ) : (
+                      <>Já tem conta? <span className="text-primary font-medium">Fazer login</span></>
+                    )}
+                  </button>
+                )}
               </div>
             </CardContent>
           </Card>
