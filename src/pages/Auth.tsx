@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -29,8 +29,46 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showGoogleInAppDialog, setShowGoogleInAppDialog] = useState(false);
+  const [oauthError, setOauthError] = useState<{ error: string; description?: string } | null>(null);
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const safeDecode = (value: string) => {
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return value;
+      }
+    };
+
+    const fromSearch = new URLSearchParams(window.location.search);
+    const fromHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+
+    const error = fromSearch.get('error') ?? fromHash.get('error');
+    const descriptionRaw = fromSearch.get('error_description') ?? fromHash.get('error_description');
+
+    if (!error) return;
+
+    const info = {
+      error,
+      description: descriptionRaw ? safeDecode(descriptionRaw) : undefined,
+    };
+
+    setOauthError(info);
+
+    if (error === 'access_denied') {
+      toast.error('Google bloqueou o acesso (403). Verifique se o app está em “Testing” ou se sua conta está liberada.');
+    } else if (error.toLowerCase().includes('redirect')) {
+      toast.error('Erro de redirecionamento do Google. Verifique as URLs permitidas no backend.');
+    } else {
+      toast.error(`Falha no login com Google: ${error}`);
+    }
+
+    // Evita repetir o toast ao recarregar
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }, []);
+
 
   const isInAppBrowser = () => {
     const ua = navigator.userAgent || '';
@@ -331,7 +369,15 @@ export default function Auth() {
                 )}
               </Button>
 
+              {oauthError && (
+                <p className="mt-2 text-xs text-muted-foreground break-words">
+                  Detalhe do Google: <span className="font-medium">{oauthError.error}</span>
+                  {oauthError.description ? <> — {oauthError.description}</> : null}
+                </p>
+              )}
+
               <div className="mt-5 text-center space-y-2">
+
                 {isForgotPassword ? (
                   <button
                     type="button"
