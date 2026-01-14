@@ -5,6 +5,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import Dashboard from '@/pages/Dashboard';
 import { WelcomeWizard } from '@/components/onboarding/WelcomeWizard';
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
+import { useWelcomeSound } from '@/hooks/useWelcomeSound';
 import { Loader2 } from 'lucide-react';
 
 const Index = () => {
@@ -12,6 +13,9 @@ const Index = () => {
   const navigate = useNavigate();
   const { isNewUser, profile, completeOnboarding, loading: progressLoading } = useChallengeProgress();
   const [showWizard, setShowWizard] = useState(false);
+  
+  // Play welcome sound on app open
+  useWelcomeSound();
 
   useEffect(() => {
     if (!authLoading && !user) {
