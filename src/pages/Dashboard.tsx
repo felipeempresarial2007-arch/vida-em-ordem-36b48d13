@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, Trophy, ArrowRight, Calendar, CheckCircle2, Sparkles, TrendingUp, Crown, Brain } from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle2, Sparkles, Brain, Calendar, TrendingUp, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,8 +10,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { ChallengeCompleteCard } from '@/components/dashboard/ChallengeCompleteCard';
-
-const MotionCard = motion.create(Card);
+import ProgressCard from '@/components/dashboard/ProgressCard';
 
 export default function Dashboard() {
   const { 
@@ -76,77 +75,12 @@ export default function Dashboard() {
         <ChallengeCompleteCard completedAt={progress.completedAt} />
       )}
 
-      {/* Stats Grid - Compact for mobile */}
-      <div className="grid grid-cols-3 gap-2">
-        <Card>
-          <CardContent className="p-3 text-center">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
-              <Calendar className="w-4 h-4 text-primary" />
-            </div>
-            <p className="text-lg font-semibold text-foreground">{progress.currentDay}</p>
-            <p className="text-[10px] text-muted-foreground">de 30</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-3 text-center">
-            <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center mx-auto mb-1.5">
-              <TrendingUp className="w-4 h-4 text-secondary" />
-            </div>
-            <p className="text-lg font-semibold text-foreground">{progressPercent}%</p>
-            <p className="text-[10px] text-muted-foreground">completo</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-3 text-center">
-            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center mx-auto mb-1.5">
-              <Trophy className="w-4 h-4 text-muted-foreground" />
-            </div>
-            <p className="text-lg font-semibold text-foreground">{stageInfo.name.split(' ')[0]}</p>
-            <p className="text-[10px] text-muted-foreground">etapa</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Progress Bar - Compact */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-foreground">Progresso</span>
-            <span className="text-xs font-semibold text-primary">{progressPercent}%</span>
-          </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <motion.div 
-              className="h-full bg-primary rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            />
-          </div>
-          <div className="flex gap-1 mt-3 overflow-x-auto pb-1 -mx-1 px-1">
-            {(Object.keys(STAGE_INFO) as Array<keyof typeof STAGE_INFO>).map((stage) => {
-              const info = STAGE_INFO[stage];
-              const isActive = stage === currentStage;
-              const isDone = info.days[info.days.length - 1] < progress.currentDay;
-              
-              return (
-                <div
-                  key={stage}
-                  className={cn(
-                    'px-2 py-0.5 rounded text-[10px] font-medium transition-colors whitespace-nowrap',
-                    isActive && 'bg-primary text-primary-foreground',
-                    isDone && 'bg-secondary/15 text-secondary',
-                    !isActive && !isDone && 'bg-muted text-muted-foreground'
-                  )}
-                >
-                  {info.name.split(' ')[0]}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Progress Card - Clickable with Insights */}
+      <ProgressCard 
+        currentDay={progress.currentDay}
+        totalDays={30}
+        currentStage={currentStage}
+      />
 
       {/* Quote Card - Compact */}
       <Card className="bg-muted/30">
