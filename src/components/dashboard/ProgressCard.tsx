@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { STAGE_INFO } from '@/lib/missions';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { TrendingUp, Target, Zap, CheckCircle2, Clock, Flame } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { TrendingUp, Target, Zap, CheckCircle2, Clock, Flame, ChevronRight, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Types ---
 
@@ -29,20 +29,31 @@ interface StagePillProps {
   info: StageData;
   isActive: boolean;
   isCompleted: boolean;
+  index: number;
 }
 
-const StagePill = React.memo(({ info, isActive, isCompleted }: StagePillProps) => {
+const StagePill = React.memo(({ info, isActive, isCompleted, index }: StagePillProps) => {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 + index * 0.05, duration: 0.3 }}
       className={cn(
-        'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
-        isActive && `${info.gradient} text-primary-foreground shadow-md`,
-        isCompleted && 'bg-muted text-muted-foreground line-through',
-        !isActive && !isCompleted && 'bg-muted text-muted-foreground'
+        'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 relative overflow-hidden',
+        isActive && 'bg-primary text-primary-foreground shadow-lg shadow-primary/25',
+        isCompleted && 'bg-secondary/15 text-secondary',
+        !isActive && !isCompleted && 'bg-muted/80 text-muted-foreground'
       )}
     >
-      {info.name}
-    </div>
+      {isActive && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+          animate={{ x: ['-100%', '100%'] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+        />
+      )}
+      <span className="relative z-10">{info.name}</span>
+    </motion.div>
   );
 });
 
@@ -65,7 +76,6 @@ function getProgressInsights(currentDay: number, totalDays: number, currentStage
   
   const insights: ProgressInsight[] = [];
 
-  // Progress-based message
   if (progress < 25) {
     insights.push({
       title: 'Início da Jornada',
@@ -103,7 +113,6 @@ function getProgressInsights(currentDay: number, totalDays: number, currentStage
     });
   }
 
-  // Stage-specific tip
   const stageTips: Record<StageKey, string> = {
     rotina: 'Foque em dormir e acordar no mesmo horário. A consistência do sono é a base de toda produtividade.',
     ambiente: 'Um ambiente organizado reduz o ruído mental. Comece pelo espaço onde você passa mais tempo.',
@@ -118,7 +127,6 @@ function getProgressInsights(currentDay: number, totalDays: number, currentStage
     type: 'tip'
   });
 
-  // Day-specific action
   if (stageDaysLeft > 0) {
     insights.push({
       title: 'Ação de Hoje',
@@ -153,181 +161,276 @@ export default function ProgressCard({
   );
 
   const stageInfo = STAGE_INFO[currentStage];
-  const labelId = "progress-card-label";
-  const detailsId = "progress-card-details";
+  const daysRemaining = totalDays - currentDay;
 
   return (
     <>
-      <div 
-        className={cn("bg-card rounded-2xl p-6 shadow-lg border border-border animate-slide-up", className)}
-        role="region"
-        aria-labelledby={labelId}
-        aria-describedby={detailsId}
+      {/* Main Progress Card */}
+      <motion.div 
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className={cn(
+          "relative overflow-hidden rounded-2xl border border-border/50 shadow-xl",
+          "bg-gradient-to-br from-card via-card to-muted/30",
+          className
+        )}
       >
-        {/* Header Section */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 id={labelId} className="text-sm font-medium text-muted-foreground">
-              Progresso do Desafio
-            </h3>
-            <p id={detailsId} className="text-3xl font-bold text-foreground mt-1">
-              Dia {currentDay} <span className="text-lg font-normal text-muted-foreground">de {totalDays}</span>
-            </p>
-          </div>
-          
-          <div className="text-right" aria-hidden="true">
-            <span className="text-4xl font-bold gradient-progress bg-clip-text text-transparent">
-              {progress}%
-            </span>
-          </div>
-        </div>
-
-        {/* Clickable Progress Bar - Highly Interactive */}
-        <motion.button
-          onClick={() => setIsInsightsOpen(true)}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl p-3 -mx-3 hover:bg-accent/50 transition-colors duration-200"
-          aria-label="Clique para ver insights detalhados do seu progresso"
-        >
-          <div className="relative">
-            {/* Progress bar container */}
-            <div 
-              className="h-5 bg-muted rounded-full overflow-hidden relative shadow-inner transition-all duration-300 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-primary/30"
-              role="progressbar"
-              aria-valuenow={progress}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`Progresso do desafio: ${progress}%`}
-            >
-              <motion.div 
-                className="h-full gradient-progress rounded-full relative"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-200" />
-              </motion.div>
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="relative p-5">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-5">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Desafio Ativo
+                </span>
+              </div>
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">
+                Dia {currentDay}
+                <span className="text-base font-normal text-muted-foreground ml-1">
+                  / {totalDays}
+                </span>
+              </h2>
             </div>
             
-            {/* Click indicator */}
-            <div className="flex items-center justify-center gap-1 mt-2">
-              <div className="h-1 w-1 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
-              <p className="text-xs text-muted-foreground group-hover:text-primary transition-colors duration-200">
-                Toque para ver insights e dicas
-              </p>
-              <div className="h-1 w-1 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
+            {/* Progress Circle */}
+            <div className="relative">
+              <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  fill="none"
+                  stroke="hsl(var(--muted))"
+                  strokeWidth="4"
+                />
+                <motion.circle
+                  cx="32"
+                  cy="32"
+                  r="28"
+                  fill="none"
+                  stroke="url(#progressGradient)"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeDasharray={2 * Math.PI * 28}
+                  initial={{ strokeDashoffset: 2 * Math.PI * 28 }}
+                  animate={{ strokeDashoffset: 2 * Math.PI * 28 * (1 - progress / 100) }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                />
+                <defs>
+                  <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="hsl(24 75% 55%)" />
+                    <stop offset="100%" stopColor="hsl(16 90% 48%)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-lg font-bold text-foreground">{progress}%</span>
+              </div>
             </div>
           </div>
-        </motion.button>
 
-        {/* Stage Pills */}
-        <div className="flex gap-2 flex-wrap mt-3" role="list" aria-label="Etapas do desafio">
-          {(Object.keys(STAGE_INFO) as Array<StageKey>).map((stage) => {
-            const info = STAGE_INFO[stage];
-            const lastDayOfStage = info.days?.[info.days.length - 1] ?? 0;
-            const isCompleted = lastDayOfStage < currentDay;
-            const isActive = stage === currentStage;
-            
-            return (
-              <StagePill
-                key={stage}
-                stageKey={stage}
-                info={info}
-                isActive={isActive}
-                isCompleted={isCompleted}
-              />
-            );
-          })}
+          {/* Clickable Progress Bar */}
+          <motion.button
+            onClick={() => setIsInsightsOpen(true)}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className="w-full group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl"
+            aria-label="Ver insights detalhados do progresso"
+          >
+            <div className="bg-muted/50 rounded-xl p-4 border border-border/50 transition-all duration-300 group-hover:border-primary/30 group-hover:bg-muted/70 group-hover:shadow-lg">
+              {/* Progress Bar */}
+              <div className="relative h-3 bg-muted rounded-full overflow-hidden shadow-inner mb-3">
+                <motion.div 
+                  className="absolute inset-y-0 left-0 gradient-progress rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                >
+                  {/* Animated shine effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
+                  />
+                </motion.div>
+                
+                {/* Progress indicator dot */}
+                <motion.div
+                  className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white shadow-lg border-2 border-primary"
+                  initial={{ left: '0%' }}
+                  animate={{ left: `calc(${Math.min(progress, 95)}% - 8px)` }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                />
+              </div>
+
+              {/* Stats Row */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">
+                    {daysRemaining} dias restantes
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                  <span>Ver insights</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </motion.button>
+
+          {/* Stage Pills */}
+          <div className="flex gap-2 flex-wrap mt-4">
+            {(Object.keys(STAGE_INFO) as Array<StageKey>).map((stage, index) => {
+              const info = STAGE_INFO[stage];
+              const lastDayOfStage = info.days?.[info.days.length - 1] ?? 0;
+              const isCompleted = lastDayOfStage < currentDay;
+              const isActive = stage === currentStage;
+              
+              return (
+                <StagePill
+                  key={stage}
+                  stageKey={stage}
+                  info={info}
+                  isActive={isActive}
+                  isCompleted={isCompleted}
+                  index={index}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Progress Insights Sheet */}
       <Sheet open={isInsightsOpen} onOpenChange={setIsInsightsOpen}>
-        <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-y-auto">
-          <SheetHeader className="text-left pb-4 border-b border-border">
-            <SheetTitle className="flex items-center gap-2 text-xl">
-              <TrendingUp className="w-6 h-6 text-primary" />
-              Seu Progresso
-            </SheetTitle>
-            <SheetDescription>
-              Análise estratégica do seu desempenho no desafio
-            </SheetDescription>
+        <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-y-auto border-t border-border/50">
+          <SheetHeader className="text-left pb-5 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl gradient-progress flex items-center justify-center shadow-lg shadow-primary/20">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <SheetTitle className="text-xl font-bold">Seu Progresso</SheetTitle>
+                <SheetDescription className="text-sm">
+                  Análise estratégica do desafio
+                </SheetDescription>
+              </div>
+            </div>
           </SheetHeader>
 
-          <div className="py-6 space-y-4">
-            {/* Progress Summary */}
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-4 border border-primary/20">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-muted-foreground">Progresso Total</span>
-                <span className="text-2xl font-bold text-primary">{progress}%</span>
+          <div className="py-6 space-y-5">
+            {/* Progress Summary Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="relative overflow-hidden rounded-2xl p-5 border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent"
+            >
+              <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
+              
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-semibold text-muted-foreground">Progresso Total</span>
+                  <span className="text-3xl font-bold text-primary">{progress}%</span>
+                </div>
+                
+                <div className="h-3 bg-background/60 rounded-full overflow-hidden shadow-inner">
+                  <motion.div 
+                    className="h-full gradient-progress rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+                  />
+                </div>
+                
+                <div className="flex justify-between mt-3 text-xs font-medium">
+                  <span className="text-foreground">Dia {currentDay}</span>
+                  <span className="text-muted-foreground">{daysRemaining} dias restantes</span>
+                </div>
               </div>
-              <div className="h-3 bg-background/50 rounded-full overflow-hidden">
-                <motion.div 
-                  className="h-full gradient-progress rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-                />
-              </div>
-              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                <span>Dia {currentDay}</span>
-                <span>{totalDays - currentDay} dias restantes</span>
-              </div>
-            </div>
+            </motion.div>
 
-            {/* Current Stage Info */}
-            <div className="bg-card rounded-2xl p-4 border border-border">
-              <div className="flex items-center gap-3 mb-2">
-                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", stageInfo.gradient)}>
-                  <Target className="w-5 h-5 text-primary-foreground" />
+            {/* Current Stage Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="rounded-2xl p-4 border border-border bg-card"
+            >
+              <div className="flex items-center gap-4">
+                <div className={cn(
+                  "w-12 h-12 rounded-xl flex items-center justify-center shadow-lg",
+                  stageInfo.gradient
+                )}>
+                  <Target className="w-6 h-6 text-primary-foreground" />
                 </div>
-                <div>
-                  <h4 className="font-semibold text-foreground">{stageInfo.name}</h4>
-                  <p className="text-xs text-muted-foreground">Etapa atual</p>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Etapa Atual</p>
+                  <h4 className="text-lg font-bold text-foreground">{stageInfo.name}</h4>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-primary">
+                    {stageInfo.days[stageInfo.days.length - 1] - currentDay + 1}
+                  </p>
+                  <p className="text-xs text-muted-foreground">dias</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Insights Cards */}
             <div className="space-y-3">
-              <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-1">
                 Insights & Dicas
               </h4>
-              {insights.map((insight, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * (index + 1) }}
-                  className={cn(
-                    "rounded-xl p-4 border",
-                    insight.type === 'success' && "bg-green-500/5 border-green-500/20",
-                    insight.type === 'motivation' && "bg-orange-500/5 border-orange-500/20",
-                    insight.type === 'tip' && "bg-primary/5 border-primary/20"
-                  )}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5">{insight.icon}</div>
-                    <div>
-                      <h5 className="font-medium text-foreground text-sm">{insight.title}</h5>
-                      <p className="text-muted-foreground text-sm mt-1 leading-relaxed">
-                        {insight.message}
-                      </p>
+              <AnimatePresence>
+                {insights.map((insight, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 + index * 0.1 }}
+                    className={cn(
+                      "rounded-xl p-4 border backdrop-blur-sm",
+                      insight.type === 'success' && "bg-green-500/5 border-green-500/20",
+                      insight.type === 'motivation' && "bg-orange-500/5 border-orange-500/20",
+                      insight.type === 'tip' && "bg-primary/5 border-primary/20"
+                    )}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 p-1.5 rounded-lg bg-background/50">
+                        {insight.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h5 className="font-semibold text-foreground text-sm mb-1">{insight.title}</h5>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {insight.message}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
 
             {/* Motivational Quote */}
-            <div className="bg-muted/50 rounded-2xl p-4 text-center">
-              <p className="text-sm italic text-muted-foreground">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="rounded-2xl p-5 bg-muted/30 border border-border/50 text-center"
+            >
+              <Sparkles className="w-5 h-5 text-primary mx-auto mb-2" />
+              <p className="text-sm italic text-foreground font-medium">
                 "A jornada de mil milhas começa com um único passo."
               </p>
-              <p className="text-xs text-muted-foreground/70 mt-1">— Lao Tzu</p>
-            </div>
+              <p className="text-xs text-muted-foreground mt-2">— Lao Tzu</p>
+            </motion.div>
           </div>
         </SheetContent>
       </Sheet>
