@@ -182,39 +182,45 @@ export default function ProgressCard({
           </div>
         </div>
 
-        {/* Clickable Progress Bar */}
-        <button
+        {/* Clickable Progress Bar - Highly Interactive */}
+        <motion.button
           onClick={() => setIsInsightsOpen(true)}
-          className="w-full group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl p-3 -mx-3 hover:bg-accent/50 transition-colors duration-200"
           aria-label="Clique para ver insights detalhados do seu progresso"
         >
-          <div 
-            className="h-4 bg-muted rounded-full overflow-hidden mb-1 relative transition-all duration-200 group-hover:shadow-md group-hover:scale-[1.02]"
-            role="progressbar"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`Progresso do desafio: ${progress}%`}
-          >
-            <motion.div 
-              className="h-full gradient-progress rounded-full relative"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+          <div className="relative">
+            {/* Progress bar container */}
+            <div 
+              className="h-5 bg-muted rounded-full overflow-hidden relative shadow-inner transition-all duration-300 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-primary/30"
+              role="progressbar"
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Progresso do desafio: ${progress}%`}
             >
-              {/* Pulse effect on hover */}
-              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-            </motion.div>
+              <motion.div 
+                className="h-full gradient-progress rounded-full relative"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-200" />
+              </motion.div>
+            </div>
             
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
+            {/* Click indicator */}
+            <div className="flex items-center justify-center gap-1 mt-2">
+              <div className="h-1 w-1 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
+              <p className="text-xs text-muted-foreground group-hover:text-primary transition-colors duration-200">
+                Toque para ver insights e dicas
+              </p>
+              <div className="h-1 w-1 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
             </div>
           </div>
-          <p className="text-xs text-muted-foreground text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Toque para ver insights
-          </p>
-        </button>
+        </motion.button>
 
         {/* Stage Pills */}
         <div className="flex gap-2 flex-wrap mt-3" role="list" aria-label="Etapas do desafio">
