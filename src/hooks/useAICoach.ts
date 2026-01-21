@@ -2,14 +2,29 @@ import { useState, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
+export type MessageContent = 
+  | string 
+  | Array<{ type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } }>;
+
 export type Message = {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  imageUrl?: string; // For display purposes
   timestamp: Date;
 };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-coach`;
+
+// Convert file to base64 data URL
+async function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 export function useAICoach() {
   const { user } = useAuth();
@@ -39,14 +54,27 @@ export function useAICoach() {
     return null;
   }, [user, userName]);
 
-  const sendMessage = useCallback(async (content: string) => {
-    if (!content.trim() || isLoading) return;
+  const sendMessage = useCallback(async (content: string, imageFile?: File) => {
+    if ((!content.trim() && !imageFile) || isLoading) return;
 
     setError(null);
+    
+    // Process image if provided
+    let imageBase64: string | undefined;
+    if (imageFile) {
+      try {
+        imageBase64 = await fileToBase64(imageFile);
+      } catch (err) {
+        setError('Erro ao processar a imagem. Tente novamente.');
+        return;
+      }
+    }
+
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: content.trim(),
+      content: content.trim() || 'Analise esta imagem e me ajude com o que você identificar.',
+      imageUrl: imageBase64,
       timestamp: new Date(),
     };
 
@@ -56,10 +84,27 @@ export function useAICoach() {
     // Get user name for personalization
     const name = await fetchUserName();
 
-    const apiMessages = [...messages, userMessage].map(m => ({
-      role: m.role,
-      content: m.content,
-    }));
+    // Build API messages with proper format for multimodal
+    const apiMessages = [...messages, userMessage].map(m => {
+      // If message has image, use multimodal format
+      if (m.imageUrl) {
+        const contentParts: Array<{ type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } }> = [];
+        
+        if (m.content) {
+          contentParts.push({ type: 'text', text: m.content });
+        }
+        
+        contentParts.push({
+          type: 'image_url',
+          image_url: { url: m.imageUrl }
+        });
+        
+        return { role: m.role, content: contentParts };
+      }
+      
+      // Regular text message
+      return { role: m.role, content: m.content };
+    });
 
     let assistantContent = '';
 
