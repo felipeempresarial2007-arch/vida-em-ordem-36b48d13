@@ -47,6 +47,48 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_agenda: {
+        Row: {
+          completed: boolean
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          priority: string | null
+          time_end: string | null
+          time_start: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          priority?: string | null
+          time_end?: string | null
+          time_start?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          priority?: string | null
+          time_end?: string | null
+          time_start?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_habits: {
         Row: {
           category: string
