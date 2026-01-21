@@ -42,12 +42,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Sidebar - Hidden on mobile */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-60 flex-col bg-card border-r border-border">
-        <div className="h-14 flex items-center px-5 border-b border-border">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-60 flex-col bg-card/95 backdrop-blur-xl border-r border-border/60">
+        <div className="h-14 flex items-center px-5 border-b border-border/60">
           <Logo size="md" />
         </div>
 
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -56,9 +56,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
+                  'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                   isActive 
-                    ? 'bg-primary text-primary-foreground' 
+                    ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
               >
@@ -69,13 +69,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
           })}
         </nav>
 
-        <div className="p-3 border-t border-border space-y-1">
+        <div className="p-3 border-t border-border/60 space-y-1">
           <NavLink
             to="/settings"
             className={cn(
-              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
+              'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
               location.pathname === '/settings' 
-                ? 'bg-primary text-primary-foreground' 
+                ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
@@ -85,9 +85,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
           <NavLink
             to="/install"
             className={cn(
-              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150',
+              'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
               location.pathname === '/install' 
-                ? 'bg-primary text-primary-foreground' 
+                ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
@@ -96,7 +96,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </NavLink>
           <Button 
             variant="ghost" 
-            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground h-9" 
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground h-10 rounded-xl" 
             onClick={signOut}
           >
             <LogOut className="w-4 h-4" />
@@ -105,32 +105,32 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </div>
       </aside>
 
-      {/* Mobile Header - Compact */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-12 bg-card/95 backdrop-blur-sm border-b border-border flex items-center justify-between px-4 z-50">
+      {/* Mobile Header - Premium glass effect */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-12 bg-card/90 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-4 z-50">
         <Logo size="sm" />
         <Button 
           variant="ghost" 
           size="icon" 
-          className="w-8 h-8"
+          className="w-9 h-9 rounded-xl"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
         </Button>
       </header>
 
-      {/* Mobile Settings Menu */}
+      {/* Mobile Settings Menu - Premium */}
       {mobileMenuOpen && (
         <>
           <div 
-            className="lg:hidden fixed inset-0 bg-foreground/10 backdrop-blur-sm z-40"
+            className="lg:hidden fixed inset-0 bg-foreground/5 backdrop-blur-sm z-40"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="lg:hidden fixed right-0 top-12 w-56 bg-card border-l border-b border-border rounded-bl-xl z-50 animate-scale-in shadow-lg">
+          <div className="lg:hidden fixed right-2 top-14 w-52 bg-card/95 backdrop-blur-xl border border-border/60 rounded-2xl z-50 animate-scale-in shadow-xl">
             <div className="p-2 space-y-1">
               <NavLink
                 to="/settings"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <Bell className="w-4 h-4" />
                 <span>Lembretes</span>
@@ -138,14 +138,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
               <NavLink
                 to="/install"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <Download className="w-4 h-4" />
                 <span>Instalar App</span>
               </NavLink>
+              <div className="h-px bg-border/60 my-1" />
               <Button 
                 variant="ghost" 
-                className="w-full justify-start gap-3 text-muted-foreground h-10" 
+                className="w-full justify-start gap-3 text-muted-foreground h-10 rounded-xl" 
                 onClick={() => {
                   signOut();
                   setMobileMenuOpen(false);
@@ -159,9 +160,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </>
       )}
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-card/95 backdrop-blur-md border-t border-border z-50 safe-area-bottom">
-        <div className="flex items-center justify-around h-full px-1">
+      {/* Mobile Bottom Navigation - Premium glass */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-card/90 backdrop-blur-xl border-t border-border/50 z-50 safe-area-bottom">
+        <div className="flex items-center justify-around h-full px-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -170,20 +171,20 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors',
+                  'flex flex-col items-center justify-center gap-1 flex-1 h-full transition-all duration-200',
                   isActive 
                     ? 'text-primary' 
                     : 'text-muted-foreground'
                 )}
               >
                 <div className={cn(
-                  'flex items-center justify-center w-10 h-7 rounded-lg transition-colors',
-                  isActive && 'bg-primary/10'
+                  'flex items-center justify-center w-11 h-8 rounded-xl transition-all duration-200',
+                  isActive && 'bg-primary/12 shadow-sm'
                 )}>
-                  <Icon className={cn('w-5 h-5', isActive && 'text-primary')} />
+                  <Icon className={cn('w-5 h-5 transition-transform duration-200', isActive && 'scale-105')} />
                 </div>
                 <span className={cn(
-                  'text-[10px] font-medium',
+                  'text-[10px] font-semibold tracking-tight',
                   isActive ? 'text-primary' : 'text-muted-foreground'
                 )}>
                   {item.label}

@@ -82,18 +82,18 @@ export default function Dashboard() {
         currentStage={currentStage}
       />
 
-      {/* Quote Card - Compact */}
-      <Card className="bg-muted/30">
-        <CardContent className="p-3">
-          <div className="flex items-start gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
+      {/* Quote Card - Premium subtle gradient */}
+      <Card className="bg-gradient-to-br from-muted/40 to-muted/20 border-border/60">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-xl bg-primary/12 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-0.5">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                 Pensamento do dia
               </p>
-              <p className="text-xs text-foreground leading-relaxed">
+              <p className="text-sm text-foreground leading-relaxed font-medium">
                 "{quote}"
               </p>
             </div>
@@ -101,43 +101,43 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Focus Protocol Card - Compact */}
+      {/* Focus Protocol Card - Premium interactive */}
       <Link to="/focus-protocol">
-        <Card className="group hover:border-primary/30 transition-colors cursor-pointer">
-          <CardContent className="p-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-              <Brain className="w-4 h-4 text-primary" />
+        <Card className="group hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/8 flex items-center justify-center group-hover:from-primary/20 group-hover:to-primary/12 transition-colors">
+              <Brain className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-foreground">Protocolo de Foco</h3>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Técnicas de neuro-performance
               </p>
             </div>
-            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
           </CardContent>
         </Card>
       </Link>
 
-      {/* Today's Mission */}
+      {/* Today's Mission - Premium header gradient */}
       {!isCompleted && missionTemplate && todayMission && (
-        <Card className="overflow-hidden">
-          {/* Mission Header */}
-          <div className="p-5 bg-primary text-primary-foreground">
-            <div className="flex items-center gap-2 text-xs font-medium text-primary-foreground/80 mb-1">
+        <Card className="overflow-hidden shadow-lg shadow-primary/5">
+          {/* Mission Header - Premium gradient */}
+          <div className="p-5 bg-gradient-to-br from-primary via-primary to-accent text-primary-foreground">
+            <div className="flex items-center gap-2 text-xs font-semibold text-primary-foreground/80 mb-1.5">
               <span>{stageInfo.name}</span>
-              <span>•</span>
+              <span className="w-1 h-1 rounded-full bg-primary-foreground/50" />
               <span>Dia {missionTemplate.day}</span>
             </div>
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-bold">
               {missionTemplate.title}
             </h2>
-            <p className="text-sm text-primary-foreground/80 mt-1.5 leading-relaxed">
+            <p className="text-sm text-primary-foreground/85 mt-2 leading-relaxed">
               {missionTemplate.description}
             </p>
           </div>
 
-          {/* Checklist */}
+          {/* Checklist - Premium styling */}
           {!todayMission.completed && (
             <CardContent className="p-5 space-y-4">
               <div className="space-y-2">
@@ -145,10 +145,10 @@ export default function Dashboard() {
                   <label
                     key={index}
                     className={cn(
-                      'flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-colors',
+                      'flex items-start gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-200',
                       todayMission.checklist[index] 
-                        ? 'bg-secondary/10' 
-                        : 'bg-muted/50 hover:bg-muted'
+                        ? 'bg-secondary/12 border border-secondary/20' 
+                        : 'bg-muted/40 hover:bg-muted/60 border border-transparent'
                     )}
                   >
                     <Checkbox
@@ -157,7 +157,7 @@ export default function Dashboard() {
                       className="mt-0.5"
                     />
                     <span className={cn(
-                      'text-sm flex-1',
+                      'text-sm flex-1 leading-relaxed',
                       todayMission.checklist[index] && 'line-through text-muted-foreground'
                     )}>
                       {item}
@@ -169,22 +169,22 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* Reflection */}
+              {/* Reflection - Premium styling */}
               {allChecked && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   className="pt-2"
                 >
-                  <div className="p-4 bg-muted/50 rounded-lg">
-                    <h4 className="text-sm font-medium text-foreground mb-2">
+                  <div className="p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl border border-border/50">
+                    <h4 className="text-sm font-semibold text-foreground mb-2.5">
                       Reflexão do Dia
                     </h4>
                     <Textarea
                       placeholder="Como foi realizar esta missão? O que você aprendeu?"
                       value={reflection}
                       onChange={(e) => updateReflection(e.target.value)}
-                      className="min-h-20 resize-none text-sm"
+                      className="min-h-24 resize-none text-sm rounded-xl"
                     />
                   </div>
                 </motion.div>
@@ -208,14 +208,14 @@ export default function Dashboard() {
             </CardContent>
           )}
 
-          {/* Completed State */}
+          {/* Completed State - Premium celebration */}
           {todayMission.completed && (
-            <CardContent className="p-5 text-center">
-              <div className="w-14 h-14 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-3">
-                <CheckCircle2 className="w-7 h-7 text-secondary" />
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-secondary/10">
+                <CheckCircle2 className="w-8 h-8 text-secondary" />
               </div>
-              <h3 className="font-semibold text-foreground">Missão Concluída!</h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h3 className="font-bold text-foreground text-lg">Missão Concluída!</h3>
+              <p className="text-sm text-muted-foreground mt-1.5">
                 Volte amanhã para a próxima missão.
               </p>
             </CardContent>
@@ -223,17 +223,17 @@ export default function Dashboard() {
         </Card>
       )}
 
-      {/* Community Card */}
-      <Card className="bg-muted/30">
+      {/* Community Card - Premium subtle */}
+      <Card className="bg-gradient-to-br from-muted/30 to-transparent border-border/60">
         <CardContent className="p-5">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-              <span className="text-lg">👥</span>
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-muted/80 flex items-center justify-center">
+              <span className="text-xl">👥</span>
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-medium text-foreground">Comunidade</h3>
-                <span className="text-[10px] font-medium bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
+                <h3 className="text-sm font-semibold text-foreground">Comunidade</h3>
+                <span className="text-[10px] font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                   Em breve
                 </span>
               </div>
