@@ -245,6 +245,14 @@ export default function Continuacao() {
       {/* Habit Calendar */}
       <HabitCalendar tasks={tasks} />
 
+      {/* Add Task Button - Compact */}
+      <Button 
+        onClick={() => setShowForm(true)}
+        className="w-full h-10 text-sm"
+      >
+        <Plus className="w-4 h-4 mr-1.5" />
+        Adicionar Tarefa
+      </Button>
 
       {/* Add Task Form */}
       <AnimatePresence>
