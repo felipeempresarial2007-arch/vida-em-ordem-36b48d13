@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { 
   ArrowRight, 
   Target, 
@@ -44,7 +46,7 @@ export default function Landing() {
   const { user } = useAuth();
   const { openCheckout, isSubscribed } = useSubscription();
 
-  const handleGetStarted = () => {
+  const handleGetStarted = async () => {
     if (user) {
       if (isSubscribed) {
         navigate('/dashboard');
@@ -52,7 +54,25 @@ export default function Landing() {
         openCheckout(STRIPE_PRICES.monthly.priceId);
       }
     } else {
-      navigate('/auth');
+      // For non-logged users, redirect to Stripe checkout directly (guest checkout)
+      try {
+        toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: { priceId: STRIPE_PRICES.monthly.priceId, guestCheckout: true },
+        });
+        
+        if (error || !data?.url) {
+          toast.dismiss('checkout');
+          toast.error('Erro ao criar sessão de checkout');
+          return;
+        }
+        
+        toast.dismiss('checkout');
+        window.open(data.url, '_blank');
+      } catch (error) {
+        toast.dismiss('checkout');
+        toast.error('Erro ao processar checkout');
+      }
     }
   };
 

@@ -64,37 +64,6 @@ serve(async (req) => {
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) return json(500, { error: "Server misconfigured" });
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return json(401, { error: "Unauthorized" });
-    }
-
-    const token = authHeader.slice("Bearer ".length);
-
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    // Validate token claims (expiry/signature) and extract identity.
-    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      logStep("Invalid JWT", { claimsError: claimsError?.message });
-      return json(401, { error: "Unauthorized" });
-    }
-
-    const userId = (claimsData.claims as any).sub as string | undefined;
-    const email = (claimsData.claims as any).email as string | undefined;
-
-    if (!userId || !email) {
-      return json(401, { error: "Unauthorized" });
-    }
-
-    if (!checkRateLimit(`user:${userId}`)) {
-      return json(429, { error: "Too many requests" });
-    }
-
     let body: any;
     try {
       body = await req.json();
@@ -103,6 +72,8 @@ serve(async (req) => {
     }
 
     const priceId = body?.priceId;
+    const isGuestCheckout = body?.guestCheckout === true;
+
     if (typeof priceId !== "string" || priceId.length > 128) {
       return json(400, { error: "priceId is required" });
     }
@@ -111,14 +82,54 @@ serve(async (req) => {
       return json(400, { error: "Invalid priceId" });
     }
 
-    logStep("Authenticated request", { userId, priceId });
+    let email: string | undefined;
+    let userId: string | undefined;
+    let customerId: string | undefined;
+
+    const authHeader = req.headers.get("Authorization");
+    
+    // If authenticated, use the user's email
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice("Bearer ".length);
+
+      const supabaseClient = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+        { auth: { persistSession: false } }
+      );
+
+      const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+      if (!claimsError && claimsData?.claims) {
+        userId = (claimsData.claims as any).sub as string | undefined;
+        email = (claimsData.claims as any).email as string | undefined;
+        
+        if (userId && !checkRateLimit(`user:${userId}`)) {
+          return json(429, { error: "Too many requests" });
+        }
+      }
+    }
+
+    // For guest checkout without auth, we allow it but apply IP-based rate limit
+    if (!email && isGuestCheckout) {
+      const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+      if (!checkRateLimit(`ip:${clientIP}`)) {
+        return json(429, { error: "Too many requests" });
+      }
+      logStep("Guest checkout requested", { clientIP });
+    } else if (!email) {
+      return json(401, { error: "Unauthorized" });
+    }
+
+    logStep("Processing checkout", { userId, email, isGuestCheckout, priceId });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
-    // Check if customer already exists
-    const customers = await stripe.customers.list({ email, limit: 1 });
-    const customerId = customers.data[0]?.id;
-    if (customerId) logStep("Found existing customer", { customerId });
+    // Check if customer already exists (only if we have email)
+    if (email) {
+      const customers = await stripe.customers.list({ email, limit: 1 });
+      customerId = customers.data[0]?.id;
+      if (customerId) logStep("Found existing customer", { customerId });
+    }
 
     const origin = getSafeOrigin(req);
 
