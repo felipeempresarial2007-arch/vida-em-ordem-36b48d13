@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
 import { 
   ArrowRight, 
   Target, 
@@ -41,10 +42,15 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { openCheckout, isSubscribed } = useSubscription();
 
   const handleGetStarted = () => {
     if (user) {
-      navigate('/');
+      if (isSubscribed) {
+        navigate('/dashboard');
+      } else {
+        openCheckout(STRIPE_PRICES.monthly.priceId);
+      }
     } else {
       navigate('/auth');
     }
