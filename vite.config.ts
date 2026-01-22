@@ -54,6 +54,8 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
+        cacheId: 'focus30-v2',
+        cleanupOutdatedCaches: true,
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         runtimeCaching: [
           {
