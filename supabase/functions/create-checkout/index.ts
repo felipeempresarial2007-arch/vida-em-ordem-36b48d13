@@ -48,9 +48,9 @@ function checkRateLimit(key: string) {
 
 const ALLOWED_PRICE_IDS = new Set([
   // Mensal
-  "price_1SnAd4P8WA5VcKKzrUA51WV6",
+  "price_1SsmXFDYwN6d3g31EM8QBScy",
   // Anual
-  "price_1SnAh3P8WA5VcKKz4PtlqlWi",
+  "price_1SsmXwDYwN6d3g31Fc9Ue5ED",
 ]);
 
 serve(async (req) => {
