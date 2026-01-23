@@ -85,8 +85,9 @@ function PublicLandingRoute() {
 
 const AppRoutes = () => (
   <Routes>
-    {/* Public landing page as root */}
+    {/* Public landing page as root - redirects logged users to dashboard */}
     <Route path="/" element={<PublicLandingRoute />} />
+    {/* Landing always accessible for sharing links */}
     <Route path="/landing" element={<Landing />} />
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/payment-success" element={<PaymentSuccess />} />
