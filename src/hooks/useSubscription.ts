@@ -6,16 +6,16 @@ import { toast } from 'sonner';
 // Stripe Price IDs
 export const STRIPE_PRICES = {
   monthly: {
-    priceId: 'price_1SnAd4P8WA5VcKKzrUA51WV6',
-    productId: 'prod_Tkfz41apw3jLZ4',
+    priceId: 'price_1SsmXFDYwN6d3g31EM8QBScy',
+    productId: 'prod_TqTUW8hx6FMoSy',
     name: 'Mensal',
     price: 27.90,
     originalPrice: 58.80,
     interval: 'month' as const,
   },
   annual: {
-    priceId: 'price_1SnAh3P8WA5VcKKz4PtlqlWi',
-    productId: 'prod_Tkg3wEZhNIPRqe',
+    priceId: 'price_1SsmXwDYwN6d3g31Fc9Ue5ED',
+    productId: 'prod_TqTUig6qMhaMOc',
     name: 'Anual',
     price: 210.90,
     pricePerMonth: 17.57,
