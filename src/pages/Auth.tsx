@@ -132,7 +132,7 @@ export default function Auth() {
           }
         } else {
           toast.success('Bem-vindo de volta!');
-          navigate('/');
+          navigate('/dashboard');
         }
       } else {
         if (!fullName.trim()) {
@@ -149,7 +149,7 @@ export default function Auth() {
           }
         } else {
           toast.success('Conta criada com sucesso!');
-          navigate('/');
+          navigate('/dashboard');
         }
       }
     } catch (error) {
