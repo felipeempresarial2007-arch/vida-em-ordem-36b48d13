@@ -40,7 +40,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/landing" replace />;
   }
 
   return <AppLayout>{children}</AppLayout>;
@@ -58,23 +58,45 @@ function AuthRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
 }
 
+// Public landing route - shows landing for guests, redirects logged users to dashboard
+function PublicLandingRoute() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Landing />;
+}
+
 const AppRoutes = () => (
   <Routes>
+    {/* Public landing page as root */}
+    <Route path="/" element={<PublicLandingRoute />} />
     <Route path="/landing" element={<Landing />} />
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/payment-success" element={<PaymentSuccess />} />
     <Route path="/payment-canceled" element={<PaymentCanceled />} />
     <Route path="/install" element={<Install />} />
+    {/* Protected app routes */}
+    <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
     <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
     <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-    <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
     <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
     <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />

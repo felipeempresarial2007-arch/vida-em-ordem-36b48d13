@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { ChallengeCompleteCard } from '@/components/dashboard/ChallengeCompleteCard';
 import ProgressCard from '@/components/dashboard/ProgressCard';
+import { TrialBanner } from '@/components/trial/TrialBanner';
 
 export default function Dashboard() {
   const { 
@@ -60,6 +61,9 @@ export default function Dashboard() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Trial Banner - Shows upgrade message after 24h */}
+      <TrialBanner />
+
       {/* Header - Compact for mobile */}
       <div>
         <h1 className="text-xl md:text-2xl font-semibold text-foreground">
