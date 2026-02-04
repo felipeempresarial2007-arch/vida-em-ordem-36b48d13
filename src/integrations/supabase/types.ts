@@ -65,6 +65,42 @@ export type Database = {
           },
         ]
       }
+      ambassador_invites: {
+        Row: {
+          code: string
+          commission_rate: number
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          notes: string | null
+          used_at: string | null
+          used_by_user_id: string | null
+        }
+        Insert: {
+          code: string
+          commission_rate?: number
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          used_at?: string | null
+          used_by_user_id?: string | null
+        }
+        Update: {
+          code?: string
+          commission_rate?: number
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          used_at?: string | null
+          used_by_user_id?: string | null
+        }
+        Relationships: []
+      }
       ambassadors: {
         Row: {
           bonus_paid_at: string | null
@@ -521,6 +557,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_invite_code: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       get_ambassador_active_customers: {
         Args: { ambassador_uuid: string }
