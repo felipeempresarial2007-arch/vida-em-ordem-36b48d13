@@ -93,7 +93,7 @@ export function useSubscription() {
     }
   }, [user]);
 
-  const openCheckout = useCallback(async (priceId: string = STRIPE_PRICES.monthly.priceId) => {
+  const openCheckout = useCallback(async (priceId: string = STRIPE_PRICES.monthly.priceId, referralCode?: string) => {
     if (!user) {
       toast.error('Você precisa estar logado para assinar');
       return;
@@ -109,7 +109,7 @@ export function useSubscription() {
       toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
 
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId },
+        body: { priceId, referralCode },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },

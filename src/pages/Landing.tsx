@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
+import { getStoredReferralCode } from '@/hooks/useReferralTracking';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { 
+import {
   ArrowRight, 
   Target, 
   Zap, 
@@ -47,18 +48,25 @@ export default function Landing() {
   const { openCheckout, isSubscribed } = useSubscription();
 
   const handleGetStarted = async () => {
+    // Get stored referral code
+    const referralCode = getStoredReferralCode();
+    
     if (user) {
       if (isSubscribed) {
         navigate('/dashboard');
       } else {
-        openCheckout(STRIPE_PRICES.monthly.priceId);
+        openCheckout(STRIPE_PRICES.monthly.priceId, referralCode || undefined);
       }
     } else {
       // For non-logged users, redirect to Stripe checkout directly (guest checkout)
       try {
         toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
         const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { priceId: STRIPE_PRICES.monthly.priceId, guestCheckout: true },
+          body: { 
+            priceId: STRIPE_PRICES.monthly.priceId, 
+            guestCheckout: true,
+            referralCode: referralCode || undefined,
+          },
         });
         
         if (error || !data?.url) {

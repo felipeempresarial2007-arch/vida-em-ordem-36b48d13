@@ -73,6 +73,7 @@ serve(async (req) => {
 
     const priceId = body?.priceId;
     const isGuestCheckout = body?.guestCheckout === true;
+    const referralCode = body?.referralCode; // Código de indicação
 
     if (typeof priceId !== "string" || priceId.length > 128) {
       return json(400, { error: "priceId is required" });
@@ -120,7 +121,7 @@ serve(async (req) => {
       return json(401, { error: "Unauthorized" });
     }
 
-    logStep("Processing checkout", { userId, email, isGuestCheckout, priceId });
+    logStep("Processing checkout", { userId, email, isGuestCheckout, priceId, referralCode });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
@@ -133,6 +134,15 @@ serve(async (req) => {
 
     const origin = getSafeOrigin(req);
 
+    // Incluir metadata de referral se houver código
+    const sessionMetadata: Record<string, string> = {};
+    if (referralCode && typeof referralCode === 'string') {
+      sessionMetadata.referral_code = referralCode.toUpperCase();
+    }
+    if (userId) {
+      sessionMetadata.user_id = userId;
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : email,
@@ -140,6 +150,10 @@ serve(async (req) => {
       mode: "subscription",
       success_url: `${origin}/payment-success`,
       cancel_url: `${origin}/payment-canceled`,
+      metadata: Object.keys(sessionMetadata).length > 0 ? sessionMetadata : undefined,
+      subscription_data: Object.keys(sessionMetadata).length > 0 ? {
+        metadata: sessionMetadata,
+      } : undefined,
     });
 
     logStep("Checkout session created", { sessionId: session.id });

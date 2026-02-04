@@ -19,8 +19,11 @@ import FocusProtocol from "./pages/FocusProtocol";
 import AICoach from "./pages/AICoach";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Ambassador from "./pages/Ambassador";
+import Admin from "./pages/Admin";
 import AppLayout from "./components/layout/AppLayout";
 import { useNotificationScheduler } from "./hooks/useNotificationScheduler";
+import { useReferralTracking } from "./hooks/useReferralTracking";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -67,6 +70,9 @@ function AuthRoute({ children }: { children: React.ReactNode }) {
 // Public landing route - shows landing for guests, redirects logged users to dashboard
 function PublicLandingRoute() {
   const { user, loading } = useAuth();
+  
+  // Track referrals on landing page
+  useReferralTracking();
 
   if (loading) {
     return (
@@ -103,6 +109,8 @@ const AppRoutes = () => (
     <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
     <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
     <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
+    <Route path="/embaixador" element={<ProtectedRoute><Ambassador /></ProtectedRoute>} />
+    <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
