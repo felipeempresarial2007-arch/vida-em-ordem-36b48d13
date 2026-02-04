@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { FloatingAICoach } from '@/components/ai/FloatingAICoach';
 import { NotificationPrompt } from '@/components/reminders/NotificationPrompt';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   LayoutDashboard, 
   Home, 
@@ -18,6 +19,8 @@ import {
   Settings,
   Download,
   Bell,
+  Users,
+  Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -35,9 +38,39 @@ const navItems = [
 ];
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAmbassador, setIsAmbassador] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check user roles
+  useEffect(() => {
+    const checkRoles = async () => {
+      if (!user) return;
+
+      // Check if ambassador
+      const { data: ambassadorData } = await supabase
+        .from('ambassadors')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      setIsAmbassador(!!ambassadorData);
+
+      // Check if admin
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      setIsAdmin(!!roleData);
+    };
+
+    checkRoles();
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,6 +127,39 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Download className="w-4 h-4" />
             <span>Instalar App</span>
           </NavLink>
+          
+          {/* Ambassador Link */}
+          {isAmbassador && (
+            <NavLink
+              to="/embaixador"
+              className={cn(
+                'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
+                location.pathname === '/embaixador' 
+                  ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              <Users className="w-4 h-4" />
+              <span>Embaixador</span>
+            </NavLink>
+          )}
+          
+          {/* Admin Link */}
+          {isAdmin && (
+            <NavLink
+              to="/admin"
+              className={cn(
+                'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
+                location.pathname === '/admin' 
+                  ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              <Shield className="w-4 h-4" />
+              <span>Admin</span>
+            </NavLink>
+          )}
+          
           <Button 
             variant="ghost" 
             className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground h-10 rounded-xl" 
@@ -143,6 +209,31 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <Download className="w-4 h-4" />
                 <span>Instalar App</span>
               </NavLink>
+              
+              {/* Ambassador Link Mobile */}
+              {isAmbassador && (
+                <NavLink
+                  to="/embaixador"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Embaixador</span>
+                </NavLink>
+              )}
+              
+              {/* Admin Link Mobile */}
+              {isAdmin && (
+                <NavLink
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Admin</span>
+                </NavLink>
+              )}
+              
               <div className="h-px bg-border/60 my-1" />
               <Button 
                 variant="ghost" 
