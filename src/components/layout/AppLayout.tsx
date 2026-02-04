@@ -38,39 +38,9 @@ const navItems = [
 ];
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { signOut, user } = useAuth();
+  const { signOut, isAdmin, isAmbassador } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAmbassador, setIsAmbassador] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  // Check user roles
-  useEffect(() => {
-    const checkRoles = async () => {
-      if (!user) return;
-
-      // Check if ambassador
-      const { data: ambassadorData } = await supabase
-        .from('ambassadors')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      setIsAmbassador(!!ambassadorData);
-
-      // Check if admin
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      setIsAdmin(!!roleData);
-    };
-
-    checkRoles();
-  }, [user]);
 
   return (
     <div className="min-h-screen bg-background">
