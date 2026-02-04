@@ -6,6 +6,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isAdmin: boolean;
+  isAmbassador: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
@@ -19,25 +21,81 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAmbassador, setIsAmbassador] = useState(false);
+
+  const checkUserRoles = async (userId: string) => {
+    try {
+      // Check admin role
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      setIsAdmin(!!roleData);
+
+      // Check ambassador status
+      const { data: ambassadorData } = await supabase
+        .from('ambassadors')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .maybeSingle();
+      
+      setIsAmbassador(!!ambassadorData);
+    } catch (error) {
+      console.error('Error checking user roles:', error);
+      setIsAdmin(false);
+      setIsAmbassador(false);
+    }
+  };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    let isMounted = true;
+
+    // Listener for ONGOING auth changes (does NOT control loading)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (!isMounted) return;
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
+
+        // Fire and forget for ongoing changes
+        if (session?.user) {
+          checkUserRoles(session.user.id);
+        } else {
+          setIsAdmin(false);
+          setIsAmbassador(false);
+        }
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    // INITIAL load (controls loading state)
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!isMounted) return;
 
-    return () => subscription.unsubscribe();
+        setSession(session);
+        setUser(session?.user ?? null);
+
+        // Fetch roles BEFORE setting loading false
+        if (session?.user) {
+          await checkUserRoles(session.user.id);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -70,9 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        // Use a public route to avoid race conditions with protected routes
         redirectTo: `${window.location.origin}/auth`,
-        // Improves UX when user has multiple Google accounts
         queryParams: {
           prompt: 'select_account',
         },
@@ -97,7 +153,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signInWithGoogle, resetPassword, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      loading, 
+      isAdmin, 
+      isAmbassador, 
+      signUp, 
+      signIn, 
+      signInWithGoogle, 
+      resetPassword, 
+      signOut 
+    }}>
       {children}
     </AuthContext.Provider>
   );
