@@ -57,6 +57,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ambassador_commissions_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "ambassadors_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ambassador_commissions_referral_customer_id_fkey"
             columns: ["referral_customer_id"]
             isOneToOne: false
@@ -452,6 +459,13 @@ export type Database = {
             referencedRelation: "ambassadors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "referral_clicks_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "ambassadors_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       referral_customers: {
@@ -497,6 +511,13 @@ export type Database = {
             columns: ["ambassador_id"]
             isOneToOne: false
             referencedRelation: "ambassadors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_customers_ambassador_id_fkey"
+            columns: ["ambassador_id"]
+            isOneToOne: false
+            referencedRelation: "ambassadors_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -554,7 +575,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      ambassadors_safe: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          referral_code: string | null
+          status: Database["public"]["Enums"]["ambassador_status"] | null
+          terms_accepted_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          referral_code?: string | null
+          status?: Database["public"]["Enums"]["ambassador_status"] | null
+          terms_accepted_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          referral_code?: string | null
+          status?: Database["public"]["Enums"]["ambassador_status"] | null
+          terms_accepted_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_invite_code: { Args: never; Returns: string }

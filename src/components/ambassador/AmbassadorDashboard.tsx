@@ -84,7 +84,7 @@ export default function AmbassadorDashboard() {
               <p>O programa é exclusivo para convidados. Não é permitido autocadastro ou autoindicação.</p>
               
               <h4>2. Comissões</h4>
-              <p>Você receberá {ambassador.commissionRate}% de comissão sobre cada assinatura ativa gerada através do seu link. A comissão é recorrente enquanto o cliente mantiver a assinatura ativa.</p>
+              <p>Você receberá comissão sobre cada assinatura ativa gerada através do seu link. A comissão é recorrente enquanto o cliente mantiver a assinatura ativa.</p>
               
               <h4>3. Cliente Válido</h4>
               <p>Considera-se cliente válido aquele que possui assinatura paga ativa, fora do período de trial e sem chargeback pendente.</p>
@@ -304,26 +304,16 @@ export default function AmbassadorDashboard() {
               <span className="text-muted-foreground">{bonusPercentage.toFixed(0)}%</span>
             </div>
             <Progress value={bonusPercentage} className="h-3" />
-            {ambassador.bonusPaidAt && (
-              <p className="text-sm text-green-500 flex items-center gap-1">
-                <Check className="w-4 h-4" />
-                Bônus pago em {new Date(ambassador.bonusPaidAt).toLocaleDateString('pt-BR')}
-              </p>
-            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Commission Details */}
+      {/* Commission Details - Only show non-sensitive data */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Detalhes da Comissão</CardTitle>
+          <CardTitle className="text-lg">Detalhes</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex justify-between py-2 border-b">
-            <span className="text-muted-foreground">Taxa de Comissão</span>
-            <span className="font-semibold">{ambassador.commissionRate}%</span>
-          </div>
           <div className="flex justify-between py-2 border-b">
             <span className="text-muted-foreground">Comissão Pendente</span>
             <span className="font-semibold text-orange-500">
