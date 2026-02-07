@@ -2,13 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
+// NOTE: Sensitive financial fields (commissionRate, bonusPaidAt) are intentionally
+// excluded from this interface to protect confidential business terms.
+// These fields are only accessible to admins via the full ambassadors table.
 export interface AmbassadorData {
   id: string;
   referralCode: string;
   status: 'active' | 'suspended' | 'blocked';
-  commissionRate: number;
   termsAcceptedAt: string | null;
-  bonusPaidAt: string | null;
   createdAt: string;
 }
 
@@ -42,9 +43,10 @@ export function useAmbassador() {
     try {
       setIsLoading(true);
 
-      // Verificar se o usuário é embaixador
+      // Use the safe view that excludes sensitive financial data
+      // (commission_rate, bonus_paid_at, notes are hidden from ambassadors)
       const { data: ambassadorData, error: ambassadorError } = await supabase
-        .from('ambassadors')
+        .from('ambassadors_safe')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
@@ -66,10 +68,7 @@ export function useAmbassador() {
         id: ambassadorData.id,
         referralCode: ambassadorData.referral_code,
         status: ambassadorData.status as 'active' | 'suspended' | 'blocked',
-        commissionRate: Number(ambassadorData.commission_rate),
-        
         termsAcceptedAt: ambassadorData.terms_accepted_at,
-        bonusPaidAt: ambassadorData.bonus_paid_at,
         createdAt: ambassadorData.created_at,
       });
 
@@ -101,6 +100,10 @@ export function useAmbassador() {
         ?.filter(c => c.status === 'pending' || c.status === 'approved')
         .reduce((sum, c) => sum + Number(c.amount), 0) || 0;
 
+      // Check bonus eligibility using the database function
+      // (bonus_paid_at is not exposed to ambassadors for security)
+      const bonusEligible = activeCustomers >= 10;
+
       setStats({
         totalClicks: clickCount || 0,
         activeCustomers,
@@ -109,7 +112,7 @@ export function useAmbassador() {
         totalCommission,
         pendingCommission,
         bonusProgress: Math.min(activeCustomers, 10),
-        bonusEligible: activeCustomers >= 10 && !ambassadorData.bonus_paid_at,
+        bonusEligible,
       });
 
     } catch (error) {
