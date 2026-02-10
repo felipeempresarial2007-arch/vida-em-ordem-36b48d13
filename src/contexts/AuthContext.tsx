@@ -6,7 +6,6 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  isAdmin: boolean;
   isAmbassador: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -21,21 +20,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isAmbassador, setIsAmbassador] = useState(false);
 
   const checkUserRoles = async (userId: string) => {
     try {
-      // Check admin role
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      setIsAdmin(!!roleData);
-
       // Check ambassador status
       const { data: ambassadorData } = await supabase
         .from('ambassadors')
@@ -47,7 +35,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAmbassador(!!ambassadorData);
     } catch (error) {
       console.error('Error checking user roles:', error);
-      setIsAdmin(false);
       setIsAmbassador(false);
     }
   };
@@ -66,7 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (session?.user) {
           checkUserRoles(session.user.id);
         } else {
-          setIsAdmin(false);
           setIsAmbassador(false);
         }
       }
@@ -157,7 +143,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user, 
       session, 
       loading, 
-      isAdmin, 
       isAmbassador, 
       signUp, 
       signIn, 

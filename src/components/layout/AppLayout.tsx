@@ -20,7 +20,7 @@ import {
   Download,
   Bell,
   Users,
-  Shield,
+  
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -38,7 +38,7 @@ const navItems = [
 ];
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { signOut, isAdmin, isAmbassador } = useAuth();
+  const { signOut, isAmbassador } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -114,21 +114,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </NavLink>
           )}
           
-          {/* Admin Link */}
-          {isAdmin && (
-            <NavLink
-              to="/admin"
-              className={cn(
-                'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
-                location.pathname === '/admin' 
-                  ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20' 
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              )}
-            >
-              <Shield className="w-4 h-4" />
-              <span>Admin</span>
-            </NavLink>
-          )}
           
           <Button 
             variant="ghost" 
@@ -192,17 +177,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 </NavLink>
               )}
               
-              {/* Admin Link Mobile */}
-              {isAdmin && (
-                <NavLink
-                  to="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                >
-                  <Shield className="w-4 h-4" />
-                  <span>Admin</span>
-                </NavLink>
-              )}
               
               <div className="h-px bg-border/60 my-1" />
               <Button 
