@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, ArrowRight, CheckCircle2, Sparkles, Brain, Calendar, TrendingUp, Trophy } from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle2, Sparkles, Brain, Calendar, TrendingUp, Trophy, Crown, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,6 +12,8 @@ import { motion } from 'framer-motion';
 import { ChallengeCompleteCard } from '@/components/dashboard/ChallengeCompleteCard';
 import ProgressCard from '@/components/dashboard/ProgressCard';
 import { TrialBanner } from '@/components/trial/TrialBanner';
+import { useTrial } from '@/hooks/useTrial';
+import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
 
 export default function Dashboard() {
   const { 
@@ -24,9 +26,11 @@ export default function Dashboard() {
     completeMission 
   } = useChallengeProgress();
 
+  const { isTrialExpired, isLoading: trialLoading } = useTrial();
+  const { openCheckout, isSubscribed } = useSubscription();
   const [quote] = useState(getRandomQuote());
 
-  if (loading) {
+  if (loading || trialLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="flex flex-col items-center gap-3">
@@ -34,6 +38,57 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground">Carregando...</p>
         </div>
       </div>
+    );
+  }
+
+  // Block the entire dashboard if trial expired and not subscribed
+  if (isTrialExpired && !isSubscribed) {
+    return (
+      <motion.div
+        className="flex items-center justify-center min-h-[60vh]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <Card className="max-w-md w-full border-destructive/30 bg-gradient-to-br from-destructive/5 via-background to-primary/5 shadow-xl">
+          <CardContent className="p-8 text-center space-y-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-destructive/15 to-primary/10 flex items-center justify-center mx-auto">
+              <Lock className="w-8 h-8 text-destructive" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">
+                Seu período de teste terminou
+              </h2>
+              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                Seu trial gratuito de 24 horas expirou. Faça o upgrade para o plano Pro 
+                e continue transformando sua vida com o Focus30.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <Button
+                onClick={() => openCheckout(STRIPE_PRICES.monthly.priceId)}
+                className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90"
+                size="lg"
+              >
+                <Crown className="w-5 h-5 mr-2" />
+                Assinar Plano Mensal — R$ 27,90/mês
+              </Button>
+              <Button
+                onClick={() => openCheckout(STRIPE_PRICES.annual.priceId)}
+                variant="outline"
+                className="w-full border-primary/30 text-primary hover:bg-primary/10"
+                size="lg"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Assinar Plano Anual — R$ 17,57/mês
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Cancele quando quiser. Sem compromisso.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     );
   }
 
