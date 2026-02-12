@@ -4,10 +4,10 @@ project_id = "mizmiixyztcobcpekqar"
 verify_jwt = false
 
 [functions.check-subscription]
-verify_jwt = false
+verify_jwt = true
 
 [functions.customer-portal]
-verify_jwt = false
+verify_jwt = true
 
 [functions.ai-coach]
-verify_jwt = false
+verify_jwt = true
