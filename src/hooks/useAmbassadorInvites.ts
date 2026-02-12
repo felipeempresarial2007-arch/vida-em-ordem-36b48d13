@@ -80,12 +80,7 @@ export function useClaimInvite() {
         console.error('Error marking invite as used:', updateError);
       }
 
-      // Add ambassador role
-      await supabase.from('user_roles').insert({
-        user_id: user.id,
-        role: 'ambassador',
-      });
-
+      // Ambassador role is automatically assigned via database trigger
       toast.success('Parabéns! Você agora é um Embaixador Focus 30!');
       return true;
     } catch (error: any) {
