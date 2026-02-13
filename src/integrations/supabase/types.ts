@@ -14,139 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      ambassador_commissions: {
-        Row: {
-          ambassador_id: string
-          amount: number
-          created_at: string
-          id: string
-          paid_at: string | null
-          payment_period_end: string
-          payment_period_start: string
-          referral_customer_id: string
-          status: string
-        }
-        Insert: {
-          ambassador_id: string
-          amount: number
-          created_at?: string
-          id?: string
-          paid_at?: string | null
-          payment_period_end: string
-          payment_period_start: string
-          referral_customer_id: string
-          status?: string
-        }
-        Update: {
-          ambassador_id?: string
-          amount?: number
-          created_at?: string
-          id?: string
-          paid_at?: string | null
-          payment_period_end?: string
-          payment_period_start?: string
-          referral_customer_id?: string
-          status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ambassador_commissions_ambassador_id_fkey"
-            columns: ["ambassador_id"]
-            isOneToOne: false
-            referencedRelation: "ambassadors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ambassador_commissions_ambassador_id_fkey"
-            columns: ["ambassador_id"]
-            isOneToOne: false
-            referencedRelation: "ambassadors_safe"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ambassador_commissions_referral_customer_id_fkey"
-            columns: ["referral_customer_id"]
-            isOneToOne: false
-            referencedRelation: "referral_customers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      ambassador_invites: {
-        Row: {
-          code: string
-          commission_rate: number
-          created_at: string
-          created_by: string
-          expires_at: string | null
-          id: string
-          notes: string | null
-          used_at: string | null
-          used_by_user_id: string | null
-        }
-        Insert: {
-          code: string
-          commission_rate?: number
-          created_at?: string
-          created_by: string
-          expires_at?: string | null
-          id?: string
-          notes?: string | null
-          used_at?: string | null
-          used_by_user_id?: string | null
-        }
-        Update: {
-          code?: string
-          commission_rate?: number
-          created_at?: string
-          created_by?: string
-          expires_at?: string | null
-          id?: string
-          notes?: string | null
-          used_at?: string | null
-          used_by_user_id?: string | null
-        }
-        Relationships: []
-      }
-      ambassadors: {
-        Row: {
-          bonus_paid_at: string | null
-          commission_rate: number
-          created_at: string
-          id: string
-          notes: string | null
-          referral_code: string
-          status: Database["public"]["Enums"]["ambassador_status"]
-          terms_accepted_at: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          bonus_paid_at?: string | null
-          commission_rate?: number
-          created_at?: string
-          id?: string
-          notes?: string | null
-          referral_code: string
-          status?: Database["public"]["Enums"]["ambassador_status"]
-          terms_accepted_at?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          bonus_paid_at?: string | null
-          commission_rate?: number
-          created_at?: string
-          id?: string
-          notes?: string | null
-          referral_code?: string
-          status?: Database["public"]["Enums"]["ambassador_status"]
-          terms_accepted_at?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       challenge_progress: {
         Row: {
           completed_at: string | null
@@ -426,102 +293,6 @@ export type Database = {
         }
         Relationships: []
       }
-      referral_clicks: {
-        Row: {
-          ambassador_id: string
-          created_at: string
-          id: string
-          ip_hash: string | null
-          referrer_url: string | null
-          user_agent: string | null
-        }
-        Insert: {
-          ambassador_id: string
-          created_at?: string
-          id?: string
-          ip_hash?: string | null
-          referrer_url?: string | null
-          user_agent?: string | null
-        }
-        Update: {
-          ambassador_id?: string
-          created_at?: string
-          id?: string
-          ip_hash?: string | null
-          referrer_url?: string | null
-          user_agent?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "referral_clicks_ambassador_id_fkey"
-            columns: ["ambassador_id"]
-            isOneToOne: false
-            referencedRelation: "ambassadors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "referral_clicks_ambassador_id_fkey"
-            columns: ["ambassador_id"]
-            isOneToOne: false
-            referencedRelation: "ambassadors_safe"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      referral_customers: {
-        Row: {
-          ambassador_id: string
-          created_at: string
-          customer_user_id: string
-          first_payment_at: string | null
-          id: string
-          last_payment_at: string | null
-          stripe_customer_id: string | null
-          subscription_status: string
-          total_paid: number
-          updated_at: string
-        }
-        Insert: {
-          ambassador_id: string
-          created_at?: string
-          customer_user_id: string
-          first_payment_at?: string | null
-          id?: string
-          last_payment_at?: string | null
-          stripe_customer_id?: string | null
-          subscription_status?: string
-          total_paid?: number
-          updated_at?: string
-        }
-        Update: {
-          ambassador_id?: string
-          created_at?: string
-          customer_user_id?: string
-          first_payment_at?: string | null
-          id?: string
-          last_payment_at?: string | null
-          stripe_customer_id?: string | null
-          subscription_status?: string
-          total_paid?: number
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "referral_customers_ambassador_id_fkey"
-            columns: ["ambassador_id"]
-            isOneToOne: false
-            referencedRelation: "ambassadors"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "referral_customers_ambassador_id_fkey"
-            columns: ["ambassador_id"]
-            isOneToOne: false
-            referencedRelation: "ambassadors_safe"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       reminder_settings: {
         Row: {
           created_at: string
@@ -552,78 +323,15 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
-      ambassadors_safe: {
-        Row: {
-          created_at: string | null
-          id: string | null
-          referral_code: string | null
-          status: Database["public"]["Enums"]["ambassador_status"] | null
-          terms_accepted_at: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string | null
-          referral_code?: string | null
-          status?: Database["public"]["Enums"]["ambassador_status"] | null
-          terms_accepted_at?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string | null
-          referral_code?: string | null
-          status?: Database["public"]["Enums"]["ambassador_status"] | null
-          terms_accepted_at?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      generate_invite_code: { Args: never; Returns: string }
-      generate_referral_code: { Args: never; Returns: string }
-      get_ambassador_active_customers: {
-        Args: { ambassador_uuid: string }
-        Returns: number
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      ambassador_status: "active" | "suspended" | "blocked"
-      app_role: "admin" | "ambassador"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -750,9 +458,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      ambassador_status: ["active", "suspended", "blocked"],
-      app_role: ["admin", "ambassador"],
-    },
+    Enums: {},
   },
 } as const

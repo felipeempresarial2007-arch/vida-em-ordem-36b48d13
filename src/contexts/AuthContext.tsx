@@ -6,7 +6,6 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  isAmbassador: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
@@ -20,57 +19,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAmbassador, setIsAmbassador] = useState(false);
-
-  const checkUserRoles = async (userId: string) => {
-    try {
-      // Check ambassador status
-      const { data: ambassadorData } = await supabase
-        .from('ambassadors')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('status', 'active')
-        .maybeSingle();
-      
-      setIsAmbassador(!!ambassadorData);
-    } catch (error) {
-      console.error('Error checking user roles:', error);
-      setIsAmbassador(false);
-    }
-  };
 
   useEffect(() => {
     let isMounted = true;
 
-    // Listener for ONGOING auth changes (does NOT control loading)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (!isMounted) return;
         setSession(session);
         setUser(session?.user ?? null);
-
-        // Fire and forget for ongoing changes
-        if (session?.user) {
-          checkUserRoles(session.user.id);
-        } else {
-          setIsAmbassador(false);
-        }
       }
     );
 
-    // INITIAL load (controls loading state)
     const initializeAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!isMounted) return;
-
         setSession(session);
         setUser(session?.user ?? null);
-
-        // Fetch roles BEFORE setting loading false
-        if (session?.user) {
-          await checkUserRoles(session.user.id);
-        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -143,7 +109,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user, 
       session, 
       loading, 
-      isAmbassador, 
       signUp, 
       signIn, 
       signInWithGoogle, 

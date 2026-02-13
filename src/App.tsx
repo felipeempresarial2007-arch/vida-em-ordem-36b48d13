@@ -19,11 +19,9 @@ import FocusProtocol from "./pages/FocusProtocol";
 import AICoach from "./pages/AICoach";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import Ambassador from "./pages/Ambassador";
 
 import AppLayout from "./components/layout/AppLayout";
 import { useNotificationScheduler } from "./hooks/useNotificationScheduler";
-import { useReferralTracking } from "./hooks/useReferralTracking";
 import { useTrial } from "./hooks/useTrial";
 import { useSubscription, STRIPE_PRICES } from "./hooks/useSubscription";
 import { Loader2, Lock, Crown, Sparkles } from "lucide-react";
@@ -90,7 +88,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isTrialExpired, isLoading: trialLoading } = useTrial();
   const { isSubscribed, isLoading: subLoading } = useSubscription();
   
-  // Initialize notification scheduler for logged in users
   useNotificationScheduler();
 
   if (loading || trialLoading || subLoading) {
@@ -105,7 +102,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/landing" replace />;
   }
 
-  // Block ALL pages when trial expired and not subscribed
   if (isTrialExpired && !isSubscribed) {
     return <AppLayout><TrialGate /></AppLayout>;
   }
@@ -131,12 +127,8 @@ function AuthRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-// Public landing route - shows landing for guests, redirects logged users to dashboard
 function PublicLandingRoute() {
   const { user, loading } = useAuth();
-  
-  // Track referrals on landing page
-  useReferralTracking();
 
   if (loading) {
     return (
@@ -155,15 +147,12 @@ function PublicLandingRoute() {
 
 const AppRoutes = () => (
   <Routes>
-    {/* Public landing page as root - redirects logged users to dashboard */}
     <Route path="/" element={<PublicLandingRoute />} />
-    {/* Landing always accessible for sharing links */}
     <Route path="/landing" element={<Landing />} />
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/payment-success" element={<PaymentSuccess />} />
     <Route path="/payment-canceled" element={<PaymentCanceled />} />
     <Route path="/install" element={<Install />} />
-    {/* Protected app routes */}
     <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
     <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
@@ -173,7 +162,6 @@ const AppRoutes = () => (
     <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
     <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
     <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
-    <Route path="/embaixador" element={<ProtectedRoute><Ambassador /></ProtectedRoute>} />
     
     <Route path="*" element={<NotFound />} />
   </Routes>
