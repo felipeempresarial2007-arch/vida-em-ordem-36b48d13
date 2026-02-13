@@ -4,13 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useReminderSettings } from '@/hooks/useReminderSettings';
 
 export function NotificationPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const navigate = useNavigate();
+  const { settings, loading } = useReminderSettings();
 
   useEffect(() => {
-    // Check if notifications are supported and not yet granted
+    // Don't show if still loading settings or if reminders are already enabled
+    if (loading || settings?.isEnabled) return;
+    
+    // Check if notifications are supported
     if (!('Notification' in window)) return;
     
     // Check if user already dismissed the prompt today
@@ -21,10 +26,6 @@ export function NotificationPrompt() {
     
     // Check if notifications are already granted
     if (Notification.permission === 'granted') return;
-    
-    // Check if reminder is already enabled
-    const reminderEnabled = localStorage.getItem('focus30_reminder_enabled');
-    if (reminderEnabled === 'true') return;
 
     // Show prompt after a short delay
     const timer = setTimeout(() => {
@@ -32,7 +33,7 @@ export function NotificationPrompt() {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [loading, settings?.isEnabled]);
 
   const handleDismiss = () => {
     const today = new Date().toISOString().split('T')[0];
