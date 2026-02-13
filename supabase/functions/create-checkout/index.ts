@@ -73,7 +73,7 @@ serve(async (req) => {
 
     const priceId = body?.priceId;
     const isGuestCheckout = body?.guestCheckout === true;
-    const referralCode = body?.referralCode; // Código de indicação
+    
 
     if (typeof priceId !== "string" || priceId.length > 128) {
       return json(400, { error: "priceId is required" });
@@ -121,7 +121,7 @@ serve(async (req) => {
       return json(401, { error: "Unauthorized" });
     }
 
-    logStep("Processing checkout", { userId, email, isGuestCheckout, priceId, referralCode });
+    logStep("Processing checkout", { userId, email, isGuestCheckout, priceId });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
@@ -134,11 +134,7 @@ serve(async (req) => {
 
     const origin = getSafeOrigin(req);
 
-    // Incluir metadata de referral se houver código
     const sessionMetadata: Record<string, string> = {};
-    if (referralCode && typeof referralCode === 'string') {
-      sessionMetadata.referral_code = referralCode.toUpperCase();
-    }
     if (userId) {
       sessionMetadata.user_id = userId;
     }
