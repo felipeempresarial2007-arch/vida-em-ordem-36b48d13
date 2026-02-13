@@ -6,7 +6,6 @@ import Dashboard from '@/pages/Dashboard';
 import { WelcomeWizard } from '@/components/onboarding/WelcomeWizard';
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { useWelcomeSound } from '@/hooks/useWelcomeSound';
-import { useProcessReferral } from '@/hooks/useProcessReferral';
 import { Loader2 } from 'lucide-react';
 
 const Index = () => {
@@ -18,9 +17,6 @@ const Index = () => {
   // Play welcome sound on app open
   useWelcomeSound();
   
-  // Process referral after login
-  useProcessReferral();
-
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/landing');
