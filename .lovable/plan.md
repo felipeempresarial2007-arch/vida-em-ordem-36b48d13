@@ -1,64 +1,36 @@
 
 
-# Plano: Liberar Acesso de Admin para Sua Conta Atual
+# Acesso Gratuito para Email Especifico
 
-## Contexto do Problema
+## Objetivo
+Permitir que um email especifico use o app sem precisar pagar, ignorando o sistema de trial e assinatura.
 
-| Conta logada | user_id |
-|--------------|---------|
-| felipeempresarial2007@gmail.com | c52e4c12-8433-4a6b-aa14-2ce5c9f90389 |
-| (conta com admin hoje) | 7abd20d0-c9be-4198-934a-2b1128952eaa |
+## Abordagem
+Adicionar uma lista de emails VIP no hook `useSubscription`. Quando o email do usuario logado estiver nessa lista, o hook retorna `isSubscribed: true` automaticamente, sem consultar o Stripe. Isso desativa o bloqueio de trial e a tela de upgrade.
 
-A role `admin` está vinculada a um usuário antigo que você não tem mais acesso. Precisamos adicionar essa permissão à conta que você usa hoje.
+## Alteracoes
 
----
+### 1. `src/hooks/useSubscription.ts`
+- Adicionar uma constante `VIP_EMAILS` com o(s) email(s) que terao acesso gratuito
+- No `checkSubscription`, antes de chamar a edge function, verificar se o email do usuario esta na lista VIP
+- Se estiver, setar `isSubscribed: true` e retornar sem chamar o backend
 
-## Passo a Passo
+```text
+const VIP_EMAILS = ['email@exemplo.com'];
 
-### Etapa 1 — Acessar o backend
-
-Vou abrir para você a interface do backend do projeto.
-
-### Etapa 2 — Inserir registro na tabela `user_roles`
-
-Na interface do backend:
-
-1. Navegue até **Database → Tables → user_roles**
-2. Clique em **Insert row** (ou "+ Add row")
-3. Preencha os campos:
-
-| Campo | Valor |
-|-------|-------|
-| user_id | `c52e4c12-8433-4a6b-aa14-2ce5c9f90389` |
-| role | `admin` |
-
-4. Salve/Confirm
-
-### Etapa 3 — Testar o acesso
-
-1. Faça logout no app
-2. Faça login novamente com seu e-mail
-3. O link **"Admin"** (ícone de escudo 🛡️) deve aparecer:
-   - **Desktop**: na barra lateral esquerda
-   - **Mobile**: no menu de configurações (ícone de engrenagem no canto superior direito)
-4. Acesse `/admin` e gere seu primeiro código de embaixador
-
----
-
-## Alternativa (se preferir via SQL)
-
-Se você tiver acesso ao painel "Run SQL" no backend, pode executar:
-
-```sql
-INSERT INTO public.user_roles (user_id, role)
-VALUES ('c52e4c12-8433-4a6b-aa14-2ce5c9f90389', 'admin');
+// Dentro de checkSubscription:
+if (user.email && VIP_EMAILS.includes(user.email.toLowerCase())) {
+  setState({
+    isSubscribed: true,
+    productId: null,
+    subscriptionEnd: null,
+    planName: 'VIP',
+    isLoading: false,
+  });
+  return;
+}
 ```
 
----
-
-## Resumo
-
-- Nenhuma alteração de código é necessária
-- Apenas um registro precisa ser adicionado ao banco de dados
-- Após isso, você terá acesso completo ao painel de Admin e poderá gerar códigos de embaixador
+## Proximo passo
+Apos aprovacao, vou precisar saber qual email deve ter acesso gratuito para incluir na lista.
 
