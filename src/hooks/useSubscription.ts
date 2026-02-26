@@ -4,6 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 // Stripe Price IDs
+// Emails with free VIP access (bypass trial & subscription)
+const VIP_EMAILS = ['felipeempresarial2007@gmail.com'];
+
 export const STRIPE_PRICES = {
   monthly: {
     priceId: 'price_1SsmXFDYwN6d3g31EM8QBScy',
@@ -55,6 +58,18 @@ export function useSubscription() {
 
     try {
       setState(prev => ({ ...prev, isLoading: true }));
+
+      // VIP bypass — skip backend call
+      if (user.email && VIP_EMAILS.includes(user.email.toLowerCase())) {
+        setState({
+          isSubscribed: true,
+          productId: null,
+          subscriptionEnd: null,
+          planName: 'VIP',
+          isLoading: false,
+        });
+        return;
+      }
       
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
