@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 export function useNotificationScheduler() {
-  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastNotificationDateRef = useRef<string | null>(null);
 
   useEffect(() => {

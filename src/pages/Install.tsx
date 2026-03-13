@@ -143,6 +143,14 @@ const Install = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
+          {/* App Screenshot */}
+          <div className="mb-6">
+            <img
+              src="/app-screenshot.png"
+              alt="FOCUS 30 App"
+              className="w-full max-w-sm mx-auto rounded-2xl shadow-2xl shadow-primary/20 border border-border/50"
+            />
+          </div>
           <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-orange-600 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/30">
             <Download className="w-12 h-12 text-white" />
           </div>

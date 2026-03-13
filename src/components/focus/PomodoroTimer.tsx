@@ -52,7 +52,7 @@ export default function PomodoroTimer({ task, onComplete }: PomodoroTimerProps) 
 
   // Timer countdown
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (isRunning && timeLeft > 0) {
       interval = setInterval(() => {
@@ -76,7 +76,9 @@ export default function PomodoroTimer({ task, onComplete }: PomodoroTimerProps) 
       }
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isRunning, timeLeft, mode, completedPomodoros]);
 
   const switchMode = useCallback((newMode: TimerMode) => {
