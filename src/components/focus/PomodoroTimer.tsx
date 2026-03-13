@@ -76,7 +76,9 @@ export default function PomodoroTimer({ task, onComplete }: PomodoroTimerProps) 
       }
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isRunning, timeLeft, mode, completedPomodoros]);
 
   const switchMode = useCallback((newMode: TimerMode) => {
