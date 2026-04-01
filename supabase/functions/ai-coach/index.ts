@@ -95,7 +95,7 @@ Uma perspectiva que o usuário não teria sozinho.
 **5. Próximo Passo**
 UMA ação concreta para fazer AGORA.
 
-## ⚡ REGRAS DE OURO
+## REGRAS DE OURO
 
 1. **Seja específico** — "Acorde às 6h30" ao invés de "acorde cedo"
 2. **Baseie-se em evidências** — Cite conceitos quando relevante
