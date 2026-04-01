@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { MissionTemplate, STAGE_INFO } from '@/lib/missions';
-import { CheckCircle2, Circle, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, Circle, ArrowRight, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MissionCardProps {
@@ -57,7 +57,7 @@ export default function MissionCard({
               {mission.title}
             </h2>
           </div>
-          <Sparkles className="w-6 h-6 text-primary-foreground/80" />
+          <Target className="w-6 h-6 text-primary-foreground/80" />
         </div>
         <p className="text-primary-foreground/90 mt-2 text-sm">
           {mission.description}

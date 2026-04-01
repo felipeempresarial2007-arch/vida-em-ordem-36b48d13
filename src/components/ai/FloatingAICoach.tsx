@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Sparkles } from 'lucide-react';
+import { Bot, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { AICoachChat } from './AICoachChat';
@@ -65,7 +65,7 @@ export function FloatingAICoach() {
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-foreground text-sm">Coach de IA</h3>
-                      <Sparkles className="w-3.5 h-3.5 text-secondary" />
+                      <Zap className="w-3.5 h-3.5 text-secondary" />
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />

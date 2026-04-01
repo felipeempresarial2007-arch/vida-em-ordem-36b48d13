@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle2, ArrowRight, Sparkles, PartyPopper } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Unlock, PartyPopper } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 export default function PaymentSuccess() {
@@ -62,7 +62,7 @@ export default function PaymentSuccess() {
               className="bg-muted/50 rounded-xl p-4 mb-6 text-left"
             >
               <div className="flex items-center gap-2 text-sm font-medium text-foreground mb-3">
-                <Sparkles className="w-4 h-4 text-primary" />
+                <Unlock className="w-4 h-4 text-primary" />
                 Você desbloqueou:
               </div>
               <ul className="space-y-2 text-sm text-muted-foreground">

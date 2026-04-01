@@ -18,7 +18,6 @@ import {
   ChevronRight,
   Clock,
   Users,
-  Sparkles,
   Check,
   Rocket,
   Smartphone,
@@ -152,8 +151,8 @@ export default function Landing() {
   const stats = [
     { value: '4', label: 'Pilares de organização' },
     { value: '30', label: 'Dias de desafio' },
-    { value: '4.9', label: 'Avaliação média' },
-    { value: '24/7', label: 'Coach IA disponível' }
+    { value: '4.9', label: 'Avaliação dos usuários' },
+    { value: '24/7', label: 'Suporte disponível' }
   ];
 
   const faqs = [
@@ -522,7 +521,7 @@ export default function Landing() {
               {/* Badge */}
               <div className="absolute -top-5 left-1/2 -translate-x-1/2">
                 <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-orange-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold shadow-xl shadow-primary/30">
-                  <Sparkles className="w-4 h-4" />
+                  <Zap className="w-4 h-4" />
                   Vagas Limitadas
                 </div>
               </div>
@@ -577,7 +576,7 @@ export default function Landing() {
               {/* Anchor - Less than a snack */}
               <div className="text-center mb-8 py-4 border-y border-border/50">
                 <p className="text-muted-foreground text-sm">
-                  💡 <span className="font-medium text-foreground">Menos que um lanche por semana</span> para organizar toda sua vida
+                  <span className="font-medium text-foreground">Menos que um lanche por semana</span> para organizar toda sua vida
                 </p>
               </div>
 

@@ -217,7 +217,7 @@ export function useChallengeProgress() {
         })
         .eq('user_id', user.id);
 
-      toast.success('Missão concluída! 🎉');
+      toast.success('Missão concluída com sucesso!');
       
       // Refresh data
       await fetchProgress();

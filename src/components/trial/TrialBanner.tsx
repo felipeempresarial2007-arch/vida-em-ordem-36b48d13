@@ -3,7 +3,7 @@ import { useTrial } from '@/hooks/useTrial';
 import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, Sparkles, Crown, ArrowRight, X } from 'lucide-react';
+import { Clock, Zap, Crown, ArrowRight, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function TrialBanner() {
@@ -47,7 +47,7 @@ export function TrialBanner() {
                   onClick={() => openCheckout(STRIPE_PRICES.monthly.priceId)}
                   className="w-full md:w-auto shrink-0 bg-gradient-to-r from-primary to-accent hover:opacity-90"
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
+                  <Zap className="w-4 h-4 mr-2" />
                   Fazer Upgrade
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>

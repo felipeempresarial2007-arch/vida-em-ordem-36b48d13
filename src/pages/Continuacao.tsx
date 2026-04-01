@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Infinity, CheckCircle2, Flame, TrendingUp, Plus, X, Edit2, Sparkles } from 'lucide-react';
+import { Infinity, CheckCircle2, Flame, TrendingUp, Plus, X, Edit2, ListPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
@@ -229,10 +229,10 @@ export default function Continuacao() {
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-primary" />
+                <CheckCircle2 className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-1">Parabéns! 🎉</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-1">Bem feito!</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Crie tarefas diárias baseadas nos 4 pilares para manter seus hábitos.
                 </p>
@@ -267,7 +267,7 @@ export default function Continuacao() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                    <ListPlus className="w-5 h-5 text-primary" />
                   </div>
                   <CardTitle className="text-lg">Nova Tarefa Diária</CardTitle>
                 </div>

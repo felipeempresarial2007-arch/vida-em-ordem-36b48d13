@@ -60,7 +60,7 @@ const slides = [
     icon: ArrowRight,
     title: 'Pronto para Começar?',
     description: 'Sua primeira missão está esperando. Lembre-se: consistência é mais importante que perfeição.',
-    highlight: 'Vamos lá! 🚀',
+    highlight: 'Vamos começar.',
   },
 ];
 

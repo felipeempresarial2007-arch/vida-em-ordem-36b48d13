@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, ArrowRight, CheckCircle2, Sparkles, Brain, Calendar, TrendingUp, Trophy } from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle2, Lightbulb, Brain, Calendar, TrendingUp, Trophy, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -91,7 +91,7 @@ export default function Dashboard() {
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-xl bg-primary/12 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-primary" />
+              <Lightbulb className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
@@ -232,7 +232,7 @@ export default function Dashboard() {
         <CardContent className="p-5">
           <div className="flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-xl bg-muted/80 flex items-center justify-center">
-              <span className="text-xl">👥</span>
+              <Users className="w-5 h-5 text-muted-foreground" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
