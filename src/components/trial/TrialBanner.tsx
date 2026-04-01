@@ -3,7 +3,7 @@ import { useTrial } from '@/hooks/useTrial';
 import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, Sparkles, Crown, ArrowRight, X } from 'lucide-react';
+import { Clock, Zap, Crown, ArrowRight, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function TrialBanner() {
