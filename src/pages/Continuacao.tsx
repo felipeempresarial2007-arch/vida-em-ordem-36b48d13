@@ -229,10 +229,10 @@ export default function Continuacao() {
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-primary" />
+                <CheckCircle2 className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-1">Parabéns! 🎉</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-1">Bem feito!</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Crie tarefas diárias baseadas nos 4 pilares para manter seus hábitos.
                 </p>
