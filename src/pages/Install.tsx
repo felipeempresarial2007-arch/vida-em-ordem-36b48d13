@@ -107,7 +107,7 @@ const Install = () => {
             <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-3">
-            App Instalado! 🎉
+            App Instalado com Sucesso
           </h1>
           <p className="text-muted-foreground mb-6">
             Você já está usando o FOCUS 30 como aplicativo. Aproveite a experiência completa!

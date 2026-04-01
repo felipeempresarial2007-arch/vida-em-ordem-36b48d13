@@ -44,7 +44,7 @@ export default function AICoach() {
         </div>
 
         <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <Zap className="w-3.5 h-3.5 text-primary" />
           <span className="text-xs font-medium text-primary">FOCUS 30</span>
         </div>
       </div>

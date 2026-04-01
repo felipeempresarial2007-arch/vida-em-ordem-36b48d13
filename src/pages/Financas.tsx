@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Wallet, Plus, TrendingUp, TrendingDown, X, CheckCircle2, Lock, ChevronRight, Loader2, Sparkles, DollarSign } from 'lucide-react';
+import { Wallet, Plus, TrendingUp, TrendingDown, X, CheckCircle2, Lock, ChevronRight, Loader2, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';

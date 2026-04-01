@@ -51,13 +51,13 @@ export function ChallengeCompleteCard({ completedAt }: ChallengeCompleteCardProp
             </motion.div>
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="w-4 h-4 text-secondary" />
+                <Award className="w-4 h-4 text-secondary" />
                 <span className="text-xs font-medium text-secondary uppercase tracking-wide">
-                  Parabéns!
+                  Conquista desbloqueada
                 </span>
               </div>
               <h2 className="text-xl font-bold text-foreground">
-                Desafio Completo! 🎉
+                Desafio Completo</h2>
               </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
                 Concluído em {completedDate}

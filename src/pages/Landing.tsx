@@ -151,8 +151,8 @@ export default function Landing() {
   const stats = [
     { value: '4', label: 'Pilares de organização' },
     { value: '30', label: 'Dias de desafio' },
-    { value: '4.9', label: 'Avaliação média' },
-    { value: '24/7', label: 'Coach IA disponível' }
+    { value: '4.9', label: 'Avaliação dos usuários' },
+    { value: '24/7', label: 'Suporte disponível' }
   ];
 
   const faqs = [
