@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { MissionTemplate, STAGE_INFO } from '@/lib/missions';
-import { CheckCircle2, Circle, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, Circle, ArrowRight, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MissionCardProps {
