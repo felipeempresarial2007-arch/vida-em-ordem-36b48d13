@@ -57,7 +57,7 @@ export function ChallengeCompleteCard({ completedAt }: ChallengeCompleteCardProp
                 </span>
               </div>
               <h2 className="text-xl font-bold text-foreground">
-                Desafio Completo</h2>
+                Desafio Completo
               </h2>
               <p className="text-sm text-muted-foreground mt-0.5">
                 Concluído em {completedDate}
