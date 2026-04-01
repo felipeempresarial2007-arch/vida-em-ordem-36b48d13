@@ -37,7 +37,7 @@ export function useNotificationScheduler() {
     const showNotification = () => {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then((registration) => {
-          registration.showNotification('FOCUS 30 🎯', {
+          registration.showNotification('FOCUS 30', {
             body: 'Hora de completar sua missão do dia! Vamos manter o foco?',
             icon: '/pwa-192x192.png',
             badge: '/pwa-192x192.png',
