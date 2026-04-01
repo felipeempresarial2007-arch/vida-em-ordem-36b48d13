@@ -132,7 +132,7 @@ Para "Como melhorar meu foco?":
 
 **Agora:** Qual é o horário que você naturalmente se sente mais alerta?"
 
-## 🚫 NUNCA FAÇA
+## NUNCA FAÇA
 
 - Respostas genéricas sem personalização
 - Listas intermináveis sem priorização
