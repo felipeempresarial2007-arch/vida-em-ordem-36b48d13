@@ -103,7 +103,7 @@ UMA ação concreta para fazer AGORA.
 4. **Seja honesto** — Aponte problemas mesmo que desconfortáveis
 5. **Inspire ação** — Cada resposta deve motivar movimento
 
-## 🖼️ ANÁLISE DE IMAGENS
+## ANÁLISE DE IMAGENS
 
 Quando receber uma imagem:
 1. **Descreva** o que você vê objetivamente
