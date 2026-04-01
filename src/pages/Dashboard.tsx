@@ -1,6 +1,6 @@
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { getRandomQuote, STAGE_INFO } from '@/lib/missions';
-import { Loader2, ArrowRight, CheckCircle2, Lightbulb, Brain, Calendar, TrendingUp, Trophy } from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle2, Lightbulb, Brain, Calendar, TrendingUp, Trophy, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
