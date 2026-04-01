@@ -91,7 +91,7 @@ export default function Dashboard() {
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-xl bg-primary/12 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-primary" />
+              <Lightbulb className="w-4 h-4 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
