@@ -451,7 +451,7 @@ export const MISSIONS: MissionTemplate[] = [
       'Para cada um, defina: horário específico e gatilho ("depois de X, faço Y")',
       'Identifique possíveis obstáculos e como superá-los',
       'Crie um sistema de acompanhamento: app, calendário ou diário',
-      'Celebre a conclusão do desafio! 🎉 Você construiu uma nova versão de si mesmo!',
+      'Celebre a conclusão do desafio — você construiu uma nova versão de si mesmo.',
     ],
   },
 ];

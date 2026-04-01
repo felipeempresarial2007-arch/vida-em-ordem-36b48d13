@@ -46,7 +46,7 @@ export function useNotificationScheduler() {
           });
         });
       } else {
-        new Notification('FOCUS 30 🎯', {
+        new Notification('FOCUS 30', {
           body: 'Hora de completar sua missão do dia! Vamos manter o foco?',
           icon: '/pwa-192x192.png',
         });
