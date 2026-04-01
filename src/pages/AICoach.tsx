@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bot, Sparkles, ArrowLeft } from 'lucide-react';
+import { Bot, Zap, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
