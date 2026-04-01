@@ -18,7 +18,6 @@ import {
   ChevronRight,
   Clock,
   Users,
-  Sparkles,
   Check,
   Rocket,
   Smartphone,
