@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 
 import AppLayout from "./components/layout/AppLayout";
 import { useNotificationScheduler } from "./hooks/useNotificationScheduler";
+import { usePageTracking } from "./hooks/usePageTracking";
 import { useTrial } from "./hooks/useTrial";
 import { useSubscription, STRIPE_PRICES } from "./hooks/useSubscription";
 import { Loader2, Lock, Crown, Sparkles } from "lucide-react";
