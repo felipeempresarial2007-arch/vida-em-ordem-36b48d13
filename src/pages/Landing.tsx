@@ -576,7 +576,7 @@ export default function Landing() {
               {/* Anchor - Less than a snack */}
               <div className="text-center mb-8 py-4 border-y border-border/50">
                 <p className="text-muted-foreground text-sm">
-                  💡 <span className="font-medium text-foreground">Menos que um lanche por semana</span> para organizar toda sua vida
+                  <span className="font-medium text-foreground">Menos que um lanche por semana</span> para organizar toda sua vida
                 </p>
               </div>
 
