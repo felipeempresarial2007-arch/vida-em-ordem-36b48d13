@@ -521,7 +521,7 @@ export default function Landing() {
               {/* Badge */}
               <div className="absolute -top-5 left-1/2 -translate-x-1/2">
                 <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-orange-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold shadow-xl shadow-primary/30">
-                  <Sparkles className="w-4 h-4" />
+                  <Zap className="w-4 h-4" />
                   Vagas Limitadas
                 </div>
               </div>
