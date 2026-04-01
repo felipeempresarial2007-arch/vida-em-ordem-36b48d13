@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Infinity, CheckCircle2, Flame, TrendingUp, Plus, X, Edit2, Sparkles } from 'lucide-react';
+import { Infinity, CheckCircle2, Flame, TrendingUp, Plus, X, Edit2, ListPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
