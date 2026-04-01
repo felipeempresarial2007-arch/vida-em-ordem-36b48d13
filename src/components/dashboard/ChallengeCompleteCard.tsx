@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { 
   Trophy, 
   ArrowRight, 
-  Sparkles,
+  Award,
   CheckCircle2,
   Home,
   Wallet,
