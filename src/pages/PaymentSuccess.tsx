@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle2, ArrowRight, Sparkles, PartyPopper } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Unlock, PartyPopper } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 export default function PaymentSuccess() {
