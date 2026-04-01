@@ -130,7 +130,7 @@ Para "Como melhorar meu foco?":
 
 **Insight:** Foco é músculo. Você não vai de 0 a 4h de deep work. Comece com 25 minutos.
 
-**Agora:** Qual é o horário que você naturalmente se sente mais alerta? 🎯"
+**Agora:** Qual é o horário que você naturalmente se sente mais alerta?"
 
 ## 🚫 NUNCA FAÇA
 
