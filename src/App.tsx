@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 
 import AppLayout from "./components/layout/AppLayout";
 import { useNotificationScheduler } from "./hooks/useNotificationScheduler";
+import { usePageTracking } from "./hooks/usePageTracking";
 import { useTrial } from "./hooks/useTrial";
 import { useSubscription, STRIPE_PRICES } from "./hooks/useSubscription";
 import { Loader2, Lock, Crown, Sparkles } from "lucide-react";
@@ -145,27 +146,31 @@ function PublicLandingRoute() {
   return <Landing />;
 }
 
-const AppRoutes = () => (
-  <Routes>
-    <Route path="/" element={<PublicLandingRoute />} />
-    <Route path="/landing" element={<Landing />} />
-    <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
-    <Route path="/payment-success" element={<PaymentSuccess />} />
-    <Route path="/payment-canceled" element={<PaymentCanceled />} />
-    <Route path="/install" element={<Install />} />
-    <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-    <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
-    <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
-    <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-    <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
-    <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
-    <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
-    <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
-    <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
-    
-    <Route path="*" element={<NotFound />} />
-  </Routes>
-);
+const AppRoutes = () => {
+  usePageTracking();
+  
+  return (
+    <Routes>
+      <Route path="/" element={<PublicLandingRoute />} />
+      <Route path="/landing" element={<Landing />} />
+      <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/payment-canceled" element={<PaymentCanceled />} />
+      <Route path="/install" element={<Install />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+      <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
+      <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
+      <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
+      <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
+      <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
+      <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
+      
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
