@@ -689,7 +689,14 @@ export default function Landing() {
             <div className="flex items-center gap-8 text-sm text-muted-foreground">
               <a href="#" className="hover:text-primary transition-colors">Termos</a>
               <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
-              <a href="#" className="hover:text-primary transition-colors">Contato</a>
+              <a 
+                href="https://wa.me/5511920470829" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-green-500 transition-colors flex items-center gap-1.5"
+              >
+                <span className="text-lg">📱</span> Suporte WhatsApp
+              </a>
             </div>
           </div>
         </div>
