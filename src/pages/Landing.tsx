@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { FloatingWhatsApp } from '@/components/landing/FloatingWhatsApp';
 import {
   ArrowRight, 
   Target, 
