@@ -14,9 +14,15 @@ export function FloatingWhatsApp() {
         href="https://wa.me/5511920470829"
         target="_blank"
         rel="noopener noreferrer"
+        className="block"
+        onClick={(e) => {
+          e.stopPropagation();
+          window.open('https://wa.me/5511920470829', '_blank');
+        }}
       >
         <Button
-          className="w-14 h-14 rounded-full shadow-2xl bg-[#25D366] hover:bg-[#1ebe57] hover:scale-110 transition-transform"
+          type="button"
+          className="w-14 h-14 rounded-full shadow-2xl bg-[#25D366] hover:bg-[#1ebe57] hover:scale-110 transition-transform pointer-events-none"
         >
           <MessageCircle className="w-6 h-6 text-white" />
         </Button>
