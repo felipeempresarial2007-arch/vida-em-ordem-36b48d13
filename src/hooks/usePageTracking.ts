@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    fbq?: (...args: unknown[]) => void;
   }
 }
 
@@ -16,6 +17,10 @@ export function usePageTracking() {
         page_path: location.pathname + location.search,
         page_title: document.title,
       });
+    }
+
+    if (window.fbq) {
+      window.fbq("track", "PageView");
     }
   }, [location]);
 }
