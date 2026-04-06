@@ -430,11 +430,11 @@ export default function Landing() {
           >
             <Button 
               size="lg" 
-              className="rounded-full px-10 shadow-lg shadow-primary/25"
+              className="cta-magnetic rounded-full px-10 border-0"
               onClick={handleGetStarted}
             >
-              Começar agora
-              <ChevronRight className="w-5 h-5 ml-1" />
+              Começar minha transformação
+              <ArrowRight className="w-5 h-5 ml-1" />
             </Button>
           </motion.div>
         </div>
