@@ -378,6 +378,71 @@
   .animate-glow-pulse {
     animation: glowPulse 2s ease-in-out infinite;
   }
+
+  /* ========================================
+     Premium CTA Button - Magnetic Pulse
+     Orange-to-black gradient with living animation
+     ======================================== */
+  .cta-magnetic {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, hsl(24 85% 52%) 0%, hsl(20 88% 42%) 40%, hsl(220 25% 12%) 100%);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border: none;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    box-shadow: 
+      0 4px 20px hsl(24 85% 52% / 0.35),
+      0 8px 40px hsl(24 85% 52% / 0.15),
+      inset 0 1px 0 hsl(24 85% 70% / 0.3);
+    animation: ctaPulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .cta-magnetic::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(20 90% 48%) 0%, hsl(18 92% 38%) 45%, hsl(220 30% 8%) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+  }
+
+  .cta-magnetic::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      hsl(24 85% 60% / 0.15) 10%,
+      transparent 20%
+    );
+    animation: ctaShine 4s linear infinite;
+    z-index: -1;
+  }
+
+  .cta-magnetic:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 8px 30px hsl(24 85% 52% / 0.45),
+      0 16px 60px hsl(24 85% 52% / 0.2),
+      inset 0 1px 0 hsl(24 85% 70% / 0.4);
+  }
+
+  .cta-magnetic:hover::before {
+    opacity: 1;
+  }
+
+  .cta-magnetic:active {
+    transform: translateY(-1px) scale(1.01);
+    animation: none;
+  }
 }
 
 @keyframes fadeIn {
