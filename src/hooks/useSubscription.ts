@@ -139,7 +139,7 @@ export function useSubscription() {
 
       if (data?.url) {
         toast.dismiss('checkout');
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       }
     } catch (error) {
       toast.dismiss('checkout');
@@ -178,7 +178,7 @@ export function useSubscription() {
 
       if (data?.url) {
         toast.dismiss('portal');
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       }
     } catch (error) {
       toast.dismiss('portal');
