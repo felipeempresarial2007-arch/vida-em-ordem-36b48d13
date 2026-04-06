@@ -381,22 +381,32 @@
 
   /* ========================================
      Premium CTA Button - Magnetic Pulse
-     Orange-to-black gradient with living animation
+     Psicologia: Laranja (ação/urgência) → Vermelho escuro (desejo/paixão)
+     → Marrom profundo (confiança/solidez)
+     Transição emocional: motivação → desejo → segurança
      ======================================== */
   .cta-magnetic {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, hsl(24 85% 52%) 0%, hsl(20 88% 42%) 40%, hsl(220 25% 12%) 100%);
+    background: linear-gradient(
+      135deg, 
+      hsl(28 90% 54%) 0%,
+      hsl(24 85% 50%) 30%,
+      hsl(16 80% 40%) 65%,
+      hsl(12 60% 22%) 100%
+    );
     color: white;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    font-size: 1.125rem;
+    padding: 1.25rem 2.5rem;
+    letter-spacing: 0.02em;
     border: none;
     z-index: 1;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
     box-shadow: 
-      0 4px 20px hsl(24 85% 52% / 0.35),
-      0 8px 40px hsl(24 85% 52% / 0.15),
-      inset 0 1px 0 hsl(24 85% 70% / 0.3);
+      0 6px 24px hsl(24 85% 52% / 0.4),
+      0 12px 48px hsl(12 60% 22% / 0.15),
+      inset 0 1px 0 hsl(30 90% 65% / 0.25);
     animation: ctaPulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
@@ -404,7 +414,13 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, hsl(20 90% 48%) 0%, hsl(18 92% 38%) 45%, hsl(220 30% 8%) 100%);
+    background: linear-gradient(
+      135deg, 
+      hsl(24 92% 50%) 0%,
+      hsl(18 88% 44%) 35%,
+      hsl(12 72% 34%) 70%,
+      hsl(8 55% 18%) 100%
+    );
     opacity: 0;
     transition: opacity 0.4s ease;
     z-index: -1;
@@ -420,19 +436,19 @@
     background: conic-gradient(
       from 0deg,
       transparent 0%,
-      hsl(24 85% 60% / 0.15) 10%,
-      transparent 20%
+      hsl(30 90% 62% / 0.12) 8%,
+      transparent 16%
     );
-    animation: ctaShine 4s linear infinite;
+    animation: ctaShine 5s linear infinite;
     z-index: -1;
   }
 
   .cta-magnetic:hover {
-    transform: translateY(-3px) scale(1.02);
+    transform: translateY(-3px) scale(1.03);
     box-shadow: 
-      0 8px 30px hsl(24 85% 52% / 0.45),
-      0 16px 60px hsl(24 85% 52% / 0.2),
-      inset 0 1px 0 hsl(24 85% 70% / 0.4);
+      0 10px 36px hsl(24 85% 52% / 0.5),
+      0 20px 64px hsl(12 60% 22% / 0.2),
+      inset 0 1px 0 hsl(30 90% 65% / 0.35);
   }
 
   .cta-magnetic:hover::before {
