@@ -273,7 +273,7 @@ export default function Landing() {
             >
               <Button 
                 size="xl" 
-                className="rounded-full w-full sm:w-auto px-10 shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 text-base"
+                className="cta-magnetic rounded-full w-full sm:w-auto px-10 text-base border-0"
                 onClick={handleGetStarted}
               >
                 Começar minha transformação
@@ -430,11 +430,11 @@ export default function Landing() {
           >
             <Button 
               size="lg" 
-              className="rounded-full px-10 shadow-lg shadow-primary/25"
+              className="cta-magnetic rounded-full px-10 border-0"
               onClick={handleGetStarted}
             >
-              Começar agora
-              <ChevronRight className="w-5 h-5 ml-1" />
+              Começar minha transformação
+              <ArrowRight className="w-5 h-5 ml-1" />
             </Button>
           </motion.div>
         </div>
@@ -584,10 +584,10 @@ export default function Landing() {
               {/* CTA Button */}
               <Button 
                 size="xl" 
-                className="w-full rounded-2xl text-lg shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 py-7"
+                className="cta-magnetic w-full rounded-2xl text-lg py-7 border-0"
                 onClick={handleGetStarted}
               >
-                Quero garantir minha vaga
+                Começar minha transformação
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
@@ -664,10 +664,10 @@ export default function Landing() {
             </p>
             <Button 
               size="xl" 
-              className="rounded-full px-12 shadow-2xl transition-all duration-300 bg-white text-primary hover:bg-white/95 hover:scale-105 font-semibold"
+              className="cta-magnetic rounded-full px-12 font-semibold border-0"
               onClick={handleGetStarted}
             >
-              Garantir minha vaga por R$ 27,90/mês
+              Começar minha transformação
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">
