@@ -664,10 +664,10 @@ export default function Landing() {
             </p>
             <Button 
               size="xl" 
-              className="rounded-full px-12 shadow-2xl transition-all duration-300 bg-white text-primary hover:bg-white/95 hover:scale-105 font-semibold"
+              className="cta-magnetic rounded-full px-12 font-semibold border-0"
               onClick={handleGetStarted}
             >
-              Garantir minha vaga por R$ 27,90/mês
+              Começar minha transformação
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">
