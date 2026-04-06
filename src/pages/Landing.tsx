@@ -584,10 +584,10 @@ export default function Landing() {
               {/* CTA Button */}
               <Button 
                 size="xl" 
-                className="w-full rounded-2xl text-lg shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 py-7"
+                className="cta-magnetic w-full rounded-2xl text-lg py-7 border-0"
                 onClick={handleGetStarted}
               >
-                Quero garantir minha vaga
+                Começar minha transformação
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
