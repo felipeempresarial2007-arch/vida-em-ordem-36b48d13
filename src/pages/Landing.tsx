@@ -273,7 +273,7 @@ export default function Landing() {
             >
               <Button 
                 size="xl" 
-                className="rounded-full w-full sm:w-auto px-10 shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 text-base"
+                className="cta-magnetic rounded-full w-full sm:w-auto px-10 text-base border-0"
                 onClick={handleGetStarted}
               >
                 Começar minha transformação
