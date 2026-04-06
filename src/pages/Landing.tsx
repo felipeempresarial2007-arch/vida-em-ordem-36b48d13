@@ -71,7 +71,7 @@ export default function Landing() {
         }
         
         toast.dismiss('checkout');
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       } catch (error) {
         toast.dismiss('checkout');
         toast.error('Erro ao processar checkout');
