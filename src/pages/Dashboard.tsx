@@ -6,12 +6,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { ChallengeCompleteCard } from '@/components/dashboard/ChallengeCompleteCard';
 import ProgressCard from '@/components/dashboard/ProgressCard';
 import { TrialBanner } from '@/components/trial/TrialBanner';
+import { AchievementCard } from '@/components/dashboard/AchievementCard';
 
 export default function Dashboard() {
   const { 
