@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { FloatingWhatsApp } from '@/components/landing/FloatingWhatsApp';
+
+const FloatingWhatsApp = lazy(() => import('@/components/landing/FloatingWhatsApp').then(m => ({ default: m.FloatingWhatsApp })));
 import {
   ArrowRight, 
   Target, 
@@ -703,7 +705,9 @@ export default function Landing() {
         </div>
       </footer>
 
-      <FloatingWhatsApp />
+      <Suspense fallback={null}>
+        <FloatingWhatsApp />
+      </Suspense>
     </div>
   );
 }
