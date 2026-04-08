@@ -164,6 +164,18 @@ export default function Landing() {
       answer: 'As missões foram desenhadas para serem práticas. A maioria leva entre 15 a 30 minutos por dia.'
     },
     {
+      question: 'O FOCUS 30 funciona para quem tem pouco tempo?',
+      answer: 'Sim! O método foi criado especialmente para pessoas com rotinas corridas. Cada missão é curta, objetiva e pode ser feita em qualquer momento do dia. Você não precisa de horas livres — precisa apenas de 15 minutos de foco real.'
+    },
+    {
+      question: 'Posso usar o FOCUS 30 se já uso outros apps de produtividade?',
+      answer: 'Com certeza. O FOCUS 30 não é apenas mais um app de tarefas — é um sistema de transformação com missões guiadas, coaching por IA e acompanhamento de progresso. Ele complementa qualquer ferramenta que você já use, trazendo a estrutura e a disciplina que faltam.'
+    },
+    {
+      question: 'O Coach IA é realmente personalizado?',
+      answer: 'Sim. O Coach IA analisa o seu contexto, entende suas dificuldades e oferece orientações sob medida para a sua situação. Não são respostas genéricas — é como ter um mentor pessoal disponível 24 horas por dia, 7 dias por semana.'
+    },
+    {
       question: 'E se eu perder um dia?',
       answer: 'Sem problemas! Você pode continuar de onde parou. O importante é não desistir e manter a consistência.'
     },
@@ -212,12 +224,13 @@ export default function Landing() {
             </div>
             <div className="md:hidden flex items-center gap-2">
               <Link to="/auth">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="min-h-[48px] min-w-[48px]">
                   Entrar
                 </Button>
               </Link>
-              <Button size="sm" className="rounded-full shadow-md shadow-primary/20" onClick={handleGetStarted}>
-                Começar
+              <Button size="sm" className="rounded-full shadow-md shadow-primary/20 min-h-[48px] px-5 text-sm font-semibold" onClick={handleGetStarted}>
+                Garantir vaga
+                <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
           </div>
