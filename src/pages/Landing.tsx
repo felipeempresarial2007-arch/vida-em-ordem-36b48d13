@@ -253,9 +253,9 @@ export default function Landing() {
               variants={fadeInUp}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] mb-6 tracking-tight"
             >
-              Organize sua vida
+              A sensação de ter a vida
               <span className="block bg-gradient-to-r from-primary via-primary to-orange-500 bg-clip-text text-transparent">
-                com clareza e foco
+                sob controle em 30 dias
               </span>
             </motion.h1>
 
