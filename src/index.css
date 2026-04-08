@@ -398,10 +398,11 @@
     color: white;
     font-weight: 700;
     font-size: clamp(0.95rem, 2.5vw, 1.25rem);
-    padding: 1rem 1.5rem;
+    padding: 1.125rem 1.75rem;
     letter-spacing: 0.02em;
     width: 100%;
     max-width: 100%;
+    min-height: 56px;
     box-sizing: border-box;
     white-space: normal;
     text-align: center;
