@@ -664,7 +664,7 @@ export default function Landing() {
             </p>
             <Button 
               size="xl" 
-              className="cta-magnetic rounded-full px-12 font-semibold border-0"
+              className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStarted}
             >
               Começar minha transformação
