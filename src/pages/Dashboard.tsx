@@ -6,12 +6,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { ChallengeCompleteCard } from '@/components/dashboard/ChallengeCompleteCard';
 import ProgressCard from '@/components/dashboard/ProgressCard';
 import { TrialBanner } from '@/components/trial/TrialBanner';
+import { AchievementCard } from '@/components/dashboard/AchievementCard';
 
 export default function Dashboard() {
   const { 
@@ -25,6 +26,16 @@ export default function Dashboard() {
   } = useChallengeProgress();
 
   const [quote] = useState(getRandomQuote());
+  const [achievement, setAchievement] = useState<{day: number; stage: string; title: string} | null>(null);
+
+  const handleCompleteMission = useCallback(async () => {
+    if (!todayMission || !missionTemplate) return;
+    const day = missionTemplate.day;
+    const stage = missionTemplate.stage;
+    const title = missionTemplate.title;
+    await completeMission();
+    setAchievement({ day, stage, title });
+  }, [todayMission, missionTemplate, completeMission]);
 
   if (loading) {
     return (
@@ -199,7 +210,7 @@ export default function Dashboard() {
                 className="w-full"
                 size="lg"
                 disabled={!canComplete}
-                onClick={completeMission}
+                onClick={handleCompleteMission}
               >
                 <CheckCircle2 className="w-4 h-4 mr-2" />
                 Concluir Missão
@@ -227,7 +238,17 @@ export default function Dashboard() {
         </Card>
       )}
 
-      {/* Community Card - Premium subtle */}
+      {/* Achievement Card - shown after completing a mission */}
+      {achievement && (
+        <AchievementCard
+          dayNumber={achievement.day}
+          stage={achievement.stage}
+          title={achievement.title}
+          onDismiss={() => setAchievement(null)}
+        />
+      )}
+
+
       <Card className="bg-gradient-to-br from-muted/30 to-transparent border-border/60">
         <CardContent className="p-5">
           <div className="flex items-center gap-3.5">
