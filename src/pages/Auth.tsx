@@ -88,12 +88,17 @@ export default function Auth() {
   const startGoogleOAuth = async () => {
     setGoogleLoading(true);
     try {
+      console.log('[Google OAuth] Starting sign in from:', window.location.origin);
       const { error } = await signInWithGoogle();
       if (error) {
-        toast.error('Erro ao entrar com Google');
+        console.error('[Google OAuth] Error:', error.message, error);
+        toast.error(`Erro ao entrar com Google: ${error.message}`);
+      } else {
+        console.log('[Google OAuth] Success - no error returned');
       }
-    } catch {
-      toast.error('Ocorreu um erro inesperado');
+    } catch (err: any) {
+      console.error('[Google OAuth] Unexpected error:', err);
+      toast.error(`Erro inesperado: ${err?.message || 'desconhecido'}`);
     } finally {
       setGoogleLoading(false);
     }
