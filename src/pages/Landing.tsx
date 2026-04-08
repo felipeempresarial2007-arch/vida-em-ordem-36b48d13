@@ -278,7 +278,7 @@ export default function Landing() {
                 className="cta-magnetic rounded-full sm:max-w-md border-0"
                 onClick={handleGetStarted}
               >
-                Começar minha transformação
+                Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
