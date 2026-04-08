@@ -151,26 +151,34 @@ function PublicLandingRoute() {
 const AppRoutes = () => {
   usePageTracking();
   
+  const SuspenseFallback = (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+    </div>
+  );
+
   return (
-    <Routes>
-      <Route path="/" element={<PublicLandingRoute />} />
-      <Route path="/landing" element={<Landing />} />
-      <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
-      <Route path="/payment-success" element={<PaymentSuccess />} />
-      <Route path="/payment-canceled" element={<PaymentCanceled />} />
-      <Route path="/install" element={<Install />} />
-      <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-      <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
-      <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
-      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-      <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
-      <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
-      <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
-      <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
-      <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
-      
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Suspense fallback={SuspenseFallback}>
+      <Routes>
+        <Route path="/" element={<PublicLandingRoute />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-canceled" element={<PaymentCanceled />} />
+        <Route path="/install" element={<Install />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+        <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
+        <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/ambiente" element={<ProtectedRoute><Ambiente /></ProtectedRoute>} />
+        <Route path="/financas" element={<ProtectedRoute><Financas /></ProtectedRoute>} />
+        <Route path="/rotina" element={<ProtectedRoute><Rotina /></ProtectedRoute>} />
+        <Route path="/metas" element={<ProtectedRoute><Metas /></ProtectedRoute>} />
+        <Route path="/continuacao" element={<ProtectedRoute><Continuacao /></ProtectedRoute>} />
+        
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 
