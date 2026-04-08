@@ -206,7 +206,7 @@ export default function Landing() {
                 </Button>
               </Link>
               <Button className="rounded-full px-6 shadow-lg shadow-primary/20" onClick={handleGetStarted}>
-                Quero começar
+                Garantir minha vaga
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
