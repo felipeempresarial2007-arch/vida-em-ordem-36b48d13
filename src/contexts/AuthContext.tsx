@@ -78,17 +78,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth`,
-        queryParams: {
-          prompt: 'select_account',
-        },
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+      extraParams: {
+        prompt: 'select_account',
       },
     });
 
-    return { error };
+    if (result.error) {
+      return { error: result.error };
+    }
+
+    if (result.redirected) {
+      return { error: null };
+    }
+
+    return { error: null };
   };
 
   const resetPassword = async (email: string) => {
