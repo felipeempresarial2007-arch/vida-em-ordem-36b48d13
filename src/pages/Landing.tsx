@@ -430,7 +430,7 @@ export default function Landing() {
           >
             <Button 
               size="lg" 
-              className="cta-magnetic rounded-full px-10 border-0"
+              className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStarted}
             >
               Começar minha transformação
