@@ -584,7 +584,7 @@ export default function Landing() {
               {/* CTA Button */}
               <Button 
                 size="xl" 
-                className="cta-magnetic w-full rounded-2xl text-lg py-7 border-0"
+                className="cta-magnetic rounded-2xl border-0"
                 onClick={handleGetStarted}
               >
                 Começar minha transformação
