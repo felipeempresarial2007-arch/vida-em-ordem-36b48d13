@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import DOMPurify from 'dompurify';
 
 const suggestions = [
+  "Qual é a única coisa que, se organizada hoje, mudaria sua semana?",
   "Como posso melhorar meu foco?",
   "Dicas para criar uma rotina produtiva",
   "Como manter a disciplina nos 30 dias?",
