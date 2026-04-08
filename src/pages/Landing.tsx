@@ -206,7 +206,7 @@ export default function Landing() {
                 </Button>
               </Link>
               <Button className="rounded-full px-6 shadow-lg shadow-primary/20" onClick={handleGetStarted}>
-                Quero começar
+                Garantir minha vaga
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
@@ -253,9 +253,9 @@ export default function Landing() {
               variants={fadeInUp}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] mb-6 tracking-tight"
             >
-              Organize sua vida
+              A sensação de ter a vida
               <span className="block bg-gradient-to-r from-primary via-primary to-orange-500 bg-clip-text text-transparent">
-                com clareza e foco
+                sob controle em 30 dias
               </span>
             </motion.h1>
 
@@ -278,7 +278,7 @@ export default function Landing() {
                 className="cta-magnetic rounded-full sm:max-w-md border-0"
                 onClick={handleGetStarted}
               >
-                Começar minha transformação
+                Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
@@ -435,7 +435,7 @@ export default function Landing() {
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStarted}
             >
-              Começar minha transformação
+              Garantir minha vaga no ciclo atual
               <ArrowRight className="w-5 h-5 ml-1" />
             </Button>
           </motion.div>
@@ -576,10 +576,13 @@ export default function Landing() {
                 ))}
               </div>
 
-              {/* Anchor - Less than a snack */}
-              <div className="text-center mb-8 py-4 border-y border-border/50">
+              {/* Anchor - Daily value reframe */}
+              <div className="text-center mb-8 py-5 border-y border-border/50">
+                <p className="text-foreground font-semibold text-base mb-1">
+                  Menos de R$ 1,00 por dia
+                </p>
                 <p className="text-muted-foreground text-sm">
-                  <span className="font-medium text-foreground">Menos que um lanche por semana</span> para organizar toda sua vida
+                  para transformar completamente sua rotina e sua vida
                 </p>
               </div>
 
@@ -589,7 +592,7 @@ export default function Landing() {
                 className="cta-magnetic rounded-2xl border-0"
                 onClick={handleGetStarted}
               >
-                Começar minha transformação
+                Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
@@ -669,7 +672,7 @@ export default function Landing() {
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStarted}
             >
-              Começar minha transformação
+              Garantir minha vaga no ciclo atual
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">
