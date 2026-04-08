@@ -238,7 +238,17 @@ export default function Dashboard() {
         </Card>
       )}
 
-      {/* Community Card - Premium subtle */}
+      {/* Achievement Card - shown after completing a mission */}
+      {achievement && (
+        <AchievementCard
+          dayNumber={achievement.day}
+          stage={achievement.stage}
+          title={achievement.title}
+          onDismiss={() => setAchievement(null)}
+        />
+      )}
+
+
       <Card className="bg-gradient-to-br from-muted/30 to-transparent border-border/60">
         <CardContent className="p-5">
           <div className="flex items-center gap-3.5">
