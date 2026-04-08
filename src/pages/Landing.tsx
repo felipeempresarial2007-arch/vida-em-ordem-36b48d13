@@ -576,10 +576,13 @@ export default function Landing() {
                 ))}
               </div>
 
-              {/* Anchor - Less than a snack */}
-              <div className="text-center mb-8 py-4 border-y border-border/50">
+              {/* Anchor - Daily value reframe */}
+              <div className="text-center mb-8 py-5 border-y border-border/50">
+                <p className="text-foreground font-semibold text-base mb-1">
+                  Menos de R$ 1,00 por dia
+                </p>
                 <p className="text-muted-foreground text-sm">
-                  <span className="font-medium text-foreground">Menos que um lanche por semana</span> para organizar toda sua vida
+                  para transformar completamente sua rotina e sua vida
                 </p>
               </div>
 
