@@ -210,7 +210,7 @@ export default function Dashboard() {
                 className="w-full"
                 size="lg"
                 disabled={!canComplete}
-                onClick={completeMission}
+                onClick={handleCompleteMission}
               >
                 <CheckCircle2 className="w-4 h-4 mr-2" />
                 Concluir Missão
