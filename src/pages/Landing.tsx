@@ -705,7 +705,9 @@ export default function Landing() {
         </div>
       </footer>
 
-      <FloatingWhatsApp />
+      <Suspense fallback={null}>
+        <FloatingWhatsApp />
+      </Suspense>
     </div>
   );
 }
