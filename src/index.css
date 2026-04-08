@@ -465,6 +465,14 @@
     transform: translateY(-1px) scale(1.01);
     animation: none;
   }
+
+
+  @media (min-width: 640px) {
+    .cta-magnetic {
+      width: auto;
+      padding: 1.5rem 3rem;
+    }
+  }
 }
 
 @keyframes fadeIn {
