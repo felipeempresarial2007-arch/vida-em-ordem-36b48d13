@@ -26,6 +26,16 @@ export default function Dashboard() {
   } = useChallengeProgress();
 
   const [quote] = useState(getRandomQuote());
+  const [achievement, setAchievement] = useState<{day: number; stage: string; title: string} | null>(null);
+
+  const handleCompleteMission = useCallback(async () => {
+    if (!todayMission || !missionTemplate) return;
+    const day = missionTemplate.day;
+    const stage = missionTemplate.stage;
+    const title = missionTemplate.title;
+    await completeMission();
+    setAchievement({ day, stage, title });
+  }, [todayMission, missionTemplate, completeMission]);
 
   if (loading) {
     return (
