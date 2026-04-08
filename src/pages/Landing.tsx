@@ -224,12 +224,13 @@ export default function Landing() {
             </div>
             <div className="md:hidden flex items-center gap-2">
               <Link to="/auth">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="min-h-[48px] min-w-[48px]">
                   Entrar
                 </Button>
               </Link>
-              <Button size="sm" className="rounded-full shadow-md shadow-primary/20" onClick={handleGetStarted}>
-                Começar
+              <Button size="sm" className="rounded-full shadow-md shadow-primary/20 min-h-[48px] px-5 text-sm font-semibold" onClick={handleGetStarted}>
+                Garantir vaga
+                <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
           </div>
