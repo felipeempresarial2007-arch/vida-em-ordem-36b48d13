@@ -273,7 +273,7 @@ export default function Landing() {
             >
               <Button 
                 size="xl" 
-                className="cta-magnetic rounded-full w-full sm:w-auto px-10 text-base border-0"
+                className="cta-magnetic rounded-full sm:max-w-md border-0"
                 onClick={handleGetStarted}
               >
                 Começar minha transformação
@@ -430,7 +430,7 @@ export default function Landing() {
           >
             <Button 
               size="lg" 
-              className="cta-magnetic rounded-full px-10 border-0"
+              className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStarted}
             >
               Começar minha transformação
@@ -584,7 +584,7 @@ export default function Landing() {
               {/* CTA Button */}
               <Button 
                 size="xl" 
-                className="cta-magnetic w-full rounded-2xl text-lg py-7 border-0"
+                className="cta-magnetic rounded-2xl border-0"
                 onClick={handleGetStarted}
               >
                 Começar minha transformação
@@ -664,7 +664,7 @@ export default function Landing() {
             </p>
             <Button 
               size="xl" 
-              className="cta-magnetic rounded-full px-12 font-semibold border-0"
+              className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStarted}
             >
               Começar minha transformação
