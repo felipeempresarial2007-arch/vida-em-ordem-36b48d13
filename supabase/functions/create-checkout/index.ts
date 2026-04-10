@@ -1,10 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const logStep = (step: string, details?: unknown) => {
@@ -26,12 +26,12 @@ function json(status: number, body: Record<string, unknown>) {
 function getSafeOrigin(req: Request) {
   const origin = req.headers.get("origin") ?? "";
 
-  // Allow localhost for dev and the hosted lovableproject domains.
   const isLocalhost = /^http:\/\/localhost(?::\d+)?$/.test(origin);
-  const isLovableHosted = /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(origin);
+  const isLovableHosted = /^https:\/\/[a-z0-9-]+\.lovable\.app$/.test(origin);
+  const isLovableProject = /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/.test(origin);
 
-  if (origin && (isLocalhost || isLovableHosted)) return origin;
-  return "https://lovable.dev";
+  if (origin && (isLocalhost || isLovableHosted || isLovableProject)) return origin;
+  return "https://focus-30-app.lovable.app";
 }
 
 function checkRateLimit(key: string) {
@@ -47,11 +47,20 @@ function checkRateLimit(key: string) {
 }
 
 const ALLOWED_PRICE_IDS = new Set([
-  // Mensal
   "price_1SsmXFDYwN6d3g31EM8QBScy",
-  // Anual
   "price_1SsmXwDYwN6d3g31Fc9Ue5ED",
 ]);
+
+// Pre-initialize Stripe instance at module level for reuse across requests
+let stripeInstance: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!stripeInstance) {
+    const key = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!key) throw new Error("STRIPE_SECRET_KEY not set");
+    stripeInstance = new Stripe(key, { apiVersion: "2025-08-27.basil" });
+  }
+  return stripeInstance;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -60,9 +69,6 @@ serve(async (req) => {
 
   try {
     logStep("Function started");
-
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) return json(500, { error: "Server misconfigured" });
 
     let body: any;
     try {
@@ -73,7 +79,6 @@ serve(async (req) => {
 
     const priceId = body?.priceId;
     const isGuestCheckout = body?.guestCheckout === true;
-    
 
     if (typeof priceId !== "string" || priceId.length > 128) {
       return json(400, { error: "priceId is required" });
@@ -89,7 +94,6 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     
-    // If authenticated, use the user's email
     if (authHeader?.startsWith("Bearer ")) {
       const token = authHeader.slice("Bearer ".length);
 
@@ -110,7 +114,6 @@ serve(async (req) => {
       }
     }
 
-    // For guest checkout without auth, we allow it but apply IP-based rate limit
     if (!email && isGuestCheckout) {
       const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
       if (!checkRateLimit(`ip:${clientIP}`)) {
@@ -121,18 +124,17 @@ serve(async (req) => {
       return json(401, { error: "Unauthorized" });
     }
 
-    logStep("Processing checkout", { userId, email, isGuestCheckout, priceId });
+    logStep("Processing checkout", { isGuestCheckout, priceId });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const stripe = getStripe();
+    const origin = getSafeOrigin(req);
 
-    // Check if customer already exists (only if we have email)
+    // Run customer lookup and session creation in parallel when possible
     if (email) {
       const customers = await stripe.customers.list({ email, limit: 1 });
       customerId = customers.data[0]?.id;
       if (customerId) logStep("Found existing customer", { customerId });
     }
-
-    const origin = getSafeOrigin(req);
 
     const sessionMetadata: Record<string, string> = {};
     if (userId) {
