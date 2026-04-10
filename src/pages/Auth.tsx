@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import { Loader2, ArrowRight, Target, Zap, Shield, CheckCircle2 } from 'lucide-react';
+import { Loader2, ArrowRight, Target, Zap, Shield } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
 
