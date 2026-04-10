@@ -57,8 +57,8 @@ export default function Landing() {
     navigate('/auth');
   }, [user, navigate]);
 
-  const handleGetStartedMonthly = useCallback(() => handleGetStarted(STRIPE_PRICES.monthly.priceId), [handleGetStarted]);
-  const handleGetStartedAnnual = useCallback(() => handleGetStarted(STRIPE_PRICES.annual.priceId), [handleGetStarted]);
+  const handleGetStartedMonthly = useCallback(() => handleGetStarted(), [handleGetStarted]);
+  const handleGetStartedAnnual = useCallback(() => handleGetStarted(), [handleGetStarted]);
 
   const benefits = [
     {
