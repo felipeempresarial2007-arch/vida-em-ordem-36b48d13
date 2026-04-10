@@ -452,11 +452,30 @@ export default function Auth() {
                 </summary>
                 <div className="p-4 pt-0 space-y-3 text-xs text-muted-foreground">
                   <p>
+                    Ambiente: <span className={`font-semibold ${isPreview ? 'text-amber-500' : 'text-emerald-500'}`}>
+                      {isPreview ? '⚠️ Preview (pode falhar)' : '✅ Publicado'}
+                    </span>
+                  </p>
+                  <p>
                     Origem: <span className="font-medium break-all text-foreground/70">{window.location.origin}</span>
                   </p>
                   <p>
                     Redirect: <span className="font-medium break-all text-foreground/70">{googleRedirectTo}</span>
                   </p>
+                  <p>
+                    Sessão ativa: <span className="font-medium text-foreground/70">{user ? '✅ Sim' : '❌ Não'}</span>
+                  </p>
+                  <p>
+                    Navegador in-app: <span className={`font-medium ${isInApp ? 'text-amber-500' : 'text-foreground/70'}`}>
+                      {isInApp ? '⚠️ Sim (pode causar erro)' : 'Não'}
+                    </span>
+                  </p>
+                  {isPreview && (
+                    <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400">
+                      <p className="font-medium">O login com Google funciona melhor no domínio publicado:</p>
+                      <p className="font-mono mt-1 break-all">https://focus-30-app.lovable.app/auth</p>
+                    </div>
+                  )}
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button type="button" variant="outline" size="sm" className="rounded-lg" onClick={() => copyToClipboard(`${window.location.origin}/*`)}>
                       Copiar origem/*
