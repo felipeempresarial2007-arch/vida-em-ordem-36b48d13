@@ -35,7 +35,7 @@ export default function Auth() {
   const { signIn, signUp, signInWithGoogle, resetPassword, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
-  const googleRedirectTo = `${window.location.origin}/auth`;
+  
 
   const isPreview = window.location.hostname.includes('id-preview--');
   const isInApp = isInAppBrowser();
