@@ -130,8 +130,7 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
-    // Google OAuth frequentemente falha em navegadores embutidos (ex.: Instagram/Facebook)
-    if (isInAppBrowser()) {
+    if (isInApp) {
       setShowGoogleInAppDialog(true);
       return;
     }
