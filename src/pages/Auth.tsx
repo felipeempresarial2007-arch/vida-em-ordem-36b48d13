@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import { Loader2, ArrowRight, Target, Zap, Shield } from 'lucide-react';
+import { Loader2, ArrowRight, Target, Zap, Shield, CheckCircle2 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
 
@@ -30,10 +30,14 @@ export default function Auth() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showGoogleInAppDialog, setShowGoogleInAppDialog] = useState(false);
   const [oauthError, setOauthError] = useState<{ error: string; description?: string } | null>(null);
-  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
+  const [oauthReturning, setOauthReturning] = useState(false);
+  const { signIn, signUp, signInWithGoogle, resetPassword, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const googleRedirectTo = `${window.location.origin}/auth`;
+
+  const isPreview = window.location.hostname.includes('id-preview--');
+  const isInApp = isInAppBrowser();
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -44,6 +48,28 @@ export default function Auth() {
     }
   };
 
+  // Detect OAuth return and show loading state
+  useEffect(() => {
+    const hash = window.location.hash;
+    const search = window.location.search;
+    const hasOAuthParams = hash.includes('access_token') || hash.includes('error') || search.includes('error') || search.includes('code=');
+    
+    if (hasOAuthParams) {
+      setOauthReturning(true);
+      console.log('[Auth] OAuth return detected');
+    }
+  }, []);
+
+  // Auto-navigate to dashboard when user session is established
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log('[Auth] Session detected, navigating to dashboard');
+      toast.success('Login realizado com sucesso!');
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, authLoading, navigate]);
+
+  // Parse OAuth errors from URL
   useEffect(() => {
     const safeDecode = (value: string) => {
       try {
@@ -61,6 +87,8 @@ export default function Auth() {
 
     if (!error) return;
 
+    setOauthReturning(false);
+
     const info = {
       error,
       description: descriptionRaw ? safeDecode(descriptionRaw) : undefined,
@@ -69,32 +97,29 @@ export default function Auth() {
     setOauthError(info);
 
     if (error === 'access_denied') {
-      toast.error('Google bloqueou o acesso (403). Verifique se o app está em “Testing” ou se sua conta está liberada.');
+      toast.error('Acesso negado pelo Google. Verifique se sua conta está autorizada.');
     } else if (error.toLowerCase().includes('redirect')) {
-      toast.error('Erro de redirecionamento do Google. Verifique as URLs permitidas no backend.');
+      toast.error('Erro de redirecionamento do Google. Tente novamente.');
     } else {
       toast.error(`Falha no login com Google: ${error}`);
     }
 
-    // Evita repetir o toast ao recarregar
     window.history.replaceState({}, document.title, window.location.pathname);
   }, []);
 
-  const isInAppBrowser = () => {
+  function isInAppBrowser() {
     const ua = navigator.userAgent || '';
     return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line|TikTok|LinkedInApp/i.test(ua);
-  };
+  }
 
   const startGoogleOAuth = async () => {
     setGoogleLoading(true);
     try {
-      console.log('[Google OAuth] Starting sign in from:', window.location.origin);
-      const { error } = await signInWithGoogle();
+      console.log('[Google OAuth] Starting sign in, redirect:', googleRedirectTo);
+      const { error } = await signInWithGoogle(googleRedirectTo);
       if (error) {
-        console.error('[Google OAuth] Error:', error.message, error);
+        console.error('[Google OAuth] Error:', error.message);
         toast.error(`Erro ao entrar com Google: ${error.message}`);
-      } else {
-        console.log('[Google OAuth] Success - no error returned');
       }
     } catch (err: any) {
       console.error('[Google OAuth] Unexpected error:', err);
