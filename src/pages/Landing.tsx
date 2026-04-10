@@ -1,9 +1,12 @@
-import { lazy, Suspense, useCallback } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { STRIPE_PRICES } from '@/hooks/useSubscription';
 
 const FloatingWhatsApp = lazy(() => import('@/components/landing/FloatingWhatsApp').then(m => ({ default: m.FloatingWhatsApp })));
 import {
