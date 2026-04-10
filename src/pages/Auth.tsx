@@ -116,15 +116,31 @@ export default function Auth() {
   const startGoogleOAuth = async () => {
     setGoogleLoading(true);
     try {
-      console.log('[Google OAuth] Starting sign in, redirect:', googleRedirectTo);
-      const { error } = await signInWithGoogle(googleRedirectTo);
+      const redirectUri = `${window.location.origin}/auth`;
+      console.log('[Google OAuth] Starting sign in, redirect:', redirectUri);
+      const { error } = await signInWithGoogle(redirectUri);
       if (error) {
-        console.error('[Google OAuth] Error:', error.message);
-        toast.error(`Erro ao entrar com Google: ${error.message}`);
+        const msg = error.message || '';
+        console.error('[Google OAuth] Error:', msg);
+        
+        if (msg.includes('cancelled') || msg.includes('canceled')) {
+          // User closed the popup or cancelled — no scary error needed
+          console.log('[Google OAuth] User cancelled sign in');
+        } else if (msg.includes('popup') || msg.includes('blocked')) {
+          toast.error('Pop-up bloqueado pelo navegador. Permita pop-ups e tente novamente.');
+        } else {
+          toast.error('Erro ao entrar com Google. Tente novamente.');
+        }
       }
     } catch (err: any) {
+      const msg = err?.message || '';
       console.error('[Google OAuth] Unexpected error:', err);
-      toast.error(`Erro inesperado: ${err?.message || 'desconhecido'}`);
+      
+      if (msg.includes('cancelled') || msg.includes('canceled')) {
+        // Silently ignore user cancellation
+      } else {
+        toast.error('Erro inesperado ao conectar com Google. Tente novamente.');
+      }
     } finally {
       setGoogleLoading(false);
     }
