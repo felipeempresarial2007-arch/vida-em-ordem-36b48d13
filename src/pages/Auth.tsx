@@ -18,6 +18,7 @@ import {
 import { toast } from 'sonner';
 import { Loader2, ArrowRight, Target, Zap, Shield } from 'lucide-react';
 import Logo from '@/components/Logo';
+import { FloatingWhatsApp } from '@/components/landing/FloatingWhatsApp';
 import { motion } from 'framer-motion';
 
 export default function Auth() {
@@ -526,6 +527,7 @@ export default function Auth() {
           </motion.div>
         </motion.div>
       </div>
+      <FloatingWhatsApp />
     </div>
   );
 }
