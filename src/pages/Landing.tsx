@@ -1,12 +1,9 @@
-import { lazy, Suspense, useState, useCallback } from 'react';
+import { lazy, Suspense, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
-import { STRIPE_PRICES } from '@/hooks/useSubscription';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 const FloatingWhatsApp = lazy(() => import('@/components/landing/FloatingWhatsApp').then(m => ({ default: m.FloatingWhatsApp })));
 import {
@@ -46,43 +43,19 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  
 
-  const handleGetStarted = useCallback(async (priceId: string = STRIPE_PRICES.monthly.priceId) => {
-    if (checkoutLoading) return;
-    
+  const handleGetStarted = useCallback(() => {
     if (user) {
       navigate('/dashboard');
       return;
     }
+    // Redirect to sign-up page — user gets 24h free trial, then must pay
+    navigate('/auth');
+  }, [user, navigate]);
 
-    // Guest checkout — direct to Stripe as fast as possible
-    setCheckoutLoading(true);
-    toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, guestCheckout: true },
-      });
-      
-      if (error || !data?.url) {
-        toast.dismiss('checkout');
-        toast.error('Erro ao criar sessão de checkout. Tente novamente.');
-        setCheckoutLoading(false);
-        return;
-      }
-      
-      toast.dismiss('checkout');
-      window.location.href = data.url;
-    } catch {
-      toast.dismiss('checkout');
-      toast.error('Erro ao processar checkout');
-      setCheckoutLoading(false);
-    }
-  }, [user, navigate, checkoutLoading]);
-
-  const handleGetStartedMonthly = useCallback(() => handleGetStarted(STRIPE_PRICES.monthly.priceId), [handleGetStarted]);
-  const handleGetStartedAnnual = useCallback(() => handleGetStarted(STRIPE_PRICES.annual.priceId), [handleGetStarted]);
+  const handleGetStartedMonthly = useCallback(() => handleGetStarted(), [handleGetStarted]);
+  const handleGetStartedAnnual = useCallback(() => handleGetStarted(), [handleGetStarted]);
 
   const benefits = [
     {
