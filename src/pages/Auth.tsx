@@ -30,10 +30,14 @@ export default function Auth() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showGoogleInAppDialog, setShowGoogleInAppDialog] = useState(false);
   const [oauthError, setOauthError] = useState<{ error: string; description?: string } | null>(null);
-  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
+  const [oauthReturning, setOauthReturning] = useState(false);
+  const { signIn, signUp, signInWithGoogle, resetPassword, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const googleRedirectTo = `${window.location.origin}/auth`;
+
+  const isPreview = window.location.hostname.includes('id-preview--');
+  const isInApp = isInAppBrowser();
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -44,6 +48,28 @@ export default function Auth() {
     }
   };
 
+  // Detect OAuth return and show loading state
+  useEffect(() => {
+    const hash = window.location.hash;
+    const search = window.location.search;
+    const hasOAuthParams = hash.includes('access_token') || hash.includes('error') || search.includes('error') || search.includes('code=');
+    
+    if (hasOAuthParams) {
+      setOauthReturning(true);
+      console.log('[Auth] OAuth return detected');
+    }
+  }, []);
+
+  // Auto-navigate to dashboard when user session is established
+  useEffect(() => {
+    if (!authLoading && user) {
+      console.log('[Auth] Session detected, navigating to dashboard');
+      toast.success('Login realizado com sucesso!');
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, authLoading, navigate]);
+
+  // Parse OAuth errors from URL
   useEffect(() => {
     const safeDecode = (value: string) => {
       try {
@@ -61,6 +87,8 @@ export default function Auth() {
 
     if (!error) return;
 
+    setOauthReturning(false);
+
     const info = {
       error,
       description: descriptionRaw ? safeDecode(descriptionRaw) : undefined,
@@ -69,32 +97,29 @@ export default function Auth() {
     setOauthError(info);
 
     if (error === 'access_denied') {
-      toast.error('Google bloqueou o acesso (403). Verifique se o app está em “Testing” ou se sua conta está liberada.');
+      toast.error('Acesso negado pelo Google. Verifique se sua conta está autorizada.');
     } else if (error.toLowerCase().includes('redirect')) {
-      toast.error('Erro de redirecionamento do Google. Verifique as URLs permitidas no backend.');
+      toast.error('Erro de redirecionamento do Google. Tente novamente.');
     } else {
       toast.error(`Falha no login com Google: ${error}`);
     }
 
-    // Evita repetir o toast ao recarregar
     window.history.replaceState({}, document.title, window.location.pathname);
   }, []);
 
-  const isInAppBrowser = () => {
+  function isInAppBrowser() {
     const ua = navigator.userAgent || '';
     return /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line|TikTok|LinkedInApp/i.test(ua);
-  };
+  }
 
   const startGoogleOAuth = async () => {
     setGoogleLoading(true);
     try {
-      console.log('[Google OAuth] Starting sign in from:', window.location.origin);
-      const { error } = await signInWithGoogle();
+      console.log('[Google OAuth] Starting sign in, redirect:', googleRedirectTo);
+      const { error } = await signInWithGoogle(googleRedirectTo);
       if (error) {
-        console.error('[Google OAuth] Error:', error.message, error);
+        console.error('[Google OAuth] Error:', error.message);
         toast.error(`Erro ao entrar com Google: ${error.message}`);
-      } else {
-        console.log('[Google OAuth] Success - no error returned');
       }
     } catch (err: any) {
       console.error('[Google OAuth] Unexpected error:', err);
@@ -105,8 +130,7 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
-    // Google OAuth frequentemente falha em navegadores embutidos (ex.: Instagram/Facebook)
-    if (isInAppBrowser()) {
+    if (isInApp) {
       setShowGoogleInAppDialog(true);
       return;
     }
@@ -169,6 +193,23 @@ export default function Auth() {
     { icon: Zap, text: 'Organize ambiente, finanças e rotina' },
     { icon: Shield, text: 'Acompanhe seu progresso diário' },
   ];
+
+  // Show loading screen when returning from OAuth
+  if (oauthReturning && !oauthError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/30">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center space-y-4"
+        >
+          <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto" />
+          <p className="text-lg font-medium text-foreground">Conectando com Google...</p>
+          <p className="text-sm text-muted-foreground">Aguarde enquanto verificamos sua conta</p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-background via-background to-muted/30">
@@ -411,11 +452,30 @@ export default function Auth() {
                 </summary>
                 <div className="p-4 pt-0 space-y-3 text-xs text-muted-foreground">
                   <p>
+                    Ambiente: <span className={`font-semibold ${isPreview ? 'text-amber-500' : 'text-emerald-500'}`}>
+                      {isPreview ? '⚠️ Preview (pode falhar)' : '✅ Publicado'}
+                    </span>
+                  </p>
+                  <p>
                     Origem: <span className="font-medium break-all text-foreground/70">{window.location.origin}</span>
                   </p>
                   <p>
                     Redirect: <span className="font-medium break-all text-foreground/70">{googleRedirectTo}</span>
                   </p>
+                  <p>
+                    Sessão ativa: <span className="font-medium text-foreground/70">{user ? '✅ Sim' : '❌ Não'}</span>
+                  </p>
+                  <p>
+                    Navegador in-app: <span className={`font-medium ${isInApp ? 'text-amber-500' : 'text-foreground/70'}`}>
+                      {isInApp ? '⚠️ Sim (pode causar erro)' : 'Não'}
+                    </span>
+                  </p>
+                  {isPreview && (
+                    <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400">
+                      <p className="font-medium">O login com Google funciona melhor no domínio publicado:</p>
+                      <p className="font-mono mt-1 break-all">https://focus-30-app.lovable.app/auth</p>
+                    </div>
+                  )}
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button type="button" variant="outline" size="sm" className="rounded-lg" onClick={() => copyToClipboard(`${window.location.origin}/*`)}>
                       Copiar origem/*
