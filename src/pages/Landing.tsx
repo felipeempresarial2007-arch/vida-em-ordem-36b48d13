@@ -48,17 +48,42 @@ export default function Landing() {
   const { user } = useAuth();
   
 
-  const handleGetStarted = useCallback(() => {
-    if (user) {
-      navigate('/dashboard');
-      return;
-    }
-    // Redirect to sign-up page — user gets 24h free trial, then must pay
-    navigate('/auth');
-  }, [user, navigate]);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  const handleGetStartedMonthly = useCallback(() => handleGetStarted(), [handleGetStarted]);
-  const handleGetStartedAnnual = useCallback(() => handleGetStarted(), [handleGetStarted]);
+  const openStripeCheckout = useCallback(async (priceId: string) => {
+    try {
+      setCheckoutLoading(true);
+      
+      // If logged in, use authenticated checkout
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const headers: Record<string, string> = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId },
+        headers,
+      });
+
+      if (error) {
+        toast.error('Erro ao criar sessão de checkout');
+        return;
+      }
+
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      toast.error('Erro ao processar checkout');
+    } finally {
+      setCheckoutLoading(false);
+    }
+  }, []);
+
+  const handleGetStartedMonthly = useCallback(() => openStripeCheckout(STRIPE_PRICES.monthly.priceId), [openStripeCheckout]);
+  const handleGetStartedAnnual = useCallback(() => openStripeCheckout(STRIPE_PRICES.annual.priceId), [openStripeCheckout]);
 
   const benefits = [
     {
