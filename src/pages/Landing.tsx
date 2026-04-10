@@ -220,7 +220,7 @@ export default function Landing() {
                   Entrar
                 </Button>
               </Link>
-              <Button className="rounded-full px-6 shadow-lg shadow-primary/20" onClick={handleGetStarted}>
+              <Button className="rounded-full px-6 shadow-lg shadow-primary/20" onClick={handleGetStartedMonthly}>
                 Garantir minha vaga
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
@@ -231,7 +231,7 @@ export default function Landing() {
                   Entrar
                 </Button>
               </Link>
-              <Button size="sm" className="rounded-full shadow-md shadow-primary/20 min-h-[48px] px-5 text-sm font-semibold" onClick={handleGetStarted}>
+              <Button size="sm" className="rounded-full shadow-md shadow-primary/20 min-h-[48px] px-5 text-sm font-semibold" onClick={handleGetStartedMonthly}>
                 Garantir vaga
                 <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
@@ -292,7 +292,7 @@ export default function Landing() {
               <Button 
                 size="xl" 
                 className="cta-magnetic rounded-full sm:max-w-md border-0"
-                onClick={handleGetStarted}
+                onClick={handleGetStartedMonthly}
               >
                 Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -449,7 +449,7 @@ export default function Landing() {
             <Button 
               size="lg" 
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
-              onClick={handleGetStarted}
+              onClick={handleGetStartedMonthly}
             >
               Garantir minha vaga no ciclo atual
               <ArrowRight className="w-5 h-5 ml-1" />
@@ -606,7 +606,7 @@ export default function Landing() {
               <Button 
                 size="xl" 
                 className="cta-magnetic rounded-2xl border-0"
-                onClick={handleGetStarted}
+                onClick={handleGetStartedMonthly}
               >
                 Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -686,7 +686,7 @@ export default function Landing() {
             <Button 
               size="xl" 
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
-              onClick={handleGetStarted}
+              onClick={handleGetStartedMonthly}
             >
               Garantir minha vaga no ciclo atual
               <ArrowRight className="w-5 h-5 ml-2" />
