@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 // Stripe Price IDs
 // Emails with free VIP access (bypass trial & subscription)
-const VIP_EMAILS = ['felipeempresarial2007@gmail.com'];
+const VIP_EMAILS = ['felipeempresarial2007@gmail.com', 'contatomaduwendler@gmail.com'];
 
 export const STRIPE_PRICES = {
   monthly: {
