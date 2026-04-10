@@ -194,6 +194,23 @@ export default function Auth() {
     { icon: Shield, text: 'Acompanhe seu progresso diário' },
   ];
 
+  // Show loading screen when returning from OAuth
+  if (oauthReturning && !oauthError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/30">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center space-y-4"
+        >
+          <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto" />
+          <p className="text-lg font-medium text-foreground">Conectando com Google...</p>
+          <p className="text-sm text-muted-foreground">Aguarde enquanto verificamos sua conta</p>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-background via-background to-muted/30">
       <AlertDialog open={showGoogleInAppDialog} onOpenChange={setShowGoogleInAppDialog}>
