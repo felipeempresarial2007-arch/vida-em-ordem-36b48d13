@@ -48,38 +48,14 @@ export default function Landing() {
   const { user } = useAuth();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  const handleGetStarted = useCallback(async (priceId: string = STRIPE_PRICES.monthly.priceId) => {
-    if (checkoutLoading) return;
-    
+  const handleGetStarted = useCallback(() => {
     if (user) {
       navigate('/dashboard');
       return;
     }
-
-    // Guest checkout — direct to Stripe as fast as possible
-    setCheckoutLoading(true);
-    toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, guestCheckout: true },
-      });
-      
-      if (error || !data?.url) {
-        toast.dismiss('checkout');
-        toast.error('Erro ao criar sessão de checkout. Tente novamente.');
-        setCheckoutLoading(false);
-        return;
-      }
-      
-      toast.dismiss('checkout');
-      window.location.href = data.url;
-    } catch {
-      toast.dismiss('checkout');
-      toast.error('Erro ao processar checkout');
-      setCheckoutLoading(false);
-    }
-  }, [user, navigate, checkoutLoading]);
+    // Redirect to sign-up page — user gets 24h free trial, then must pay
+    navigate('/auth');
+  }, [user, navigate]);
 
   const handleGetStartedMonthly = useCallback(() => handleGetStarted(STRIPE_PRICES.monthly.priceId), [handleGetStarted]);
   const handleGetStartedAnnual = useCallback(() => handleGetStarted(STRIPE_PRICES.annual.priceId), [handleGetStarted]);
