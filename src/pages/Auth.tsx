@@ -477,7 +477,7 @@ export default function Auth() {
                     Origem: <span className="font-medium break-all text-foreground/70">{window.location.origin}</span>
                   </p>
                   <p>
-                    Redirect: <span className="font-medium break-all text-foreground/70">{googleRedirectTo}</span>
+                    Redirect: <span className="font-medium break-all text-foreground/70">{`${window.location.origin}/auth`}</span>
                   </p>
                   <p>
                     Sessão ativa: <span className="font-medium text-foreground/70">{user ? '✅ Sim' : '❌ Não'}</span>
@@ -497,7 +497,7 @@ export default function Auth() {
                     <Button type="button" variant="outline" size="sm" className="rounded-lg" onClick={() => copyToClipboard(`${window.location.origin}/*`)}>
                       Copiar origem/*
                     </Button>
-                    <Button type="button" variant="outline" size="sm" className="rounded-lg" onClick={() => copyToClipboard(googleRedirectTo)}>
+                    <Button type="button" variant="outline" size="sm" className="rounded-lg" onClick={() => copyToClipboard(`${window.location.origin}/auth`)}>
                       Copiar redirect
                     </Button>
                   </div>
