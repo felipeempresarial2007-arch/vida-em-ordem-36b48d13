@@ -43,7 +43,7 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  
 
   const handleGetStarted = useCallback(() => {
     if (user) {
