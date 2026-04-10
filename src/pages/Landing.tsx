@@ -1,10 +1,10 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
-import { useSubscription, STRIPE_PRICES } from '@/hooks/useSubscription';
+import { STRIPE_PRICES } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -46,40 +46,43 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { openCheckout, isSubscribed } = useSubscription();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  const handleGetStarted = async () => {
+  const handleGetStarted = useCallback(async (priceId: string = STRIPE_PRICES.monthly.priceId) => {
+    if (checkoutLoading) return;
+    
     if (user) {
-      if (isSubscribed) {
-        navigate('/dashboard');
-      } else {
-        openCheckout(STRIPE_PRICES.monthly.priceId);
-      }
-    } else {
-      // For non-logged users, redirect to Stripe checkout directly (guest checkout)
-      try {
-        toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { 
-            priceId: STRIPE_PRICES.monthly.priceId, 
-            guestCheckout: true,
-          },
-        });
-        
-        if (error || !data?.url) {
-          toast.dismiss('checkout');
-          toast.error('Erro ao criar sessão de checkout');
-          return;
-        }
-        
-        toast.dismiss('checkout');
-        window.location.href = data.url;
-      } catch (error) {
-        toast.dismiss('checkout');
-        toast.error('Erro ao processar checkout');
-      }
+      navigate('/dashboard');
+      return;
     }
-  };
+
+    // Guest checkout — direct to Stripe as fast as possible
+    setCheckoutLoading(true);
+    toast.loading('Redirecionando para o checkout...', { id: 'checkout' });
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId, guestCheckout: true },
+      });
+      
+      if (error || !data?.url) {
+        toast.dismiss('checkout');
+        toast.error('Erro ao criar sessão de checkout. Tente novamente.');
+        setCheckoutLoading(false);
+        return;
+      }
+      
+      toast.dismiss('checkout');
+      window.location.href = data.url;
+    } catch {
+      toast.dismiss('checkout');
+      toast.error('Erro ao processar checkout');
+      setCheckoutLoading(false);
+    }
+  }, [user, navigate, checkoutLoading]);
+
+  const handleGetStartedMonthly = useCallback(() => handleGetStarted(STRIPE_PRICES.monthly.priceId), [handleGetStarted]);
+  const handleGetStartedAnnual = useCallback(() => handleGetStarted(STRIPE_PRICES.annual.priceId), [handleGetStarted]);
 
   const benefits = [
     {
