@@ -20,6 +20,8 @@ const Install = lazy(() => import("./pages/Install"));
 const FocusProtocol = lazy(() => import("./pages/FocusProtocol"));
 const AICoach = lazy(() => import("./pages/AICoach"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 import AppLayout from "./components/layout/AppLayout";
@@ -166,6 +168,8 @@ const AppRoutes = () => {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-canceled" element={<PaymentCanceled />} />
         <Route path="/install" element={<Install />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
         <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />

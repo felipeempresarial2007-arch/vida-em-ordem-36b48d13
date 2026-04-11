@@ -530,102 +530,128 @@ export default function Landing() {
             </p>
           </motion.div>
 
-          {/* Pricing Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-xl mx-auto"
-          >
-            <div className="relative p-8 md:p-12 rounded-[2rem] bg-card border-2 border-primary/20 shadow-2xl shadow-primary/10">
-              {/* Badge */}
-              <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-                <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-orange-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold shadow-xl shadow-primary/30">
-                  <Zap className="w-4 h-4" />
-                  Vagas Limitadas
+          {/* Pricing Cards */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Monthly Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="relative p-8 md:p-10 rounded-[2rem] bg-card border-2 border-border/60 shadow-xl h-full flex flex-col">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold text-foreground mb-1">Plano Mensal</h3>
+                  <p className="text-muted-foreground text-sm">Flexibilidade total</p>
                 </div>
-              </div>
 
-              {/* Header */}
-              <div className="text-center mb-8 pt-4">
-                <h3 className="text-2xl font-bold text-foreground mb-2">Acesso Completo ao FOCUS 30</h3>
-                <p className="text-muted-foreground">Tudo o que você precisa para transformar sua vida</p>
-              </div>
-
-              {/* Price Comparison */}
-              <div className="text-center mb-10 p-6 rounded-2xl bg-muted/50 border border-border/50">
-                <p className="text-sm text-muted-foreground mb-3">
-                  Valor normal: R$ 39,90 (sistema) + R$ 19,90 (Coach IA)
-                </p>
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <X className="w-5 h-5 text-destructive" />
-                    <span className="text-xl line-through">R$ 58,80</span>
+                <div className="text-center mb-8 p-5 rounded-2xl bg-muted/50 border border-border/50">
+                  <p className="text-sm text-muted-foreground mb-2 line-through">R$ 58,80/mês</p>
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-xl font-bold text-primary">R$</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">27,90</span>
+                    <span className="text-lg text-muted-foreground">/mês</span>
                   </div>
+                  <p className="text-xs text-muted-foreground mt-2">Menos de R$ 1,00 por dia</p>
                 </div>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-lg text-muted-foreground">Por apenas</span>
-                </div>
-                <div className="flex items-baseline justify-center gap-1 mt-1">
-                  <span className="text-2xl font-bold text-primary">R$</span>
-                  <span className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">
-                    27,90
-                  </span>
-                  <span className="text-xl text-muted-foreground">/mês</span>
-                </div>
-                <div className="mt-4 inline-flex items-center gap-2 bg-secondary/15 text-secondary px-4 py-2 rounded-full text-sm font-semibold">
-                  <Rocket className="w-4 h-4" />
-                  Economia de R$ 30,90
-                </div>
-              </div>
 
-              {/* Features */}
-              <div className="space-y-4 mb-10">
-                {planFeatures.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${feature.highlight ? 'bg-primary/20' : 'bg-secondary/15'}`}>
-                      <Check className={`w-4 h-4 ${feature.highlight ? 'text-primary' : 'text-secondary'}`} />
+                <div className="space-y-3 mb-8 flex-1">
+                  {planFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${feature.highlight ? 'bg-primary/20' : 'bg-secondary/15'}`}>
+                        <Check className={`w-3 h-3 ${feature.highlight ? 'text-primary' : 'text-secondary'}`} />
+                      </div>
+                      <span className={`text-sm ${feature.highlight ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                        {feature.text}
+                      </span>
                     </div>
-                    <span className={`${feature.highlight ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
-                      {feature.text}
-                    </span>
+                  ))}
+                </div>
+
+                <Button 
+                  size="lg" 
+                  className="w-full cta-magnetic rounded-2xl border-0"
+                  onClick={handleGetStartedMonthly}
+                  disabled={checkoutLoading}
+                >
+                  Assinar Plano Mensal
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </motion.div>
+
+            {/* Annual Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="relative p-8 md:p-10 rounded-[2rem] bg-card border-2 border-primary/30 shadow-2xl shadow-primary/10 h-full flex flex-col">
+                {/* Badge */}
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-orange-500 text-white px-5 py-2 rounded-full text-xs font-semibold shadow-xl shadow-primary/30">
+                    <Zap className="w-3.5 h-3.5" />
+                    Mais Popular — Economize 37%
                   </div>
-                ))}
-              </div>
-
-              {/* Anchor - Daily value reframe */}
-              <div className="text-center mb-8 py-5 border-y border-border/50">
-                <p className="text-foreground font-semibold text-base mb-1">
-                  Menos de R$ 1,00 por dia
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  para transformar completamente sua rotina e sua vida
-                </p>
-              </div>
-
-              {/* CTA Button */}
-              <Button 
-                size="xl" 
-                className="cta-magnetic rounded-2xl border-0"
-                onClick={handleGetStartedMonthly}
-              >
-                Garantir minha vaga no ciclo atual
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-
-              {/* Trust Elements */}
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-secondary" />
-                  <span>Pagamento seguro</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-secondary" />
-                  <span>Acesso imediato</span>
+
+                <div className="text-center mb-6 pt-3">
+                  <h3 className="text-xl font-bold text-foreground mb-1">Plano Anual</h3>
+                  <p className="text-muted-foreground text-sm">Melhor custo-benefício</p>
                 </div>
+
+                <div className="text-center mb-8 p-5 rounded-2xl bg-primary/5 border border-primary/20">
+                  <p className="text-sm text-muted-foreground mb-2 line-through">R$ 27,90/mês</p>
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-xl font-bold text-primary">R$</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">17,57</span>
+                    <span className="text-lg text-muted-foreground">/mês</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">Cobrado R$ 210,90/ano</p>
+                </div>
+
+                <div className="space-y-3 mb-8 flex-1">
+                  {planFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${feature.highlight ? 'bg-primary/20' : 'bg-secondary/15'}`}>
+                        <Check className={`w-3 h-3 ${feature.highlight ? 'text-primary' : 'text-secondary'}`} />
+                      </div>
+                      <span className={`text-sm ${feature.highlight ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                        {feature.text}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button 
+                  size="lg" 
+                  className="w-full cta-magnetic rounded-2xl border-0"
+                  onClick={handleGetStartedAnnual}
+                  disabled={checkoutLoading}
+                >
+                  <Rocket className="w-4 h-4 mr-2" />
+                  Assinar Plano Anual
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
               </div>
+            </motion.div>
+          </div>
+
+          {/* Trust Elements */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-secondary" />
+              <span>Pagamento seguro</span>
             </div>
-          </motion.div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-secondary" />
+              <span>Acesso imediato</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <X className="w-4 h-4 text-secondary" />
+              <span>Cancele quando quiser</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -707,11 +733,11 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <Logo size="sm" />
             <p className="text-sm text-muted-foreground">
-              © 2024 FOCUS 30. Todos os direitos reservados.
+              © 2026 FOCUS 30. Todos os direitos reservados.
             </p>
             <div className="flex items-center gap-8 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors">Termos</a>
-              <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
+              <Link to="/terms" className="hover:text-primary transition-colors">Termos</Link>
+              <Link to="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
               <a 
                 href="https://wa.me/5511920470829" 
                 target="_blank" 
