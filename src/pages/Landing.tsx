@@ -62,8 +62,10 @@ export default function Landing() {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
 
+      const isGuest = !session?.access_token;
+      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId },
+        body: { priceId, guestCheckout: isGuest },
         headers,
       });
 
