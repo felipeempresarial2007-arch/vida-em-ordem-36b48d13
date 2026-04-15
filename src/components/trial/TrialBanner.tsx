@@ -84,7 +84,7 @@ export function TrialBanner() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs md:text-sm font-medium text-foreground">
-                      <span className="text-primary font-semibold">Trial Gratuito</span>
+                      <span className="text-primary font-semibold">Trial Gratuito (7 dias)</span>
                       {' • '}
                       <span className="text-muted-foreground">{timeText}</span>
                     </p>
