@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from './useSubscription';
 
-const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 interface TrialState {
   isTrialActive: boolean;
