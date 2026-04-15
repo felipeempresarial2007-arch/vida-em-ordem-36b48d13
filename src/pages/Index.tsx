@@ -6,12 +6,15 @@ import Dashboard from '@/pages/Dashboard';
 import { WelcomeWizard } from '@/components/onboarding/WelcomeWizard';
 import { useChallengeProgress } from '@/hooks/useChallengeProgress';
 import { useWelcomeSound } from '@/hooks/useWelcomeSound';
+import { useTrial } from '@/hooks/useTrial';
+import { TrialPaywall } from '@/components/trial/TrialPaywall';
 import { Loader2 } from 'lucide-react';
 
 const Index = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { isNewUser, profile, completeOnboarding, loading: progressLoading } = useChallengeProgress();
+  const { isTrialExpired, isLoading: trialLoading } = useTrial();
   const [showWizard, setShowWizard] = useState(false);
   
   // Play welcome sound on app open
@@ -34,7 +37,7 @@ const Index = () => {
     setShowWizard(false);
   };
 
-  if (authLoading || progressLoading) {
+  if (authLoading || progressLoading || trialLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -44,6 +47,11 @@ const Index = () => {
 
   if (!user) {
     return null;
+  }
+
+  // Show full-screen paywall when trial expired
+  if (isTrialExpired) {
+    return <TrialPaywall />;
   }
 
   return (

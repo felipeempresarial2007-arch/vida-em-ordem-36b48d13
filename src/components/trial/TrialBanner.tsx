@@ -61,9 +61,11 @@ export function TrialBanner() {
 
   // Show trial countdown if trial is active
   if (isTrialActive) {
-    const timeText = hoursRemaining > 0 
-      ? `${hoursRemaining}h ${minutesRemaining}min restantes`
-      : `${minutesRemaining} minutos restantes`;
+    const timeText = hoursRemaining >= 24
+      ? `${Math.floor(hoursRemaining / 24)}d ${hoursRemaining % 24}h restantes`
+      : hoursRemaining > 0 
+        ? `${hoursRemaining}h ${minutesRemaining}min restantes`
+        : `${minutesRemaining} minutos restantes`;
 
     return (
       <AnimatePresence>
