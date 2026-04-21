@@ -8,7 +8,8 @@ import { AICoachChat } from '@/components/ai/AICoachChat';
 export default function AICoach() {
   return (
     <motion.div 
-      className="h-[calc(100vh-8rem)] flex flex-col"
+      className="flex flex-col"
+      style={{ height: 'calc(100dvh - 8rem)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
