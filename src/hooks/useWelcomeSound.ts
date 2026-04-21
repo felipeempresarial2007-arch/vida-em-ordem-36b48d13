@@ -11,23 +11,47 @@ export function useWelcomeSound() {
     const sessionPlayed = sessionStorage.getItem('focus30_welcome_sound_played');
     if (sessionPlayed || hasPlayedRef.current) return;
 
-    // Mark as played
-    hasPlayedRef.current = true;
-    sessionStorage.setItem('focus30_welcome_sound_played', 'true');
+    const playSound = () => {
+      if (hasPlayedRef.current) return;
+      hasPlayedRef.current = true;
+      sessionStorage.setItem('focus30_welcome_sound_played', 'true');
 
-    // Small delay for better UX
-    const timer = setTimeout(() => {
       try {
         const audio = new Audio(WELCOME_SOUND_BASE64);
         audio.volume = 0.3;
         audio.play().catch(() => {
-          // Browser may block autoplay, that's okay
+          // Browser may block, ignore
         });
+      } catch {
+        // Audio not supported
+      }
+    };
+
+    // Try autoplay first (works on Android/desktop)
+    const timer = setTimeout(() => {
+      if (hasPlayedRef.current) return;
+      try {
+        const audio = new Audio(WELCOME_SOUND_BASE64);
+        audio.volume = 0.3;
+        audio.play()
+          .then(() => {
+            hasPlayedRef.current = true;
+            sessionStorage.setItem('focus30_welcome_sound_played', 'true');
+          })
+          .catch(() => {
+            // iOS Safari blocks autoplay — wait for first user interaction
+            window.addEventListener('touchstart', playSound, { once: true, passive: true });
+            window.addEventListener('click', playSound, { once: true });
+          });
       } catch {
         // Audio not supported
       }
     }, 500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('touchstart', playSound);
+      window.removeEventListener('click', playSound);
+    };
   }, []);
 }

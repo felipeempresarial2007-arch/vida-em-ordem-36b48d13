@@ -11,18 +11,31 @@ export function NotificationPrompt() {
   const navigate = useNavigate();
   const { settings, loading } = useReminderSettings();
 
+  // Detect iOS Safari without standalone PWA mode
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+  const isStandalone =
+    (window.navigator as any).standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  const iosNeedsInstall = isIOS && !isStandalone;
+
   useEffect(() => {
     // Don't show if still loading settings or if reminders are already enabled
     if (loading || settings?.isEnabled) return;
-    
-    // Check if notifications are supported
-    if (!('Notification' in window)) return;
     
     // Check if user already dismissed the prompt today
     const lastDismissed = localStorage.getItem('focus30_notification_prompt_dismissed');
     const today = new Date().toISOString().split('T')[0];
     
     if (lastDismissed === today) return;
+
+    // iOS Safari (not installed): show install hint instead of permission prompt
+    if (iosNeedsInstall) {
+      const timer = setTimeout(() => setShowPrompt(true), 2000);
+      return () => clearTimeout(timer);
+    }
+
+    // Check if notifications are supported
+    if (!('Notification' in window)) return;
     
     // Check if notifications are already granted
     if (Notification.permission === 'granted') return;
@@ -33,7 +46,7 @@ export function NotificationPrompt() {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [loading, settings?.isEnabled]);
+  }, [loading, settings?.isEnabled, iosNeedsInstall]);
 
   const handleDismiss = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -43,7 +56,7 @@ export function NotificationPrompt() {
 
   const handleEnable = () => {
     setShowPrompt(false);
-    navigate('/settings');
+    navigate(iosNeedsInstall ? '/install' : '/settings');
   };
 
   if (!showPrompt) return null;
@@ -63,13 +76,17 @@ export function NotificationPrompt() {
                 <Bell className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm">Ativar lembretes diários?</p>
+                <p className="font-medium text-sm">
+                  {iosNeedsInstall ? 'Instale o app no iPhone' : 'Ativar lembretes diários?'}
+                </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Receba uma notificação para completar sua missão todos os dias.
+                  {iosNeedsInstall
+                    ? 'Para receber lembretes no iOS, adicione o FOCUS 30 à tela de início.'
+                    : 'Receba uma notificação para completar sua missão todos os dias.'}
                 </p>
                 <div className="flex gap-2 mt-3">
                   <Button size="sm" onClick={handleEnable} className="flex-1">
-                    Ativar
+                    {iosNeedsInstall ? 'Como instalar' : 'Ativar'}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={handleDismiss}>
                     Depois

@@ -40,7 +40,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-dvh bg-background">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex fixed left-0 top-0 h-full w-60 flex-col bg-card/95 backdrop-blur-xl border-r border-border/60">
         <div className="h-14 flex items-center px-5 border-b border-border/60">
@@ -107,7 +107,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
       </aside>
 
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-12 bg-card/90 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-4 z-50">
+      <header
+        className="lg:hidden fixed top-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-b border-border/50 flex items-center justify-between px-4 z-50"
+        style={{
+          paddingTop: 'env(safe-area-inset-top, 0)',
+          height: 'calc(48px + env(safe-area-inset-top, 0px))',
+        }}
+      >
         <Logo size="sm" />
         <Button 
           variant="ghost" 
@@ -163,8 +169,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
       )}
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-card/90 backdrop-blur-xl border-t border-border/50 z-50 safe-area-bottom">
-        <div className="flex items-center justify-around h-full px-2">
+      <nav
+        className="lg:hidden fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border/50 z-50"
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom, 0)',
+          height: 'calc(72px + env(safe-area-inset-bottom, 0px))',
+        }}
+      >
+        <div className="flex items-center justify-around h-[72px] px-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -198,8 +210,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
       </nav>
 
       {/* Main Content */}
-      <main className="lg:ml-60 pt-12 lg:pt-0 pb-20 lg:pb-0 min-h-screen">
-        <div className="p-4 lg:p-6 max-w-lg lg:max-w-4xl mx-auto">
+      <main
+        className="lg:ml-60 min-h-screen-dvh"
+        style={{
+          paddingTop: 'calc(48px + env(safe-area-inset-top, 0px))',
+          paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
+        }}
+      >
+        <div className="p-4 lg:p-6 max-w-lg lg:max-w-4xl mx-auto lg:!pt-6">
           {children}
         </div>
       </main>

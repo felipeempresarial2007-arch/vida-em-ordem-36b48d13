@@ -49,7 +49,8 @@ export function FloatingAICoach() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-24 lg:bottom-6 right-4 lg:right-6 z-50 w-[380px] h-[480px] lg:h-[560px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-8rem)]"
+            className="fixed bottom-24 lg:bottom-6 right-4 lg:right-6 z-50 w-[380px] h-[480px] lg:h-[560px] max-w-[calc(100vw-2rem)]"
+            style={{ maxHeight: 'calc(100dvh - 8rem)' }}
           >
             <Card className="w-full h-full flex flex-col overflow-hidden border-border/50 shadow-2xl shadow-black/20">
               {/* Header */}
