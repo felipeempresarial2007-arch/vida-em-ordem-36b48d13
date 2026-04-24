@@ -263,13 +263,19 @@ export default function Landing() {
             animate="animate"
             variants={staggerContainer}
           >
-            {/* Trust Badge */}
+            {/* Trust Badges */}
             <motion.div 
               variants={fadeInUp}
-              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2.5 rounded-full text-sm font-semibold mb-8 border border-primary/20"
+              className="flex flex-wrap items-center justify-center gap-3 mb-8"
             >
-              <TrendingUp className="w-4 h-4" />
-              Vagas abertas para o ciclo atual
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2.5 rounded-full text-sm font-semibold border border-primary/20">
+                <TrendingUp className="w-4 h-4" />
+                Vagas abertas para o ciclo atual
+              </div>
+              <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2.5 rounded-full text-sm font-semibold border border-secondary/20">
+                <Users className="w-4 h-4" />
+                +120 pessoas já usaram o Focus 30
+              </div>
             </motion.div>
 
             {/* Headline */}
