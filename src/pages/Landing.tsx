@@ -698,6 +698,57 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Tutorial Video Section */}
+      <section className="py-24 md:py-32 bg-gradient-to-b from-muted/30 to-transparent">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 max-w-3xl mx-auto"
+          >
+            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Passo a passo</span>
+            <h2 className="text-3xl md:text-5xl font-bold mt-4 mb-6 tracking-tight">
+              Veja como é simples criar sua conta
+            </h2>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+              Em poucos segundos você cria seu acesso e começa seus <span className="text-primary font-semibold">7 dias grátis</span> no Focus 30. Sem complicação, sem burocracia.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="max-w-md mx-auto"
+          >
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/20 border border-border/50 bg-card">
+              <video
+                src="/tutorial-criar-conta.mp4"
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full h-auto block"
+              >
+                Seu navegador não suporta vídeos HTML5.
+              </video>
+            </div>
+
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button
+                size="lg"
+                className="rounded-full px-8 shadow-lg shadow-primary/30 min-h-[52px] text-base font-semibold"
+                onClick={scrollToPricing}
+              >
+                Começar meus 7 dias grátis
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="py-24 md:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
