@@ -725,13 +725,16 @@ export default function Landing() {
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/20 border border-border/50 bg-card">
               <video
-                src="/tutorial-criar-conta.mp4"
                 controls
                 playsInline
                 preload="metadata"
-                className="w-full h-auto block"
+                controlsList="nodownload"
+                poster="/apple-touch-icon.png"
+                className="w-full h-auto block bg-black"
+                x-webkit-airplay="allow"
               >
-                Seu navegador não suporta vídeos HTML5.
+                <source src="/tutorial-criar-conta.mp4" type="video/mp4" />
+                Seu navegador não suporta vídeos HTML5. <a href="/tutorial-criar-conta.mp4" className="underline">Baixe o vídeo aqui</a>.
               </video>
             </div>
 
