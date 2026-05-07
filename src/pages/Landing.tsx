@@ -26,7 +26,14 @@ import {
   Smartphone,
   Shield,
   X,
-  TrendingUp
+  TrendingUp,
+  Bot,
+  Brain,
+  MessageCircle,
+  Sparkles,
+  Lock,
+  Flame,
+  AlertCircle
 } from 'lucide-react';
 
 const fadeInUp = {
