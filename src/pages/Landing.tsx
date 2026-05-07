@@ -55,6 +55,34 @@ export default function Landing() {
   const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
 
+  // Countdown — termina à meia-noite do dia atual (renova diariamente para reforçar urgência real)
+  const getEndOfDay = () => {
+    const d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d.getTime();
+  };
+  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number }>({ h: 0, m: 0, s: 0 });
+  const [spotsLeft] = useState<number>(() => {
+    // Pseudo-aleatório estável por dia: entre 7 e 14 vagas
+    const day = new Date().getDate();
+    return 7 + (day % 8);
+  });
+
+  useEffect(() => {
+    const tick = () => {
+      const diff = Math.max(0, getEndOfDay() - Date.now());
+      const h = Math.floor(diff / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      const s = Math.floor((diff % 60_000) / 1000);
+      setTimeLeft({ h, m, s });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+
   const scrollToPricing = () => {
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
   };
