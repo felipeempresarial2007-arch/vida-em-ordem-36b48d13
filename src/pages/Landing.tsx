@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,14 @@ import {
   Smartphone,
   Shield,
   X,
-  TrendingUp
+  TrendingUp,
+  Bot,
+  Brain,
+  MessageCircle,
+  Sparkles,
+  Lock,
+  Flame,
+  AlertCircle
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -47,6 +54,34 @@ export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+
+  // Countdown — termina à meia-noite do dia atual (renova diariamente para reforçar urgência real)
+  const getEndOfDay = () => {
+    const d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d.getTime();
+  };
+  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number }>({ h: 0, m: 0, s: 0 });
+  const [spotsLeft] = useState<number>(() => {
+    // Pseudo-aleatório estável por dia: entre 7 e 14 vagas
+    const day = new Date().getDate();
+    return 7 + (day % 8);
+  });
+
+  useEffect(() => {
+    const tick = () => {
+      const diff = Math.max(0, getEndOfDay() - Date.now());
+      const h = Math.floor(diff / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      const s = Math.floor((diff % 60_000) / 1000);
+      setTimeLeft({ h, m, s });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const pad = (n: number) => String(n).padStart(2, '0');
 
   const scrollToPricing = () => {
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
@@ -211,8 +246,37 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      {/* Urgency Bar — sticky no topo */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-primary via-orange-500 to-primary text-white shadow-lg">
+        <div className="container mx-auto px-3 sm:px-6 lg:px-8">
+          <button
+            onClick={scrollToPricing}
+            className="w-full flex items-center justify-center gap-2 sm:gap-4 py-2 sm:py-2.5 text-[11px] sm:text-sm font-semibold tracking-tight"
+            aria-label="Ver oferta com vagas limitadas"
+          >
+            <span className="hidden sm:inline-flex items-center gap-1.5">
+              <Flame className="w-4 h-4 animate-pulse" />
+              Últimas {spotsLeft} vagas do ciclo
+            </span>
+            <span className="sm:hidden inline-flex items-center gap-1">
+              <Flame className="w-3.5 h-3.5 animate-pulse" />
+              {spotsLeft} vagas
+            </span>
+            <span className="opacity-70">•</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              Oferta encerra em
+              <span className="font-mono tabular-nums bg-black/25 px-1.5 py-0.5 rounded">
+                {pad(timeLeft.h)}:{pad(timeLeft.m)}:{pad(timeLeft.s)}
+              </span>
+            </span>
+            <ArrowRight className="hidden sm:inline w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/40">
+      <header className="fixed top-9 sm:top-10 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <Logo size="md" />
@@ -249,7 +313,7 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
+      <section className="relative pt-44 pb-20 md:pt-52 md:pb-32 overflow-hidden">
         {/* Premium Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-br from-primary/15 to-primary/5 rounded-full blur-[120px] translate-x-1/3" />
@@ -268,9 +332,9 @@ export default function Landing() {
               variants={fadeInUp}
               className="flex flex-wrap items-center justify-center gap-3 mb-8"
             >
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2.5 rounded-full text-sm font-semibold border border-primary/20">
-                <TrendingUp className="w-4 h-4" />
-                Vagas abertas para o ciclo atual
+              <div className="inline-flex items-center gap-2 bg-destructive/10 text-destructive px-4 py-2.5 rounded-full text-sm font-semibold border border-destructive/20">
+                <AlertCircle className="w-4 h-4" />
+                Apenas {spotsLeft} vagas restantes neste ciclo
               </div>
               <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2.5 rounded-full text-sm font-semibold border border-secondary/20">
                 <Users className="w-4 h-4" />
@@ -297,6 +361,39 @@ export default function Landing() {
               Um método comprovado para organizar seu ambiente, finanças, rotina e metas. 
               Saia do caos para a clareza com missões diárias simples e práticas.
             </motion.p>
+
+            {/* Countdown Card — Escassez */}
+            <motion.div
+              variants={fadeInUp}
+              className="max-w-xl mx-auto mb-10"
+            >
+              <div className="relative p-5 sm:p-6 rounded-3xl bg-card border-2 border-primary/30 shadow-2xl shadow-primary/10">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Flame className="w-4 h-4 text-primary animate-pulse" />
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-primary">
+                    Oferta deste ciclo encerra em
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-2 sm:gap-3">
+                  {[
+                    { v: pad(timeLeft.h), l: 'Horas' },
+                    { v: pad(timeLeft.m), l: 'Min' },
+                    { v: pad(timeLeft.s), l: 'Seg' },
+                  ].map((u, i) => (
+                    <div key={i} className="flex items-center gap-2 sm:gap-3">
+                      <div className="flex flex-col items-center min-w-[64px] sm:min-w-[80px] px-3 py-2 sm:px-4 sm:py-3 rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/30">
+                        <span className="text-2xl sm:text-3xl font-bold font-mono tabular-nums leading-none">{u.v}</span>
+                        <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide opacity-90 mt-1">{u.l}</span>
+                      </div>
+                      {i < 2 && <span className="text-2xl sm:text-3xl font-bold text-primary/40">:</span>}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-center text-xs sm:text-sm text-muted-foreground mt-4">
+                  Restam apenas <span className="font-bold text-foreground">{spotsLeft} vagas</span> com o preço promocional
+                </p>
+              </div>
+            </motion.div>
 
             {/* CTA Buttons */}
             <motion.div 
@@ -694,6 +791,156 @@ export default function Landing() {
               <X className="w-4 h-4 text-secondary" />
               <span>Cancele quando quiser</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coach IA Section — Diferenciação */}
+      <section id="coach-ia" className="py-24 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-gradient-to-br from-secondary/10 to-primary/5 rounded-full blur-[120px] -translate-y-1/2 -translate-x-1/3" />
+          <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-gradient-to-tl from-primary/10 to-transparent rounded-full blur-[100px] translate-x-1/3" />
+        </div>
+
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider mb-5 border border-secondary/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              Exclusivo Focus 30
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5 tracking-tight">
+              Coach IA: seu mentor pessoal
+              <span className="block bg-gradient-to-r from-secondary via-primary to-orange-500 bg-clip-text text-transparent">
+                disponível 24 horas por dia
+              </span>
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Não é um chatbot genérico. O Coach IA do Focus 30 foi treinado para entender seu contexto, suas dificuldades e te guiar com orientações sob medida em cada um dos 4 pilares do desafio.
+            </p>
+          </motion.div>
+
+          {/* Visual demo + features */}
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center max-w-6xl mx-auto">
+            {/* Demo card */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="relative rounded-3xl bg-card border border-border/60 shadow-2xl shadow-primary/10 p-6 md:p-7 overflow-hidden">
+                {/* Header chat */}
+                <div className="flex items-center gap-3 pb-4 border-b border-border/50">
+                  <div className="relative">
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                      <Bot className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-secondary border-2 border-card" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-foreground text-sm">Coach de IA</h3>
+                      <span className="text-[10px] font-semibold text-secondary bg-secondary/10 px-1.5 py-0.5 rounded">Online</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Mentor pessoal de produtividade</p>
+                  </div>
+                </div>
+
+                {/* Mensagens */}
+                <div className="pt-5 space-y-4">
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-tr-sm bg-primary text-primary-foreground text-sm shadow-md">
+                      Não consigo manter o foco depois do almoço. O que faço?
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shrink-0 mt-1">
+                      <Bot className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-tl-sm bg-muted text-foreground text-sm leading-relaxed shadow-sm">
+                      Queda de energia pós-refeição é fisiológica. Aplique o protocolo: 10 minutos de caminhada, hidrate-se e inicie o próximo bloco com Pomodoro de 25 minutos. Quer que eu programe agora?
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pl-10">
+                    <button className="text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                      Iniciar Pomodoro
+                    </button>
+                    <button className="text-xs font-semibold px-3 py-1.5 rounded-full bg-muted text-muted-foreground border border-border">
+                      Outra dica
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating accent */}
+              <div className="absolute -top-4 -right-4 hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-secondary to-primary text-white text-xs font-bold shadow-xl shadow-primary/30">
+                <Sparkles className="w-3.5 h-3.5" />
+                Resposta em segundos
+              </div>
+            </motion.div>
+
+            {/* Features list */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-5"
+            >
+              {[
+                {
+                  icon: Brain,
+                  title: 'Treinado no método Focus 30',
+                  desc: 'Conhece os 4 pilares — Ambiente, Finanças, Rotina e Metas — e adapta cada resposta ao seu momento no desafio.'
+                },
+                {
+                  icon: MessageCircle,
+                  title: 'Respostas personalizadas, nunca genéricas',
+                  desc: 'Analisa seu progresso, identifica padrões e oferece orientações práticas baseadas no que você já realizou.'
+                },
+                {
+                  icon: Clock,
+                  title: 'Disponível 24/7, sem agenda',
+                  desc: 'Travou em uma missão às 23h? Ele responde. Sem espera, sem custo extra, sem limites diários.'
+                },
+                {
+                  icon: Lock,
+                  title: 'Privado e seguro',
+                  desc: 'Suas conversas são suas. Dados criptografados e nunca usados para treinar modelos externos.'
+                }
+              ].map((f, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex gap-4 p-5 rounded-2xl bg-card border border-border/60 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-secondary/15 to-primary/10 flex items-center justify-center shrink-0">
+                    <f.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">{f.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+
+              <Button
+                size="lg"
+                className="w-full sm:w-auto rounded-full px-8 shadow-lg shadow-primary/30 mt-2"
+                onClick={scrollToPricing}
+              >
+                <Bot className="w-4 h-4 mr-2" />
+                Ativar meu Coach IA agora
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </motion.div>
           </div>
         </div>
       </section>
