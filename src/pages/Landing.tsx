@@ -795,6 +795,156 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Coach IA Section — Diferenciação */}
+      <section id="coach-ia" className="py-24 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-gradient-to-br from-secondary/10 to-primary/5 rounded-full blur-[120px] -translate-y-1/2 -translate-x-1/3" />
+          <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-gradient-to-tl from-primary/10 to-transparent rounded-full blur-[100px] translate-x-1/3" />
+        </div>
+
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider mb-5 border border-secondary/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              Exclusivo Focus 30
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5 tracking-tight">
+              Coach IA: seu mentor pessoal
+              <span className="block bg-gradient-to-r from-secondary via-primary to-orange-500 bg-clip-text text-transparent">
+                disponível 24 horas por dia
+              </span>
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Não é um chatbot genérico. O Coach IA do Focus 30 foi treinado para entender seu contexto, suas dificuldades e te guiar com orientações sob medida em cada um dos 4 pilares do desafio.
+            </p>
+          </motion.div>
+
+          {/* Visual demo + features */}
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center max-w-6xl mx-auto">
+            {/* Demo card */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="relative rounded-3xl bg-card border border-border/60 shadow-2xl shadow-primary/10 p-6 md:p-7 overflow-hidden">
+                {/* Header chat */}
+                <div className="flex items-center gap-3 pb-4 border-b border-border/50">
+                  <div className="relative">
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                      <Bot className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-secondary border-2 border-card" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-foreground text-sm">Coach de IA</h3>
+                      <span className="text-[10px] font-semibold text-secondary bg-secondary/10 px-1.5 py-0.5 rounded">Online</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Mentor pessoal de produtividade</p>
+                  </div>
+                </div>
+
+                {/* Mensagens */}
+                <div className="pt-5 space-y-4">
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-tr-sm bg-primary text-primary-foreground text-sm shadow-md">
+                      Não consigo manter o foco depois do almoço. O que faço?
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-primary flex items-center justify-center shrink-0 mt-1">
+                      <Bot className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="max-w-[85%] px-4 py-3 rounded-2xl rounded-tl-sm bg-muted text-foreground text-sm leading-relaxed shadow-sm">
+                      Queda de energia pós-refeição é fisiológica. Aplique o protocolo: 10 minutos de caminhada, hidrate-se e inicie o próximo bloco com Pomodoro de 25 minutos. Quer que eu programe agora?
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pl-10">
+                    <button className="text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                      Iniciar Pomodoro
+                    </button>
+                    <button className="text-xs font-semibold px-3 py-1.5 rounded-full bg-muted text-muted-foreground border border-border">
+                      Outra dica
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating accent */}
+              <div className="absolute -top-4 -right-4 hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-secondary to-primary text-white text-xs font-bold shadow-xl shadow-primary/30">
+                <Sparkles className="w-3.5 h-3.5" />
+                Resposta em segundos
+              </div>
+            </motion.div>
+
+            {/* Features list */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-5"
+            >
+              {[
+                {
+                  icon: Brain,
+                  title: 'Treinado no método Focus 30',
+                  desc: 'Conhece os 4 pilares — Ambiente, Finanças, Rotina e Metas — e adapta cada resposta ao seu momento no desafio.'
+                },
+                {
+                  icon: MessageCircle,
+                  title: 'Respostas personalizadas, nunca genéricas',
+                  desc: 'Analisa seu progresso, identifica padrões e oferece orientações práticas baseadas no que você já realizou.'
+                },
+                {
+                  icon: Clock,
+                  title: 'Disponível 24/7, sem agenda',
+                  desc: 'Travou em uma missão às 23h? Ele responde. Sem espera, sem custo extra, sem limites diários.'
+                },
+                {
+                  icon: Lock,
+                  title: 'Privado e seguro',
+                  desc: 'Suas conversas são suas. Dados criptografados e nunca usados para treinar modelos externos.'
+                }
+              ].map((f, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex gap-4 p-5 rounded-2xl bg-card border border-border/60 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-secondary/15 to-primary/10 flex items-center justify-center shrink-0">
+                    <f.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">{f.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+
+              <Button
+                size="lg"
+                className="w-full sm:w-auto rounded-full px-8 shadow-lg shadow-primary/30 mt-2"
+                onClick={scrollToPricing}
+              >
+                <Bot className="w-4 h-4 mr-2" />
+                Ativar meu Coach IA agora
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Tutorial Video Section */}
       <section className="py-24 md:py-32 bg-gradient-to-b from-muted/30 to-transparent">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
