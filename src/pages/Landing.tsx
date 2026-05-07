@@ -246,8 +246,37 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      {/* Urgency Bar — sticky no topo */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-gradient-to-r from-primary via-orange-500 to-primary text-white shadow-lg">
+        <div className="container mx-auto px-3 sm:px-6 lg:px-8">
+          <button
+            onClick={scrollToPricing}
+            className="w-full flex items-center justify-center gap-2 sm:gap-4 py-2 sm:py-2.5 text-[11px] sm:text-sm font-semibold tracking-tight"
+            aria-label="Ver oferta com vagas limitadas"
+          >
+            <span className="hidden sm:inline-flex items-center gap-1.5">
+              <Flame className="w-4 h-4 animate-pulse" />
+              Últimas {spotsLeft} vagas do ciclo
+            </span>
+            <span className="sm:hidden inline-flex items-center gap-1">
+              <Flame className="w-3.5 h-3.5 animate-pulse" />
+              {spotsLeft} vagas
+            </span>
+            <span className="opacity-70">•</span>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              Oferta encerra em
+              <span className="font-mono tabular-nums bg-black/25 px-1.5 py-0.5 rounded">
+                {pad(timeLeft.h)}:{pad(timeLeft.m)}:{pad(timeLeft.s)}
+              </span>
+            </span>
+            <ArrowRight className="hidden sm:inline w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/40">
+      <header className="fixed top-9 sm:top-10 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <Logo size="md" />
