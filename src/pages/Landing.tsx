@@ -362,6 +362,39 @@ export default function Landing() {
               Saia do caos para a clareza com missões diárias simples e práticas.
             </motion.p>
 
+            {/* Countdown Card — Escassez */}
+            <motion.div
+              variants={fadeInUp}
+              className="max-w-xl mx-auto mb-10"
+            >
+              <div className="relative p-5 sm:p-6 rounded-3xl bg-card border-2 border-primary/30 shadow-2xl shadow-primary/10">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <Flame className="w-4 h-4 text-primary animate-pulse" />
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-primary">
+                    Oferta deste ciclo encerra em
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-2 sm:gap-3">
+                  {[
+                    { v: pad(timeLeft.h), l: 'Horas' },
+                    { v: pad(timeLeft.m), l: 'Min' },
+                    { v: pad(timeLeft.s), l: 'Seg' },
+                  ].map((u, i) => (
+                    <div key={i} className="flex items-center gap-2 sm:gap-3">
+                      <div className="flex flex-col items-center min-w-[64px] sm:min-w-[80px] px-3 py-2 sm:px-4 sm:py-3 rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/30">
+                        <span className="text-2xl sm:text-3xl font-bold font-mono tabular-nums leading-none">{u.v}</span>
+                        <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide opacity-90 mt-1">{u.l}</span>
+                      </div>
+                      {i < 2 && <span className="text-2xl sm:text-3xl font-bold text-primary/40">:</span>}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-center text-xs sm:text-sm text-muted-foreground mt-4">
+                  Restam apenas <span className="font-bold text-foreground">{spotsLeft} vagas</span> com o preço promocional
+                </p>
+              </div>
+            </motion.div>
+
             {/* CTA Buttons */}
             <motion.div 
               variants={fadeInUp}
