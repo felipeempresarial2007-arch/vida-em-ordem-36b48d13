@@ -241,13 +241,22 @@ export default function Auth() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                window.open(window.location.href, '_blank', 'noopener,noreferrer');
-                toast.message('Se não abrir, copie o link e cole no Safari/Chrome.');
-              }}
-            >
-              Abrir no navegador
+            <AlertDialogAction asChild>
+              <a
+                href={window.location.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={async (e) => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    toast.success('Link copiado. Cole no Safari ou Chrome se não abrir.');
+                  } catch {
+                    toast.message('Se não abrir, copie o link manualmente e cole no Safari/Chrome.');
+                  }
+                }}
+              >
+                Abrir no navegador
+              </a>
             </AlertDialogAction>
             <AlertDialogAction
               onClick={() => {
