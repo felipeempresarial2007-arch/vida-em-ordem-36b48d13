@@ -1,71 +1,84 @@
+## Objetivo
 
+Substituir as credenciais Google OAuth padrão da Lovable Cloud por credenciais próprias do projeto Focus 30. Isso resolve as falhas de login no preview e faz a tela de consentimento do Google exibir "Focus 30" em vez de "Lovable", aumentando a confiança do usuário.
 
-# Plan: Compatibilidade Total com iOS (iPhone/iPad)
+## Importante
 
-## Diagnóstico
-Após varredura completa do código, identifiquei pontos críticos que prejudicam a experiência no iOS (Safari mobile, Chrome iOS, e PWA instalada na tela de início). Abaixo, as correções necessárias para que **todas as abas** funcionem perfeitamente em iPhone/iPad.
+Este processo é **100% configuração externa** (Google Cloud Console + painel da Lovable Cloud). **Nenhum código do projeto será alterado** — o `AuthContext.tsx` e o fluxo `lovable.auth.signInWithOAuth` continuam exatamente como estão.
 
-## Problemas Encontrados e Correções
+## Passo a passo
 
-### 1. Bottom Navigation cortada pela barra inferior do iPhone
-**Problema:** A barra de navegação mobile usa `h-[72px]` + `safe-area-bottom`, mas o `padding-bottom` é aplicado por dentro, então ícones ficam colados na borda do home indicator no iPhone X+.
-**Correção:** Ajustar `AppLayout.tsx` para somar a altura do safe-area, e o `<main>` precisa de `pb-[calc(72px+env(safe-area-inset-bottom))]` para o conteúdo não ficar escondido atrás da nav.
+### Etapa 1 — Pegar o Redirect URI da Lovable Cloud
 
-### 2. Header mobile colado na status bar (notch/Dynamic Island)
-**Problema:** O `<header>` mobile usa `top-0 h-12` sem respeitar a `safe-area-inset-top`. Em iPhones com notch (X+), o logo fica atrás da câmera.
-**Correção:** Adicionar `pt-[env(safe-area-inset-top)]` ao header e ajustar o `<main>` `pt-` correspondente.
+Antes de ir ao Google, copie o redirect URI que vai precisar cadastrar:
 
-### 3. Viewport com zoom e pinch quebrando layouts
-**Problema:** O meta viewport tem `maximum-scale=1.0, user-scalable=no` — isso pode causar zoom indesejado em inputs no iOS quando o `font-size < 16px`.
-**Correção:** Garantir que todos os `<input>`, `<textarea>` e `<select>` tenham `font-size: 16px` mínimo no mobile (regra global no `index.css`), evitando o auto-zoom do Safari ao focar.
+1. Abrir **Cloud → Users → Authentication Settings**
+2. Localizar a seção **Sign In Methods → Google**
+3. Expandir e copiar o **Callback URL** mostrado (algo como `https://mizmiixyztcobcpekqar.supabase.co/auth/v1/callback`)
 
-### 4. Altura `100vh` quebra com a barra dinâmica do Safari iOS
-**Problema:** `AICoach.tsx` usa `h-[calc(100vh-8rem)]` e `FloatingAICoach.tsx` usa `max-h-[calc(100vh-8rem)]`. No Safari iOS, `100vh` inclui a barra de URL retrátil, causando conteúdo cortado.
-**Correção:** Substituir `100vh` por `100dvh` (dynamic viewport height) nesses componentes e também no `min-h-screen` do `AppLayout`.
+Guarde essa URL — será usada na Etapa 3.
 
-### 5. Áudio de boas-vindas bloqueado no iOS
-**Problema:** `useWelcomeSound.ts` tenta tocar `audio.play()` automaticamente. iOS Safari **bloqueia 100%** autoplay sem interação prévia do usuário, gerando warning silencioso.
-**Correção:** Aguardar a primeira interação do usuário (`click`/`touchstart`) antes de tocar o som — usar listener `once`.
+### Etapa 2 — Configurar a tela de consentimento no Google
 
-### 6. Notificações Push não funcionam em iOS sem PWA instalada
-**Problema:** O `NotificationPrompt` aparece em qualquer iOS, mas iOS **só aceita Web Notifications a partir do iOS 16.4 e SOMENTE quando o app está instalado na tela inicial (PWA standalone)**.
-**Correção:** Detectar `navigator.standalone === true` (iOS) ou `display-mode: standalone`. Se for iOS Safari fora do modo PWA, esconder o prompt e mostrar um aviso amigável "Para receber lembretes no iPhone, instale o app na tela inicial" com link para `/install`.
+1. Acessar https://console.cloud.google.com/
+2. Criar um novo projeto (nome sugerido: **Focus 30**) ou usar um existente
+3. Menu lateral → **APIs & Services → OAuth consent screen**
+4. Tipo de usuário: **External** → Create
+5. Preencher:
+   - **App name**: Focus 30
+   - **User support email**: seu email
+   - **App logo**: logo do Focus 30 (opcional, mas recomendado)
+   - **Application home page**: `https://focus-30-app.lovable.app`
+   - **Privacy policy**: `https://focus-30-app.lovable.app/privacy`
+   - **Terms of service**: `https://focus-30-app.lovable.app/terms`
+   - **Authorized domains**: adicionar `lovable.app` e `supabase.co`
+   - **Developer contact**: seu email
+6. **Scopes** → adicionar os 3 scopes não-sensíveis:
+   - `.../auth/userinfo.email`
+   - `.../auth/userinfo.profile`
+   - `openid`
+7. **Test users** → publicar o app (botão **Publish App**) para sair do modo de teste e permitir login de qualquer usuário
 
-### 7. Checkout do Stripe em iOS Safari (popup blocker)
-**Status:** Já está usando `window.location.href` corretamente (memória `ios-safari-compatibility`), mas o `FloatingWhatsApp` ainda usa `window.open(..., '_blank')` que pode ser bloqueado.
-**Correção:** Trocar `window.open` do WhatsApp por `window.location.href` ou link `<a href target="_blank" rel="noopener">` (mais confiável em iOS).
+### Etapa 3 — Criar as credenciais OAuth Client ID
 
-### 8. Backdrop-filter / blur causando lag em iPhones antigos
-**Problema:** Múltiplos `backdrop-blur-xl` em `AppLayout`, `NotificationPrompt`, `TrialPaywall` podem causar travamento em iPhone 8/SE.
-**Correção:** Adicionar fallback `@supports not (backdrop-filter: blur())` que usa background sólido com leve transparência.
+1. Menu lateral → **APIs & Services → Credentials**
+2. **Create Credentials → OAuth Client ID**
+3. **Application type**: Web application
+4. **Name**: Focus 30 Web Client
+5. **Authorized JavaScript origins**: adicionar
+   - `https://focus-30-app.lovable.app`
+   - `https://id-preview--21ef423e-b048-4d16-9591-670909a3dd68.lovable.app`
+6. **Authorized redirect URIs**: colar o Callback URL copiado na Etapa 1
+7. Clicar em **Create**
+8. **Copiar o Client ID e o Client Secret** que aparecem (guarde em local seguro)
 
-### 9. Scroll travado dentro do `TrialPaywall` em telas pequenas
-**Problema:** Modal usa `overflow-y-auto` mas sem `-webkit-overflow-scrolling: touch`, causando scroll travado em iPhones.
-**Correção:** Adicionar regra global no CSS para scroll suave em containers iOS.
+### Etapa 4 — Inserir as credenciais na Lovable Cloud
 
-### 10. PWA Manifest — ícone Apple Touch e splash screen
-**Problema:** Apenas um `apple-touch-icon` 180x180. iOS exige tamanhos múltiplos (152, 167, 180) e um `apple-touch-startup-image` para a splash da PWA instalada.
-**Correção:** Adicionar links para múltiplos tamanhos no `index.html` (mesmo que o arquivo seja o mesmo, iOS prioriza por dimensão declarada).
+1. Voltar para **Cloud → Users → Authentication Settings → Google**
+2. Colar o **Client ID** no campo correspondente
+3. Colar o **Client Secret** no campo correspondente
+4. Salvar
 
-## Arquivos a Editar
+### Etapa 5 — Validar
 
-```text
-index.html                                    → meta tags iOS, apple-touch-icons múltiplos
-src/index.css                                 → font-size 16px em inputs, scroll iOS,
-                                                 100dvh, fallback backdrop-filter
-src/components/layout/AppLayout.tsx           → safe-area top/bottom corrigida, dvh
-src/hooks/useWelcomeSound.ts                  → tocar após primeira interação
-src/components/reminders/NotificationPrompt.tsx → detectar iOS sem PWA, ocultar/avisar
-src/components/landing/FloatingWhatsApp.tsx   → trocar window.open por link nativo
-src/pages/AICoach.tsx                         → 100vh → 100dvh
-src/components/ai/FloatingAICoach.tsx         → 100vh → 100dvh
-```
+1. Fazer logout no app
+2. Testar login com Google em https://focus-30-app.lovable.app/auth
+3. Confirmar que a tela de consentimento mostra **"Focus 30 quer acessar sua conta"** (não mais "Lovable")
+4. Testar também no preview — agora deve funcionar com as suas credenciais
 
-## Resultado Esperado
-- Todas as abas (Dashboard, Ambiente, Finanças, Rotina, Metas, Continuação, Coach AI, Configurações) navegáveis sem corte por notch ou home indicator.
-- Inputs sem zoom automático.
-- Checkout Stripe e WhatsApp funcionando em Safari iOS sem bloqueio.
-- Notificações respeitam as limitações do iOS com mensagem clara.
-- PWA instalada com ícone correto e splash screen na home do iPhone.
-- Performance fluida em iPhones a partir do iOS 14.
+## O que eu (Lovable) vou fazer ao implementar este plano
 
+Como este é um processo de configuração externa, ao aprovar o plano eu vou:
+
+1. Confirmar que **nenhum código precisa ser alterado** (o `lovable.auth.signInWithOAuth("google")` já funciona com credenciais próprias automaticamente)
+2. Disponibilizar o atalho rápido para a tela de configuração da Lovable Cloud
+3. Fornecer o link direto para o Google Cloud Console
+4. Acompanhar você caso encontre erro em alguma etapa
+
+## Tempo estimado
+
+15 a 25 minutos no total, sendo a maior parte na configuração da tela de consentimento do Google.
+
+## Pré-requisito
+
+Você precisa ter uma conta Google (qualquer Gmail serve) para acessar o Google Cloud Console. Não há custo — o OAuth do Google é gratuito.
