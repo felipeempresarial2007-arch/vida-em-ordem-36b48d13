@@ -93,8 +93,10 @@ export default function Landing() {
   const openStripeCheckout = useCallback(async (priceId: string) => {
     try {
       setCheckoutLoading(true);
+      toast.loading('Abrindo checkout seguro...', { id: 'checkout' });
       
-      // If logged in, use authenticated checkout
+      // Landing checkout must always work for visitors. If a browser has an
+      // expired auth session, guest checkout keeps Stripe accessible.
       const { data: { session } } = await supabase.auth.getSession();
       
       const headers: Record<string, string> = {};
@@ -102,30 +104,35 @@ export default function Landing() {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
 
-      const isGuest = !session?.access_token;
-      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, guestCheckout: isGuest },
+        body: { priceId, guestCheckout: true },
         headers,
       });
 
       if (error) {
-        toast.error('Erro ao criar sessão de checkout');
+        toast.dismiss('checkout');
+        toast.error('Não foi possível abrir o checkout. Tente novamente em instantes.');
+        console.error('Checkout error:', error);
         return;
       }
 
       if (data?.url) {
+        toast.dismiss('checkout');
         window.location.href = data.url;
+        return;
       }
+
+      toast.dismiss('checkout');
+      toast.error('Checkout indisponível no momento. Tente novamente.');
     } catch {
-      toast.error('Erro ao processar checkout');
+      toast.dismiss('checkout');
+      toast.error('Não foi possível processar o checkout. Tente novamente.');
     } finally {
       setCheckoutLoading(false);
     }
   }, []);
 
-  const handleGetStartedMonthly = useCallback(() => openStripeCheckout(STRIPE_PRICES.monthly.priceId), [openStripeCheckout]);
-  const handleGetStartedAnnual = useCallback(() => openStripeCheckout(STRIPE_PRICES.annual.priceId), [openStripeCheckout]);
+  const handleLifetimeCheckout = useCallback(() => openStripeCheckout(STRIPE_PRICES.lifetime.priceId), [openStripeCheckout]);
 
   const benefits = [
     {
