@@ -53,7 +53,7 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+  
 
   // Countdown — termina à meia-noite do dia atual (renova diariamente para reforçar urgência real)
   const getEndOfDay = () => {
@@ -408,7 +408,7 @@ export default function Landing() {
                 Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <p className="text-sm text-muted-foreground mt-4 font-medium">A partir de R$ 17,57/mes</p>
+              <p className="text-sm text-muted-foreground mt-4 font-medium">Pagamento único de R$ 1,00 — acesso vitalício</p>
             </motion.div>
 
             {/* Trust Elements */}
@@ -641,65 +641,34 @@ export default function Landing() {
             </p>
           </motion.div>
 
-          {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-3 mb-12">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
-                billingCycle === 'monthly'
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                  : 'bg-muted text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Mensal
-            </button>
-            <button
-              onClick={() => setBillingCycle('annual')}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 relative ${
-                billingCycle === 'annual'
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                  : 'bg-muted text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Anual
-              <span className="absolute -top-2.5 -right-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
-                -37%
-              </span>
-            </button>
-          </div>
-
-          {/* Pricing Cards */}
-          <div className={`grid md:grid-cols-2 gap-8 max-w-4xl mx-auto ${billingCycle === 'annual' ? 'flex flex-col-reverse md:grid' : ''}`}>
-            {/* Annual Plan - shown first on mobile when annual selected */}
+          {/* Single Lifetime Plan */}
+          <div className="max-w-md mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className={`${billingCycle === 'annual' ? 'order-first md:order-last' : 'order-last md:order-last'}`}
             >
               <div className="relative p-8 md:p-10 rounded-[2rem] bg-card border-2 border-primary/30 shadow-2xl shadow-primary/10 h-full flex flex-col">
-                {/* Badge */}
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-orange-500 text-white px-5 py-2 rounded-full text-xs font-semibold shadow-xl shadow-primary/30">
                     <Zap className="w-3.5 h-3.5" />
-                    Mais Popular — Economize 37%
+                    Pagamento único — Acesso vitalício
                   </div>
                 </div>
 
                 <div className="text-center mb-6 pt-3">
-                  <h3 className="text-xl font-bold text-foreground mb-1">Plano Anual</h3>
-                  <p className="text-muted-foreground text-sm">Melhor custo-beneficio</p>
+                  <h3 className="text-xl font-bold text-foreground mb-1">Acesso Vitalício</h3>
+                  <p className="text-muted-foreground text-sm">Pague uma vez, use para sempre</p>
                 </div>
 
                 <div className="text-center mb-8 p-5 rounded-2xl bg-primary/5 border border-primary/20">
-                  <p className="text-sm text-muted-foreground mb-2 line-through">R$ 27,90/mes</p>
+                  <p className="text-sm text-muted-foreground mb-2 line-through">De R$ 210,90</p>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-xl font-bold text-primary">R$</span>
-                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">17,57</span>
-                    <span className="text-lg text-muted-foreground">/mes</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">1,00</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">Cobrado R$ 210,90/ano</p>
+                  <p className="text-xs text-muted-foreground mt-2">Pagamento único — sem mensalidades</p>
                 </div>
 
                 <div className="space-y-3 mb-8 flex-1">
@@ -715,62 +684,14 @@ export default function Landing() {
                   ))}
                 </div>
 
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="w-full cta-magnetic rounded-2xl border-0"
                   onClick={handleGetStartedAnnual}
                   disabled={checkoutLoading}
                 >
                   <Rocket className="w-4 h-4 mr-2" />
-                  Assinar Plano Anual
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            </motion.div>
-
-            {/* Monthly Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className={`${billingCycle === 'annual' ? 'order-last md:order-first' : 'order-first md:order-first'}`}
-            >
-              <div className="relative p-8 md:p-10 rounded-[2rem] bg-card border-2 border-border/60 shadow-xl h-full flex flex-col">
-                <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold text-foreground mb-1">Plano Mensal</h3>
-                  <p className="text-muted-foreground text-sm">Flexibilidade total</p>
-                </div>
-
-                <div className="text-center mb-8 p-5 rounded-2xl bg-muted/50 border border-border/50">
-                  <p className="text-sm text-muted-foreground mb-2 line-through">R$ 58,80/mes</p>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-xl font-bold text-primary">R$</span>
-                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">27,90</span>
-                    <span className="text-lg text-muted-foreground">/mes</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">Menos de R$ 1,00 por dia</p>
-                </div>
-
-                <div className="space-y-3 mb-8 flex-1">
-                  {planFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${feature.highlight ? 'bg-primary/20' : 'bg-secondary/15'}`}>
-                        <Check className={`w-3 h-3 ${feature.highlight ? 'text-primary' : 'text-secondary'}`} />
-                      </div>
-                      <span className={`text-sm ${feature.highlight ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
-                        {feature.text}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <Button 
-                  size="lg" 
-                  className="w-full cta-magnetic rounded-2xl border-0"
-                  onClick={handleGetStartedMonthly}
-                  disabled={checkoutLoading}
-                >
-                  Assinar Plano Mensal
+                  Garantir acesso vitalício
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -1059,7 +980,7 @@ export default function Landing() {
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStartedAnnual}
             >
-              Garantir minha vaga — R$ 17,57/mes
+              Garantir acesso vitalício — R$ 1,00
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">

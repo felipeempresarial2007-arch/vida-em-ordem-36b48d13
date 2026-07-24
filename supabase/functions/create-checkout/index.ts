@@ -47,8 +47,7 @@ function checkRateLimit(key: string) {
 }
 
 const ALLOWED_PRICE_IDS = new Set([
-  "price_1SsmXFDYwN6d3g31EM8QBScy",
-  "price_1SsmXwDYwN6d3g31Fc9Ue5ED",
+  "price_1TwZJBDYwN6d3g31Rfqy4JAX",
 ]);
 
 // Pre-initialize Stripe instance at module level for reuse across requests
@@ -145,11 +144,11 @@ serve(async (req) => {
       customer: customerId,
       customer_email: customerId ? undefined : email,
       line_items: [{ price: priceId, quantity: 1 }],
-      mode: "subscription",
+      mode: "payment",
       success_url: `${origin}/payment-success`,
       cancel_url: `${origin}/payment-canceled`,
       metadata: Object.keys(sessionMetadata).length > 0 ? sessionMetadata : undefined,
-      subscription_data: Object.keys(sessionMetadata).length > 0 ? {
+      payment_intent_data: Object.keys(sessionMetadata).length > 0 ? {
         metadata: sessionMetadata,
       } : undefined,
     });
