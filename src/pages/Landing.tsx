@@ -666,7 +666,7 @@ export default function Landing() {
                   <p className="text-sm text-muted-foreground mb-2 line-through">De R$ 210,90</p>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-xl font-bold text-primary">R$</span>
-                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">1,00</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">4,90</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Pagamento único — sem mensalidades</p>
                 </div>
