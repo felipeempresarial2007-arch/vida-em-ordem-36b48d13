@@ -9,25 +9,25 @@ const VIP_EMAILS = ['felipeempresarial2007@gmail.com', 'contatomaduwendler@gmail
 // Single lifetime one-time payment
 export const STRIPE_PRICES = {
   lifetime: {
-    priceId: 'price_1TwZJBDYwN6d3g31Rfqy4JAX',
-    productId: 'prod_UwSDwBDJ5QMucN',
+    priceId: 'price_1TwZSeDYwN6d3g31pFU64Kmx',
+    productId: 'prod_UwSNEmjghOLs7F',
     name: 'Acesso Vitalício',
-    price: 1.0,
+    price: 4.9,
     interval: 'lifetime' as const,
   },
   // Backwards-compat aliases (keep old imports working)
   monthly: {
-    priceId: 'price_1TwZJBDYwN6d3g31Rfqy4JAX',
-    productId: 'prod_UwSDwBDJ5QMucN',
+    priceId: 'price_1TwZSeDYwN6d3g31pFU64Kmx',
+    productId: 'prod_UwSNEmjghOLs7F',
     name: 'Acesso Vitalício',
-    price: 1.0,
+    price: 4.9,
     interval: 'lifetime' as const,
   },
   annual: {
-    priceId: 'price_1TwZJBDYwN6d3g31Rfqy4JAX',
-    productId: 'prod_UwSDwBDJ5QMucN',
+    priceId: 'price_1TwZSeDYwN6d3g31pFU64Kmx',
+    productId: 'prod_UwSNEmjghOLs7F',
     name: 'Acesso Vitalício',
-    price: 1.0,
+    price: 4.9,
     interval: 'lifetime' as const,
   },
 };
