@@ -47,8 +47,9 @@ function checkRateLimit(key: string) {
 }
 
 const ALLOWED_PRICE_IDS = new Set([
-  "price_1TwZSeDYwN6d3g31pFU64Kmx",
-  "price_1TwZJBDYwN6d3g31Rfqy4JAX", // legacy — kept to avoid breaking pending checkouts
+  "price_1TwZCzDYwN6d3g31AUyS2Iyp",
+  "price_1TwZSeDYwN6d3g31pFU64Kmx", // legacy
+  "price_1TwZJBDYwN6d3g31Rfqy4JAX", // legacy
 ]);
 
 // Pre-initialize Stripe instance at module level for reuse across requests
