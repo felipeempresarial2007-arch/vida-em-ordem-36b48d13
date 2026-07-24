@@ -408,7 +408,7 @@ export default function Landing() {
                 Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <p className="text-sm text-muted-foreground mt-4 font-medium">Pagamento único de R$ 1,00 — acesso vitalício</p>
+              <p className="text-sm text-muted-foreground mt-4 font-medium">Pagamento único de R$ 4,90 — acesso vitalício</p>
             </motion.div>
 
             {/* Trust Elements */}
