@@ -53,7 +53,7 @@ const staggerContainer = {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+  
 
   // Countdown — termina à meia-noite do dia atual (renova diariamente para reforçar urgência real)
   const getEndOfDay = () => {
@@ -980,7 +980,7 @@ export default function Landing() {
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStartedAnnual}
             >
-              Garantir minha vaga — R$ 17,57/mes
+              Garantir acesso vitalício — R$ 1,00
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">
