@@ -79,49 +79,43 @@ serve(async (req) => {
     logStep("User authenticated", { userId, email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const LIFETIME_PRICE_ID = "price_1TwZJBDYwN6d3g31Rfqy4JAX";
+    const LIFETIME_PRODUCT_ID = "prod_UwSDwBDJ5QMucN";
+
     const customers = await stripe.customers.list({ email, limit: 1 });
 
     if (customers.data.length === 0) {
-      logStep("No customer found, returning unsubscribed state");
+      logStep("No customer found, returning unpaid state");
       return json(200, { subscribed: false, product_id: null, subscription_end: null });
     }
 
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    const subscriptions = await stripe.subscriptions.list({
+    // Look for a completed one-time payment for the lifetime price
+    const sessions = await stripe.checkout.sessions.list({
       customer: customerId,
-      status: "active",
-      limit: 1,
+      limit: 20,
     });
 
-    const subscription = subscriptions.data[0];
-    const subscribed = !!subscription;
-
-    let productId: string | null = null;
-    let subscriptionEnd: string | null = null;
-
-    if (subscription) {
-      if (typeof subscription.current_period_end === "number") {
-        subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+    let paid = false;
+    for (const s of sessions.data) {
+      if (s.mode !== "payment") continue;
+      if (s.payment_status !== "paid") continue;
+      const items = await stripe.checkout.sessions.listLineItems(s.id, { limit: 5 });
+      const match = items.data.some((li) => li.price?.id === LIFETIME_PRICE_ID);
+      if (match) {
+        paid = true;
+        break;
       }
-
-      const product = subscription.items?.data?.[0]?.price?.product;
-      productId = typeof product === "string" ? product : null;
-
-      logStep("Active subscription found", {
-        subscriptionId: subscription.id,
-        productId,
-        subscriptionEnd,
-      });
-    } else {
-      logStep("No active subscription found");
     }
 
+    logStep(paid ? "Lifetime payment found" : "No lifetime payment found");
+
     return json(200, {
-      subscribed,
-      product_id: productId,
-      subscription_end: subscriptionEnd,
+      subscribed: paid,
+      product_id: paid ? LIFETIME_PRODUCT_ID : null,
+      subscription_end: null,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
