@@ -980,7 +980,7 @@ export default function Landing() {
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStartedAnnual}
             >
-              Garantir acesso vitalício — R$ 1,00
+              Garantir acesso vitalício — R$ 4,90
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">
