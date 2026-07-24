@@ -106,7 +106,7 @@ serve(async (req) => {
       if (s.mode !== "payment") continue;
       if (s.payment_status !== "paid") continue;
       const items = await stripe.checkout.sessions.listLineItems(s.id, { limit: 5 });
-      const match = items.data.some((li) => li.price?.id === LIFETIME_PRICE_ID);
+      const match = items.data.some((li) => li.price?.id && LIFETIME_PRICE_IDS.has(li.price.id));
       if (match) {
         paid = true;
         break;
