@@ -93,8 +93,10 @@ export default function Landing() {
   const openStripeCheckout = useCallback(async (priceId: string) => {
     try {
       setCheckoutLoading(true);
+      toast.loading('Abrindo checkout seguro...', { id: 'checkout' });
       
-      // If logged in, use authenticated checkout
+      // Landing checkout must always work for visitors. If a browser has an
+      // expired auth session, guest checkout keeps Stripe accessible.
       const { data: { session } } = await supabase.auth.getSession();
       
       const headers: Record<string, string> = {};
@@ -102,30 +104,35 @@ export default function Landing() {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
 
-      const isGuest = !session?.access_token;
-      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId, guestCheckout: isGuest },
+        body: { priceId, guestCheckout: true },
         headers,
       });
 
       if (error) {
-        toast.error('Erro ao criar sessão de checkout');
+        toast.dismiss('checkout');
+        toast.error('Não foi possível abrir o checkout. Tente novamente em instantes.');
+        console.error('Checkout error:', error);
         return;
       }
 
       if (data?.url) {
+        toast.dismiss('checkout');
         window.location.href = data.url;
+        return;
       }
+
+      toast.dismiss('checkout');
+      toast.error('Checkout indisponível no momento. Tente novamente.');
     } catch {
-      toast.error('Erro ao processar checkout');
+      toast.dismiss('checkout');
+      toast.error('Não foi possível processar o checkout. Tente novamente.');
     } finally {
       setCheckoutLoading(false);
     }
   }, []);
 
-  const handleGetStartedMonthly = useCallback(() => openStripeCheckout(STRIPE_PRICES.monthly.priceId), [openStripeCheckout]);
-  const handleGetStartedAnnual = useCallback(() => openStripeCheckout(STRIPE_PRICES.annual.priceId), [openStripeCheckout]);
+  const handleLifetimeCheckout = useCallback(() => openStripeCheckout(STRIPE_PRICES.lifetime.priceId), [openStripeCheckout]);
 
   const benefits = [
     {
@@ -231,7 +238,7 @@ export default function Landing() {
     },
     {
       question: 'Por quanto tempo tenho acesso?',
-      answer: 'Enquanto sua assinatura estiver ativa, você tem acesso completo a todos os recursos, incluindo o Coach IA e a comunidade exclusiva.'
+      answer: 'O acesso é vitalício. Você paga R$ 4,90 uma única vez e mantém acesso completo ao Focus 30, incluindo o Coach IA.'
     }
   ];
 
@@ -403,9 +410,10 @@ export default function Landing() {
               <Button 
                 size="xl" 
                 className="cta-magnetic rounded-full sm:max-w-md border-0"
-                onClick={scrollToPricing}
+                onClick={handleLifetimeCheckout}
+                disabled={checkoutLoading}
               >
-                Garantir minha vaga no ciclo atual
+                Garantir minha vaga por R$ 4,90
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <p className="text-sm text-muted-foreground mt-4 font-medium">Pagamento único de R$ 4,90 — acesso vitalício</p>
@@ -634,10 +642,10 @@ export default function Landing() {
           >
             <span className="text-primary font-semibold text-sm uppercase tracking-widest">Oferta Especial</span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4 mb-5 tracking-tight">
-              Garanta sua vaga agora
+              Acesso vitalício por R$ 4,90
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-              Estamos abrindo vagas para o ciclo atual do FOCUS 30.
+              Pague uma única vez e desbloqueie o método Focus 30 completo, sem mensalidade e sem assinatura recorrente.
             </p>
           </motion.div>
 
@@ -687,11 +695,11 @@ export default function Landing() {
                 <Button
                   size="lg"
                   className="w-full cta-magnetic rounded-2xl border-0"
-                  onClick={handleGetStartedAnnual}
+                  onClick={handleLifetimeCheckout}
                   disabled={checkoutLoading}
                 >
                   <Rocket className="w-4 h-4 mr-2" />
-                  Garantir acesso vitalício
+                  Garantir acesso por R$ 4,90
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
@@ -710,7 +718,7 @@ export default function Landing() {
             </div>
             <div className="flex items-center gap-2">
               <X className="w-4 h-4 text-secondary" />
-              <span>Cancele quando quiser</span>
+              <span>Sem assinatura recorrente</span>
             </div>
           </div>
         </div>
@@ -880,7 +888,7 @@ export default function Landing() {
               Veja como é simples criar sua conta
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              Em poucos segundos você cria seu acesso e começa seus <span className="text-primary font-semibold">7 dias grátis</span> no Focus 30. Sem complicação, sem burocracia.
+              Em poucos segundos você cria seu acesso vitalício por <span className="text-primary font-semibold">R$ 4,90</span> e começa o Focus 30. Sem complicação, sem burocracia.
             </p>
           </motion.div>
 
@@ -910,9 +918,10 @@ export default function Landing() {
               <Button
                 size="lg"
                 className="rounded-full px-8 shadow-lg shadow-primary/30 min-h-[52px] text-base font-semibold"
-                onClick={scrollToPricing}
+                onClick={handleLifetimeCheckout}
+                disabled={checkoutLoading}
               >
-                Começar meus 7 dias grátis
+                Garantir acesso por R$ 4,90
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
@@ -978,7 +987,8 @@ export default function Landing() {
             <Button 
               size="xl" 
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
-              onClick={handleGetStartedAnnual}
+              onClick={handleLifetimeCheckout}
+              disabled={checkoutLoading}
             >
               Garantir acesso vitalício — R$ 4,90
               <ArrowRight className="w-5 h-5 ml-2" />
