@@ -79,8 +79,11 @@ serve(async (req) => {
     logStep("User authenticated", { userId, email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const LIFETIME_PRICE_ID = "price_1TwZJBDYwN6d3g31Rfqy4JAX";
-    const LIFETIME_PRODUCT_ID = "prod_UwSDwBDJ5QMucN";
+    const LIFETIME_PRICE_IDS = new Set([
+      "price_1TwZSeDYwN6d3g31pFU64Kmx",
+      "price_1TwZJBDYwN6d3g31Rfqy4JAX", // legacy
+    ]);
+    const LIFETIME_PRODUCT_ID = "prod_UwSNEmjghOLs7F";
 
     const customers = await stripe.customers.list({ email, limit: 1 });
 
