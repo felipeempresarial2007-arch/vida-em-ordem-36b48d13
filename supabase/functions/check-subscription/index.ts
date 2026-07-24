@@ -80,10 +80,11 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const LIFETIME_PRICE_IDS = new Set([
-      "price_1TwZSeDYwN6d3g31pFU64Kmx",
+      "price_1TwZCzDYwN6d3g31AUyS2Iyp",
+      "price_1TwZSeDYwN6d3g31pFU64Kmx", // legacy
       "price_1TwZJBDYwN6d3g31Rfqy4JAX", // legacy
     ]);
-    const LIFETIME_PRODUCT_ID = "prod_UwSNEmjghOLs7F";
+    const LIFETIME_PRODUCT_ID = "prod_UwS7i8qppZaYBC";
 
     const customers = await stripe.customers.list({ email, limit: 1 });
 
