@@ -408,7 +408,7 @@ export default function Landing() {
                 Garantir minha vaga no ciclo atual
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <p className="text-sm text-muted-foreground mt-4 font-medium">Pagamento único de R$ 1,00 — acesso vitalício</p>
+              <p className="text-sm text-muted-foreground mt-4 font-medium">Pagamento único de R$ 4,90 — acesso vitalício</p>
             </motion.div>
 
             {/* Trust Elements */}
@@ -666,7 +666,7 @@ export default function Landing() {
                   <p className="text-sm text-muted-foreground mb-2 line-through">De R$ 210,90</p>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-xl font-bold text-primary">R$</span>
-                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">1,00</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">4,90</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Pagamento único — sem mensalidades</p>
                 </div>
@@ -980,7 +980,7 @@ export default function Landing() {
               className="cta-magnetic rounded-full sm:max-w-md mx-auto border-0"
               onClick={handleGetStartedAnnual}
             >
-              Garantir acesso vitalício — R$ 1,00
+              Garantir acesso vitalício — R$ 4,90
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <p className="text-white/60 text-sm mt-8 flex flex-wrap items-center justify-center gap-6">

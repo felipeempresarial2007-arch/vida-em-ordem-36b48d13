@@ -56,7 +56,7 @@ export function TrialPaywall() {
               </div>
               <div className="flex items-baseline justify-center gap-1 mt-3">
                 <span className="text-lg font-bold text-foreground">R$</span>
-                <span className="text-5xl font-bold text-foreground">1,00</span>
+                <span className="text-5xl font-bold text-foreground">4,90</span>
               </div>
               <p className="text-xs text-muted-foreground mt-1">Pagamento único — sem mensalidades</p>
             </div>
