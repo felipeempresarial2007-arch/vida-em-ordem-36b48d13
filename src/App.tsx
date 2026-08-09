@@ -23,6 +23,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const SentryTest = lazy(() => import("./pages/SentryTest"));
 
 import AppLayout from "./components/layout/AppLayout";
 import { useNotificationScheduler } from "./hooks/useNotificationScheduler";
@@ -170,6 +171,7 @@ const AppRoutes = () => {
         <Route path="/install" element={<Install />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/sentry-test" element={<SentryTest />} />
         <Route path="/dashboard" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/focus-protocol" element={<ProtectedRoute><FocusProtocol /></ProtectedRoute>} />
         <Route path="/ai-coach" element={<ProtectedRoute><AICoach /></ProtectedRoute>} />
