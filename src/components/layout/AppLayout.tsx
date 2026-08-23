@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { NavBar } from '@/components/ui/tubelight-navbar';
 import Logo from '@/components/Logo';
 import { FloatingAICoach } from '@/components/ai/FloatingAICoach';
 import { NotificationPrompt } from '@/components/reminders/NotificationPrompt';
@@ -33,6 +34,12 @@ const navItems = [
   { path: '/metas', label: 'Metas', icon: Target },
   { path: '/continuacao', label: 'Continuar', icon: Infinity },
 ];
+
+const mobileNavItems = navItems.map((item) => ({
+  name: item.label,
+  url: item.path,
+  icon: item.icon,
+}));
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const { signOut } = useAuth();
@@ -168,53 +175,25 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </>
       )}
 
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation - Tubelight style */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border/50 z-50"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
         style={{
-          paddingBottom: 'env(safe-area-inset-bottom, 0)',
-          height: 'calc(72px + env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <div className="flex items-center justify-around h-[72px] px-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-1 flex-1 h-full transition-all duration-200',
-                  isActive 
-                    ? 'text-primary' 
-                    : 'text-muted-foreground'
-                )}
-              >
-                <div className={cn(
-                  'flex items-center justify-center w-11 h-8 rounded-xl transition-all duration-200',
-                  isActive && 'bg-primary/12 shadow-sm'
-                )}>
-                  <Icon className={cn('w-5 h-5 transition-transform duration-200', isActive && 'scale-105')} />
-                </div>
-                <span className={cn(
-                  'text-[10px] font-semibold tracking-tight',
-                  isActive ? 'text-primary' : 'text-muted-foreground'
-                )}>
-                  {item.label}
-                </span>
-              </NavLink>
-            );
-          })}
+        <div className="flex justify-center pointer-events-auto">
+          <NavBar items={mobileNavItems} className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl" />
         </div>
       </nav>
+
 
       {/* Main Content */}
       <main
         className="lg:ml-60 min-h-screen-dvh"
         style={{
           paddingTop: 'calc(48px + env(safe-area-inset-top, 0px))',
-          paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'calc(64px + env(safe-area-inset-bottom, 0px))',
         }}
       >
         <div className="p-4 lg:p-6 max-w-lg lg:max-w-4xl mx-auto lg:!pt-6">
