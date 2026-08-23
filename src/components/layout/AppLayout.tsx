@@ -41,7 +41,6 @@ const mobileNavItems = navItems.map((item) => ({
   icon: item.icon,
 }));
 
-
 export default function AppLayout({ children }: AppLayoutProps) {
   const { signOut } = useAuth();
   const location = useLocation();
