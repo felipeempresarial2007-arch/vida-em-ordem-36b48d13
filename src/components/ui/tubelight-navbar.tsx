@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { NavLink, useLocation } from "react-router-dom"
 import type { LucideIcon } from "lucide-react"
@@ -8,6 +7,8 @@ interface NavItem {
   name: string
   url: string
   icon: LucideIcon
+  /** Extra paths that should also mark this item as active */
+  aliases?: string[]
 }
 
 interface NavBarProps {
@@ -15,76 +16,73 @@ interface NavBarProps {
   className?: string
 }
 
+function matchScore(pathname: string, item: NavItem) {
+  const candidates = [item.url, ...(item.aliases ?? [])]
+  let score = -1
+  for (const c of candidates) {
+    if (pathname === c) score = Math.max(score, 1000)
+    else if (c !== "/" && pathname.startsWith(c + "/")) score = Math.max(score, c.length)
+  }
+  return score
+}
+
 export function NavBar({ items, className }: NavBarProps) {
   const location = useLocation()
-  const [activeTab, setActiveTab] = useState(items[0]?.name ?? "")
-  const [isMobile, setIsMobile] = useState(false)
 
-  useEffect(() => {
-    const current = items.find((item) => item.url === location.pathname)
-    if (current) {
-      setActiveTab(current.name)
+  let activeName = items[0]?.name ?? ""
+  let best = -1
+  for (const item of items) {
+    const s = matchScore(location.pathname, item)
+    if (s > best) {
+      best = s
+      activeName = item.name
     }
-  }, [location.pathname, items])
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  }
 
   return (
     <div
       className={cn(
-        "flex items-center gap-1 p-1.5 bg-muted/60 backdrop-blur-xl border border-border/60 rounded-full shadow-sm",
+        "flex items-end gap-0.5 px-1.5 py-1 rounded-2xl border border-border/60 bg-card/90 backdrop-blur-xl shadow-lg",
         className,
       )}
     >
       {items.map((item) => {
         const Icon = item.icon
-        const isActive = activeTab === item.name
+        const isActive = activeName === item.name
 
         return (
           <NavLink
             key={item.name}
             to={item.url}
-            onClick={() => setActiveTab(item.name)}
+            aria-current={isActive ? "page" : undefined}
             className={cn(
-              "relative cursor-pointer text-sm font-semibold px-4 py-2 rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
-              "text-foreground/70 hover:text-foreground",
-              isActive && "text-primary",
+              "relative flex flex-col items-center justify-center gap-0.5 rounded-xl px-2.5 py-2 min-w-[52px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+              isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {isActive && (
               <motion.div
-                layoutId="tubelight-indicator"
-                className="absolute inset-0 bg-background rounded-full shadow-md"
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
-              />
+                layoutId="tubelight-pill"
+                className="absolute inset-0 rounded-xl bg-primary/10"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+              >
+                {/* Tubelight lamp */}
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-primary">
+                  <div className="absolute -top-2 -left-2 w-12 h-6 rounded-full bg-primary/25 blur-md" />
+                  <div className="absolute -top-1 left-0 w-8 h-5 rounded-full bg-primary/25 blur-md" />
+                  <div className="absolute top-0 left-2 w-4 h-4 rounded-full bg-primary/25 blur-sm" />
+                </div>
+              </motion.div>
             )}
-            <span className="relative z-10 flex items-center gap-2">
-              <Icon className="w-4 h-4" />
-              {!isMobile && <span>{item.name}</span>}
+            <Icon className={cn("relative z-10 transition-all", isActive ? "w-5 h-5" : "w-[18px] h-[18px]")} />
+            <span
+              className={cn(
+                "relative z-10 text-[10px] leading-none font-medium tracking-tight",
+                isActive && "font-semibold",
+              )}
+            >
+              {item.name}
             </span>
-            {isActive && (
-              <motion.div
-                layoutId="tubelight-glow"
-                className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full blur-[3px]"
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
-              />
-            )}
           </NavLink>
         )
       })}

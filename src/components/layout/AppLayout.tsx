@@ -39,7 +39,9 @@ const mobileNavItems = navItems.map((item) => ({
   name: item.label,
   url: item.path,
   icon: item.icon,
+  aliases: item.path === '/' ? ['/dashboard'] : undefined,
 }));
+
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const { signOut } = useAuth();
@@ -177,15 +179,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
       {/* Mobile Bottom Navigation - Tubelight style */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none px-2"
         style={{
-          paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))',
         }}
       >
         <div className="flex justify-center pointer-events-auto">
-          <NavBar items={mobileNavItems} className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl" />
+          <NavBar items={mobileNavItems} />
         </div>
       </nav>
+
 
 
       {/* Main Content */}
