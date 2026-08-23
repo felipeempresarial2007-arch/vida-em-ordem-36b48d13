@@ -177,17 +177,18 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </>
       )}
 
-      {/* Mobile Bottom Navigation - Tubelight style */}
+      {/* Mobile Bottom Navigation - Dock style */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none px-2"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
         style={{
-          paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'calc(6px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <div className="flex justify-center pointer-events-auto">
-          <NavBar items={mobileNavItems} />
+        <div className="pointer-events-auto">
+          <AppDock items={dockItems} />
         </div>
       </nav>
+
 
 
 
