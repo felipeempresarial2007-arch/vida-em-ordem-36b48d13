@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { NavBar } from '@/components/ui/tubelight-navbar';
+import { AppDock } from '@/components/layout/AppDock';
 import Logo from '@/components/Logo';
 import { FloatingAICoach } from '@/components/ai/FloatingAICoach';
 import { NotificationPrompt } from '@/components/reminders/NotificationPrompt';
@@ -35,12 +35,11 @@ const navItems = [
   { path: '/continuacao', label: 'Continuar', icon: Infinity },
 ];
 
-const mobileNavItems = navItems.map((item) => ({
-  name: item.label,
-  url: item.path,
-  icon: item.icon,
+const dockItems = navItems.map((item) => ({
+  ...item,
   aliases: item.path === '/' ? ['/dashboard'] : undefined,
 }));
+
 
 
 export default function AppLayout({ children }: AppLayoutProps) {
