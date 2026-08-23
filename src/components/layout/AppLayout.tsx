@@ -39,7 +39,9 @@ const mobileNavItems = navItems.map((item) => ({
   name: item.label,
   url: item.path,
   icon: item.icon,
+  aliases: item.path === '/' ? ['/dashboard'] : undefined,
 }));
+
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const { signOut } = useAuth();
