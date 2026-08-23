@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { NavBar } from '@/components/ui/tubelight-navbar';
+import { AppDock } from '@/components/layout/AppDock';
 import Logo from '@/components/Logo';
 import { FloatingAICoach } from '@/components/ai/FloatingAICoach';
 import { NotificationPrompt } from '@/components/reminders/NotificationPrompt';
@@ -35,12 +35,11 @@ const navItems = [
   { path: '/continuacao', label: 'Continuar', icon: Infinity },
 ];
 
-const mobileNavItems = navItems.map((item) => ({
-  name: item.label,
-  url: item.path,
-  icon: item.icon,
+const dockItems = navItems.map((item) => ({
+  ...item,
   aliases: item.path === '/' ? ['/dashboard'] : undefined,
 }));
+
 
 
 export default function AppLayout({ children }: AppLayoutProps) {
@@ -177,17 +176,18 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </>
       )}
 
-      {/* Mobile Bottom Navigation - Tubelight style */}
+      {/* Mobile Bottom Navigation - Dock style */}
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none px-2"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
         style={{
-          paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'calc(6px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <div className="flex justify-center pointer-events-auto">
-          <NavBar items={mobileNavItems} />
+        <div className="pointer-events-auto">
+          <AppDock items={dockItems} />
         </div>
       </nav>
+
 
 
 
