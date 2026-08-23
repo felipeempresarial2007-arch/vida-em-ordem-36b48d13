@@ -194,7 +194,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         className="lg:ml-60 min-h-screen-dvh"
         style={{
           paddingTop: 'calc(48px + env(safe-area-inset-top, 0px))',
-          paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'calc(64px + env(safe-area-inset-bottom, 0px))',
         }}
       >
         <div className="p-4 lg:p-6 max-w-lg lg:max-w-4xl mx-auto lg:!pt-6">
