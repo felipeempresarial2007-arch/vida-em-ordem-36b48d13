@@ -16,10 +16,10 @@ import {
   LogOut, 
   Menu, 
   X,
-  Settings,
   Download,
   Bell,
 } from 'lucide-react';
+import { CogIcon } from '@/components/icons/CogIcon';
 import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
@@ -129,7 +129,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="w-9 h-9 rounded-xl"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <X className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
+          {mobileMenuOpen ? <X className="w-4 h-4" /> : <CogIcon size={18} />}
         </Button>
       </header>
 
