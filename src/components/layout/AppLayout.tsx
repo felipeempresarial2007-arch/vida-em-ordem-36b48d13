@@ -129,7 +129,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="w-9 h-9 rounded-xl"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <X className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
+          {mobileMenuOpen ? <X className="w-4 h-4" /> : <CogIcon size={18} />}
         </Button>
       </header>
 
