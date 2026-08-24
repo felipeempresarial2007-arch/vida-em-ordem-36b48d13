@@ -16,10 +16,10 @@ import {
   LogOut, 
   Menu, 
   X,
-  Settings,
   Download,
   Bell,
 } from 'lucide-react';
+import { CogIcon } from '@/components/icons/CogIcon';
 import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
